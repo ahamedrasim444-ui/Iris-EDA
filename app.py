@@ -53,14 +53,20 @@ if "antigravity_active" not in st.session_state:
     st.session_state.antigravity_active = False
 
 # Preset values for Tab 4 classifier
-if "pred_sl" not in st.session_state:
-    st.session_state.pred_sl = 5.8
-if "pred_sw" not in st.session_state:
-    st.session_state.pred_sw = 3.0
-if "pred_pl" not in st.session_state:
-    st.session_state.pred_pl = 4.2
-if "pred_pw" not in st.session_state:
-    st.session_state.pred_pw = 1.3
+def set_classifier_preset(sl: float, sw: float, pl: float, pw: float):
+    st.session_state["slider_sl"] = float(sl)
+    st.session_state["slider_sw"] = float(sw)
+    st.session_state["slider_pl"] = float(pl)
+    st.session_state["slider_pw"] = float(pw)
+
+if "slider_sl" not in st.session_state:
+    st.session_state["slider_sl"] = 5.8
+if "slider_sw" not in st.session_state:
+    st.session_state["slider_sw"] = 3.0
+if "slider_pl" not in st.session_state:
+    st.session_state["slider_pl"] = 4.2
+if "slider_pw" not in st.session_state:
+    st.session_state["slider_pw"] = 1.3
 
 
 # ------------------------------------------------------------------------------
@@ -90,25 +96,25 @@ with st.sidebar:
             """
             <div class="sidebar-card">
                 <div class="team-member-item">
-                    <span class="team-member-name">1. Adnan Hameed</span>
-                    <span class="team-member-role">Lead / Pipeline</span>
+                    <span class="team-member-name">1. Balaji (Team Lead)</span>
+                    <span class="team-member-role">Project Lead</span>
                 </div>
                 <div class="team-member-item">
-                    <span class="team-member-name">2. Bhavana K.</span>
-                    <span class="team-member-role">Pandas Eng.</span>
+                    <span class="team-member-name">2. Ahamed Rasim</span>
+                    <span class="team-member-role">Data & Pandas</span>
                 </div>
                 <div class="team-member-item">
-                    <span class="team-member-name">3. Chethan R.</span>
-                    <span class="team-member-role">NumPy Linear Alg.</span>
+                    <span class="team-member-name">3. Kishore Kumar</span>
+                    <span class="team-member-role">NumPy Engine</span>
                 </div>
                 <div class="team-member-item">
-                    <span class="team-member-name">4. Divya Sharma</span>
-                    <span class="team-member-role">Matplotlib & UI</span>
+                    <span class="team-member-name">4. Aadthiyan</span>
+                    <span class="team-member-role">Visual Analytics</span>
                 </div>
-                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(148, 163, 184, 0.3); font-size: 0.8rem;">
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(148, 163, 184, 0.3); font-size: 0.82rem;">
                     <strong>Faculty Guide:</strong><br>
-                    Dr. K. S. Ramanujan, Ph.D.<br>
-                    <em>Dept. of Computer Science & Engg.</em>
+                    Prof. Keerthana<br>
+                    <em>Department of Computer Science & Engineering</em>
                 </div>
             </div>
             """,
@@ -458,48 +464,29 @@ with tab4:
     )
 
     # Preset Dimension Quick-Select Buttons
-    st.markdown("**Quick Preset Profiles:**")
+    st.markdown("**Quick Preset Profiles (Click to Auto-Fill Sliders):**")
     p_col1, p_col2, p_col3, p_col4 = st.columns(4)
     with p_col1:
-        if st.button("🌸 Typical Setosa", use_container_width=True):
-            st.session_state.pred_sl = 5.0
-            st.session_state.pred_sw = 3.5
-            st.session_state.pred_pl = 1.4
-            st.session_state.pred_pw = 0.2
-            st.rerun()
+        st.button("🌸 Typical Setosa", on_click=set_classifier_preset, args=(5.0, 3.4, 1.5, 0.2), use_container_width=True)
     with p_col2:
-        if st.button("🌿 Typical Versicolor", use_container_width=True):
-            st.session_state.pred_sl = 5.9
-            st.session_state.pred_sw = 2.7
-            st.session_state.pred_pl = 4.2
-            st.session_state.pred_pw = 1.3
-            st.rerun()
+        st.button("🌿 Typical Versicolor", on_click=set_classifier_preset, args=(5.9, 2.8, 4.3, 1.3), use_container_width=True)
     with p_col3:
-        if st.button("🌺 Typical Virginica", use_container_width=True):
-            st.session_state.pred_sl = 6.6
-            st.session_state.pred_sw = 3.0
-            st.session_state.pred_pl = 5.5
-            st.session_state.pred_pw = 2.0
-            st.rerun()
+        st.button("🌺 Typical Virginica", on_click=set_classifier_preset, args=(6.6, 3.0, 5.6, 2.0), use_container_width=True)
     with p_col4:
-        if st.button("🔄 Reset Default", use_container_width=True):
-            st.session_state.pred_sl = 5.8
-            st.session_state.pred_sw = 3.0
-            st.session_state.pred_pl = 4.2
-            st.session_state.pred_pw = 1.3
-            st.rerun()
+        st.button("🔄 Reset Default", on_click=set_classifier_preset, args=(5.8, 3.0, 4.2, 1.3), use_container_width=True)
 
-    # Dimension Sliders
+    # Dimension Sliders with direct session_state keys
+    st.markdown("#### Adjust Flower Anatomical Dimensions:")
     sl_col1, sl_col2 = st.columns(2)
     with sl_col1:
-        in_sl = st.slider("Input Sepal Length (cm)", 4.0, 8.0, float(st.session_state.pred_sl), 0.1, key="in_sl_slider")
-        in_sw = st.slider("Input Sepal Width (cm)", 2.0, 4.5, float(st.session_state.pred_sw), 0.1, key="in_sw_slider")
+        in_sl = st.slider("Sepal Length (cm)", min_value=4.0, max_value=8.0, step=0.1, key="slider_sl")
+        in_sw = st.slider("Sepal Width (cm)", min_value=2.0, max_value=4.5, step=0.1, key="slider_sw")
     with sl_col2:
-        in_pl = st.slider("Input Petal Length (cm)", 1.0, 7.0, float(st.session_state.pred_pl), 0.1, key="in_pl_slider")
-        in_pw = st.slider("Input Petal Width (cm)", 0.1, 2.6, float(st.session_state.pred_pw), 0.1, key="in_pw_slider")
+        in_pl = st.slider("Petal Length (cm)", min_value=1.0, max_value=7.0, step=0.1, key="slider_pl")
+        in_pw = st.slider("Petal Width (cm)", min_value=0.1, max_value=2.6, step=0.1, key="slider_pw")
 
-    # Construct Query Vector
-    query_vector = np.array([in_sl, in_sw, in_pl, in_pw], dtype=float)
+    # Construct Live Query Vector using active state
+    query_vector = np.array([float(in_sl), float(in_sw), float(in_pl), float(in_pw)], dtype=float)
 
     # Compute Centroids on baseline raw dataset to maintain consistent ground truth
     baseline_centroids = compute_species_centroids(df_raw, FEATURE_COLS)
@@ -510,59 +497,111 @@ with tab4:
     distances = prediction_result["distances"]
     proximities = prediction_result["proximity_pct"]
 
-    # Display Prediction Box
+    # Display Live Prediction Banner
     tag_class = f"tag-{pred_species.lower()}"
+    species_emoji = {"Setosa": "🌸", "Versicolor": "🌿", "Virginica": "🌺"}.get(pred_species, "🌼")
+    
     st.markdown(
         f"""
         <div class="prediction-box">
-            <div style="font-size: 0.95rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
-                Live NumPy Prediction
+            <div style="font-size: 0.88rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;">
+                ⚡ Live NumPy Decision Engine Output
             </div>
             <div class="species-tag {tag_class}">
-                Iris {pred_species}
+                {species_emoji} Iris {pred_species}
             </div>
-            <div style="font-size: 1rem; color: #334155; margin-top: 4px;">
-                Centroid Euclidean Distance: <strong>{min_dist:.3f} cm</strong> &nbsp;|&nbsp; 
-                Confidence Proximity: <strong>{proximities[pred_species]:.1f}%</strong>
+            <div style="font-size: 1.05rem; color: #1e293b; margin-top: 6px; font-weight: 600;">
+                Minimum Centroid Distance: <span style="color: #4f46e5;">{min_dist:.3f} cm</span> &nbsp;•&nbsp; 
+                Softmax Confidence: <span style="color: #059669;">{proximities[pred_species]:.1f}%</span>
             </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
+    # Live Metric & Confidence Breakdown across 3 species
+    c_m1, c_m2, c_m3 = st.columns(3)
+    with c_m1:
+        is_best = "Setosa" == pred_species
+        st.metric(
+            label="🌸 Iris Setosa",
+            value=f"{distances['Setosa']:.3f} cm",
+            delta="🏆 Match" if is_best else f"+{distances['Setosa'] - min_dist:.2f} cm",
+            delta_color="normal" if is_best else "off",
+        )
+        st.caption(f"Confidence: **{proximities['Setosa']:.1f}%**")
+        st.progress(min(max(float(proximities['Setosa'] / 100.0), 0.0), 1.0))
+        
+    with c_m2:
+        is_best = "Versicolor" == pred_species
+        st.metric(
+            label="🌿 Iris Versicolor",
+            value=f"{distances['Versicolor']:.3f} cm",
+            delta="🏆 Match" if is_best else f"+{distances['Versicolor'] - min_dist:.2f} cm",
+            delta_color="normal" if is_best else "off",
+        )
+        st.caption(f"Confidence: **{proximities['Versicolor']:.1f}%**")
+        st.progress(min(max(float(proximities['Versicolor'] / 100.0), 0.0), 1.0))
+
+    with c_m3:
+        is_best = "Virginica" == pred_species
+        st.metric(
+            label="🌺 Iris Virginica",
+            value=f"{distances['Virginica']:.3f} cm",
+            delta="🏆 Match" if is_best else f"+{distances['Virginica'] - min_dist:.2f} cm",
+            delta_color="normal" if is_best else "off",
+        )
+        st.caption(f"Confidence: **{proximities['Virginica']:.1f}%**")
+        st.progress(min(max(float(proximities['Virginica'] / 100.0), 0.0), 1.0))
+
+    st.markdown("---")
+
     # Visual Diagnostics
     pred_viz_col1, pred_viz_col2 = st.columns([1, 1])
     with pred_viz_col1:
-        st.markdown("#### Centroid Distance & Proximity Metrics")
+        st.markdown("#### 📏 Centroid Metric Distance Breakdown")
         fig_diag = plot_prediction_diagnostics(distances, proximities, pred_species)
         st.pyplot(fig_diag, use_container_width=True)
 
     with pred_viz_col2:
-        st.markdown("#### Query Space Projection vs. Clusters")
+        st.markdown("#### 🗺️ Live Query Point Space Projection")
+        proj_x_options = ["petal_length", "sepal_length"]
+        proj_y_options = ["petal_width", "sepal_width"]
+        px_col, py_col = st.columns(2)
+        with px_col:
+            proj_x = st.selectbox("Projection X:", proj_x_options, index=0, format_func=lambda x: FEATURE_LABELS[x], key="proj_x_sel")
+        with py_col:
+            proj_y = st.selectbox("Projection Y:", proj_y_options, index=0, format_func=lambda x: FEATURE_LABELS[x], key="proj_y_sel")
+
         fig_proj = plot_query_point_projection(
             df_raw,
             query_vector,
             baseline_centroids,
             pred_species,
-            x_col="petal_length",
-            y_col="petal_width",
+            x_col=proj_x,
+            y_col=proj_y,
         )
         st.pyplot(fig_proj, use_container_width=True)
 
     # Detailed Numerical Breakdown
-    with st.expander("📐 Mathematical Distance Breakdown & Coordinate Vectors"):
-        st.write(rf"**Query Vector $\mathbf{{x}}$:** `[SL={in_sl}, SW={in_sw}, PL={in_pl}, PW={in_pw}]`")
+    with st.expander("📐 Step-by-Step NumPy Mathematical Vector Breakdown"):
+        st.write(rf"**Live Query Vector $\mathbf{{x}}$:** `[{in_sl:.2f}, {in_sw:.2f}, {in_pl:.2f}, {in_pw:.2f}]`")
         
         detail_data = []
         for sp in ["Setosa", "Versicolor", "Virginica"]:
             c_vec = baseline_centroids[sp]
+            diff_vec = query_vector - c_vec
+            sq_diff = np.sum(diff_vec ** 2)
             coord_str = f"[{c_vec[0]:.2f}, {c_vec[1]:.2f}, {c_vec[2]:.2f}, {c_vec[3]:.2f}]"
+            diff_str = f"[{diff_vec[0]:+.2f}, {diff_vec[1]:+.2f}, {diff_vec[2]:+.2f}, {diff_vec[3]:+.2f}]"
             detail_data.append({
                 "Species Class": sp,
-                r"Centroid Vector $\mathbf{\mu}_k$": coord_str,
-                r"Euclidean Distance $\|\mathbf{x} - \mathbf{\mu}_k\|_2$": f"{distances[sp]:.4f} cm",
-                "Softmax Proximity Score": f"{proximities[sp]:.2f}%",
-                "Winner": "🏆 Closest" if sp == pred_species else "-",
+                r"Centroid $\mathbf{\mu}_k$": coord_str,
+                r"Difference $(\mathbf{x} - \mathbf{\mu}_k)$": diff_str,
+                r"Sum Squared $\sum (x_j - \mu_j)^2$": f"{sq_diff:.4f}",
+                r"Euclidean Distance $\sqrt{\sum}$": f"{distances[sp]:.4f} cm",
+                "Softmax Match": f"{proximities[sp]:.1f}%",
+                "Classification": "🏆 Winner" if sp == pred_species else "-",
             })
         st.dataframe(pd.DataFrame(detail_data), use_container_width=True, hide_index=True)
 
@@ -573,9 +612,10 @@ with tab4:
 st.markdown("---")
 st.markdown(
     """
-    <div style="text-align: center; color: #64748b; font-size: 0.82rem; padding: 1rem 0;">
+    <div style="text-align: center; color: #64748b; font-size: 0.85rem; padding: 1.25rem 0; line-height: 1.6;">
         <strong>CSE Mini-Project:</strong> Multidimensional Exploratory Data Analysis of the Iris Dataset<br>
-        Developed with Streamlit, NumPy, Pandas, and Matplotlib • Department of Computer Science & Engineering
+        <strong>Team Members:</strong> Balaji (Team Lead) • Ahamed Rasim • Kishore Kumar • Aadthiyan<br>
+        <strong>Faculty Guide:</strong> Prof. Keerthana • Department of Computer Science & Engineering
     </div>
     """,
     unsafe_allow_html=True,

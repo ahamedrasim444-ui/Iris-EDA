@@ -19,14 +19,14 @@ It demonstrates foundational data science, linear algebra, and visual analytics 
 
 - **Institution:** Department of Computer Science & Engineering
 - **Course:** Data Science & Multidimensional Analytics (CS601)
-- **Faculty Guide:** Dr. K. S. Ramanujan, Ph.D., Professor & Head of Data Intelligence Lab
+- **Faculty Guide:** Prof. Keerthana, Department of Computer Science & Engineering
 
-| S.No. | Student Name | USN / Roll No. | Project Contribution & Role |
-| :---: | :--- | :---: | :--- |
-| **1** | **Adnan Hameed** | `1MS21CS001` | **Project Lead & Data Pipeline Architect** |
-| **2** | **Bhavana K.** | `1MS21CS042` | **Pandas Aggregations & Feature Engineering** |
-| **3** | **Chethan R.** | `1MS21CS058` | **NumPy Mathematical & Linear Algebra Engine** |
-| **4** | **Divya Sharma** | `1MS21CS075` | **Matplotlib Visual Analytics & Frontend Integration** |
+| S.No. | Student Name | Project Contribution & Role |
+| :---: | :--- | :--- |
+| **1** | **Balaji (Team Lead)** | **Project Lead & System Architecture** |
+| **2** | **Ahamed Rasim** | **Data Pipeline & Pandas Engineering** |
+| **3** | **Kishore Kumar** | **NumPy Mathematical & Linear Algebra Engine** |
+| **4** | **Aadthiyan** | **Matplotlib Visual Analytics & Frontend UI** |
 
 ---
 

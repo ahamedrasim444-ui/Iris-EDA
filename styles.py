@@ -1,11 +1,11 @@
 """
 styles.py
-Custom styling, CSS theme injection, metric cards, and Easter Egg UI enhancements
+Custom styling, CSS theme injection, responsive layout, metric cards, and Easter Egg UI enhancements
 for the Iris EDA Streamlit Dashboard CSE Mini-Project.
 """
 
 def get_custom_css(antigravity_mode: bool = False) -> str:
-    """Returns custom CSS styles for Streamlit."""
+    """Returns custom responsive CSS styles for Streamlit."""
     
     antigravity_animation = ""
     if antigravity_mode:
@@ -45,20 +45,22 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
         font-family: 'JetBrains Mono', monospace !important;
     }}
 
-    /* Top padding adjustment */
+    /* Global layout responsiveness */
     .block-container {{
-        padding-top: 1.8rem;
+        padding-top: 1.5rem;
         padding-bottom: 3.5rem;
-        max-width: 95% !important;
+        padding-left: clamp(1rem, 3vw, 2.5rem) !important;
+        padding-right: clamp(1rem, 3vw, 2.5rem) !important;
+        max-width: 100% !important;
     }}
 
-    /* Custom Header Banner */
+    /* Hero Banner with Responsive Typography */
     .hero-banner {{
         background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
         border: 1px solid rgba(99, 102, 241, 0.3);
         border-radius: 16px;
-        padding: 2rem 2.25rem;
-        margin-bottom: 1.75rem;
+        padding: clamp(1.2rem, 3vw, 2.25rem);
+        margin-bottom: 1.5rem;
         color: #ffffff;
         box-shadow: 0 8px 30px rgba(15, 23, 42, 0.35);
         position: relative;
@@ -77,17 +79,18 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     }}
 
     .hero-title {{
-        font-size: 2.1rem;
+        font-size: clamp(1.4rem, 2.8vw, 2.2rem);
         font-weight: 800;
         letter-spacing: -0.025em;
         margin: 0 0 0.5rem 0;
         background: linear-gradient(90deg, #ffffff 0%, #e0e7ff 60%, #a5b4fc 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        line-height: 1.2;
     }}
 
     .hero-subtitle {{
-        font-size: 1.02rem;
+        font-size: clamp(0.85rem, 1.4vw, 1.02rem);
         color: #cbd5e1;
         margin: 0 0 1rem 0;
         max-width: 880px;
@@ -104,12 +107,13 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     .badge {{
         display: inline-flex;
         align-items: center;
-        padding: 0.3rem 0.75rem;
+        padding: 0.25rem 0.65rem;
         border-radius: 9999px;
-        font-size: 0.78rem;
+        font-size: clamp(0.7rem, 1.1vw, 0.78rem);
         font-weight: 600;
         letter-spacing: 0.03em;
         text-transform: uppercase;
+        white-space: nowrap;
     }}
 
     .badge-cse {{
@@ -133,11 +137,12 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     /* Metric Cards Grid */
     .metric-card {{
         background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(226, 232, 240, 0.15);
+        border: 1px solid rgba(226, 232, 240, 0.18);
         border-radius: 12px;
-        padding: 1.15rem 1.25rem;
+        padding: clamp(0.85rem, 1.8vw, 1.25rem);
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
+        margin-bottom: 0.5rem;
     }}
 
     .metric-card:hover {{
@@ -147,7 +152,7 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     }}
 
     .metric-label {{
-        font-size: 0.8rem;
+        font-size: 0.76rem;
         font-weight: 600;
         color: #94a3b8;
         text-transform: uppercase;
@@ -156,7 +161,7 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     }}
 
     .metric-value {{
-        font-size: 1.85rem;
+        font-size: clamp(1.4rem, 2.4vw, 1.85rem);
         font-weight: 800;
         color: #0f172a;
         line-height: 1.1;
@@ -169,7 +174,7 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     }}
 
     .metric-desc {{
-        font-size: 0.76rem;
+        font-size: 0.74rem;
         color: #64748b;
         margin-top: 0.35rem;
     }}
@@ -197,9 +202,9 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.35rem 0;
+        padding: 0.38rem 0;
         border-bottom: 1px dashed rgba(148, 163, 184, 0.25);
-        font-size: 0.82rem;
+        font-size: 0.83rem;
     }}
 
     .team-member-item:last-child {{
@@ -220,10 +225,10 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     .team-member-role {{
         font-size: 0.72rem;
         background: rgba(99, 102, 241, 0.15);
-        color: #818cf8;
-        padding: 0.15rem 0.45rem;
+        color: #6366f1;
+        padding: 0.15rem 0.5rem;
         border-radius: 6px;
-        font-weight: 500;
+        font-weight: 600;
     }}
 
     /* Math Box */
@@ -233,6 +238,7 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
         border-radius: 0 10px 10px 0;
         padding: 1rem 1.25rem;
         margin: 1rem 0;
+        overflow-x: auto;
     }}
 
     @media (prefers-color-scheme: dark) {{
@@ -244,44 +250,73 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
 
     /* Prediction Card */
     .prediction-box {{
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);
-        border: 2px solid rgba(99, 102, 241, 0.3);
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        border: 2px solid rgba(99, 102, 241, 0.35);
         border-radius: 14px;
-        padding: 1.5rem;
+        padding: clamp(1rem, 2vw, 1.5rem);
         text-align: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.08);
     }}
 
     .species-tag {{
         display: inline-block;
-        padding: 0.4rem 1.25rem;
+        padding: 0.4rem 1.4rem;
         border-radius: 9999px;
-        font-size: 1.4rem;
+        font-size: clamp(1.2rem, 2.5vw, 1.6rem);
         font-weight: 800;
-        margin: 0.6rem 0;
+        margin: 0.5rem 0;
+        letter-spacing: -0.01em;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }}
 
     .tag-setosa {{
         background: #e0e7ff;
         color: #4338ca;
-        border: 1px solid #818cf8;
+        border: 2px solid #818cf8;
     }}
 
     .tag-versicolor {{
         background: #fce7f3;
         color: #be185d;
-        border: 1px solid #f472b6;
+        border: 2px solid #f472b6;
     }}
 
     .tag-virginica {{
         background: #d1fae5;
         color: #047857;
-        border: 1px solid #34d399;
+        border: 2px solid #34d399;
     }}
 
-    /* Custom Streamlit adjustments */
+    /* Custom Streamlit adjustments for mobile screens */
     div[data-testid="stMetricValue"] {{
         font-weight: 700;
+        font-size: clamp(1.2rem, 2vw, 1.7rem) !important;
+    }}
+
+    @media (max-width: 768px) {{
+        .hero-banner {{
+            padding: 1.1rem 1rem;
+            border-radius: 12px;
+        }}
+        .hero-title {{
+            font-size: 1.35rem;
+        }}
+        .hero-subtitle {{
+            font-size: 0.85rem;
+        }}
+        .badge {{
+            font-size: 0.68rem;
+            padding: 0.2rem 0.5rem;
+        }}
+        .species-tag {{
+            font-size: 1.2rem;
+            padding: 0.3rem 1rem;
+        }}
+        .stButton button {{
+            padding: 0.35rem 0.6rem !important;
+            font-size: 0.82rem !important;
+        }}
     }}
 
     /* Easter egg animation */

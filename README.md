@@ -90,55 +90,64 @@ $$w_k = \frac{\exp(-d_k / T)}{\sum_j \exp(-d_j / T)} \times 100\%$$
 
 ---
 
-## 🛠️ Tech Stack & Directory Structure
-
-- **Python:** 3.10+ (tested on Python 3.13)
-- **Frontend / Framework:** Streamlit 1.35+
-- **Array Math & Algebra:** NumPy 1.24+
-- **Data Wrangling:** Pandas 2.0+
-- **Custom Visuals:** Matplotlib 3.8+
+- **Database:** SQLite 3 (Persistent local query logging in `data/predictions.db`)
+- **Public Domain Tunnel:** Cloudflare Tunnel (`cloudflared`)
 
 ```
 iris_eda_streamlit_dashboard/
 ├── app.py                 # Main Streamlit dashboard application
+├── database.py            # SQLite database manager (prediction history & stats)
 ├── data_engine.py         # Pure NumPy mathematical engine & Pandas logic
-├── visualizations.py      # High-DPI Matplotlib heatmaps & scatter plots
-├── styles.py              # Custom CSS styles, theme cards, and Easter Egg
+├── visualizations.py      # Matplotlib heatmaps, scatter plots & boxplots
+├── styles.py              # Neat, high-contrast, uncluttered CSS styling
 ├── test_engine.py         # Automated test suite (100% test coverage)
 ├── requirements.txt       # Dependencies
+├── deploy_cloudflare_tunnel.bat # Cloudflare public tunnel launcher
+├── vercel.json            # Vercel deployment configuration
 ├── README.md              # Project documentation
 └── data/
-    └── iris.csv           # Offline-first bundled Iris dataset (150 samples)
+    ├── iris.csv           # Offline-first bundled Iris dataset (150 samples)
+    └── predictions.db     # SQLite database for live logged predictions
 ```
 
 ---
 
-## 💻 Installation & Execution
+## 🌐 Public Domain & Cloud Deployment
 
-### 1. Clone or Open the Project
+### 1. Instant Public Access via Cloudflare Tunnel
+A live, secure HTTPS public tunnel is connected directly to the server:
+- **Public URL:** `https://independence-ridge-involved-worm.trycloudflare.com`
+
+To re-launch the Cloudflare public domain at any time on Windows:
 ```bash
-cd iris_eda_streamlit_dashboard
+.\deploy_cloudflare_tunnel.bat
 ```
 
-### 2. Install Dependencies
+### 2. Deploying to Vercel / Streamlit Cloud
+- **Streamlit Community Cloud (Recommended 1-Click):**
+  1. Push this repository to GitHub.
+  2. Visit [share.streamlit.io](https://share.streamlit.io/).
+  3. Select this repository and click **Deploy**.
+- **Vercel:** Configuration provided in `vercel.json`.
+
+---
+
+## 💻 Local Installation & Execution
+
+### 1. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Run the Automated Test Suite
+### 2. Run the Automated Test Suite
 ```bash
 python test_engine.py
 ```
 
-### 4. Launch the Streamlit Dashboard
+### 3. Launch the Streamlit Dashboard
 ```bash
 streamlit run app.py
 ```
-*Alternatively, with module runner:*
-```bash
-python -m streamlit run app.py
-```
-
 Open your browser at `http://localhost:8501`.
 
 ---

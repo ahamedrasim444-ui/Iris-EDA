@@ -139,7 +139,26 @@ def test_visualizations(df):
     assert isinstance(fig6, plt.Figure)
     plt.close(fig6)
 
-    print("  [OK] All 6 Matplotlib figures generated successfully without errors.")
+    from visualizations import plot_boxplot_dispersion
+    fig7 = plot_boxplot_dispersion(df, "petal_length")
+    assert isinstance(fig7, plt.Figure)
+    plt.close(fig7)
+
+    print("  [OK] All 7 Matplotlib figures generated successfully without errors.")
+
+
+def test_database():
+    print("Testing SQLite database operations...")
+    import database
+    database.init_db()
+    row_id = database.log_prediction(5.5, 3.2, 1.3, 0.2, "Setosa", 97.4, 0.22)
+    assert row_id > 0, "Failed to insert prediction row into database"
+    rec_df = database.get_recent_predictions(limit=5)
+    assert not rec_df.empty, "Recent predictions should not be empty"
+    assert "predicted_species" in rec_df.columns
+    stats = database.get_prediction_stats()
+    assert stats["total_records"] >= 1
+    print("  [OK] Database logging and statistics verified.")
 
 
 def test_styles():
@@ -147,7 +166,7 @@ def test_styles():
     css_default = get_custom_css(False)
     assert "font-family" in css_default
     css_active = get_custom_css(True)
-    assert "antigravityFloat" in css_active
+    assert "floatEffect" in css_active
     
     banner = render_hero_banner()
     assert "CSE Mini-Project" in banner
@@ -166,6 +185,7 @@ if __name__ == "__main__":
     test_numpy_math_engine(df)
     test_nearest_centroid_classifier(df)
     test_visualizations(df)
+    test_database()
     test_styles()
     print("========================================")
     print("ALL TESTS PASSED WITH 100% SUCCESS!")

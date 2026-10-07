@@ -199,15 +199,63 @@ def plot_bivariate_scatter(
                 bbox=dict(boxstyle="round,pad=0.2", fc="#ffffff", ec=color, alpha=0.9, lw=0.8)
             )
 
+    # Setosa linear boundary cutoff (at Petal Length = 2.45 cm)
+    if x_col == "petal_length":
+        ax.axvline(x=2.45, color="#dc2626", linestyle="--", linewidth=1.6, label="Setosa Linear Boundary (< 2.45 cm)")
+
     x_label = FEATURE_LABELS.get(x_col, x_col.replace("_", " ").title())
     y_label = FEATURE_LABELS.get(y_col, y_col.replace("_", " ").title())
     
     ax.set_xlabel(x_label, fontsize=10, fontweight="bold", labelpad=8)
     ax.set_ylabel(y_label, fontsize=10, fontweight="bold", labelpad=8)
-    ax.set_title(f"Bivariate Decision Space: {x_label} vs. {y_label}", pad=12, fontsize=11, fontweight="bold")
-    ax.legend(frameon=True, facecolor="#ffffff", edgecolor="#e2e8f0", fontsize=8.5, loc="best")
+    ax.set_title(f"Bivariate Space: {x_label} vs. {y_label}", pad=12, fontsize=11, fontweight="bold")
+    ax.legend(frameon=True, facecolor="#ffffff", edgecolor="#cbd5e1", fontsize=8.5, loc="best")
     ax.grid(True, linestyle=":", alpha=0.6)
     
+    fig.tight_layout()
+    return fig
+
+
+def plot_boxplot_dispersion(
+    df: pd.DataFrame,
+    feature_col: str = "petal_length",
+    selected_species: Optional[List[str]] = None,
+) -> plt.Figure:
+    """Renders clean boxplot showing feature dispersion across species."""
+    fig, ax = plt.subplots(figsize=(6.5, 4.8), dpi=150)
+    
+    if selected_species is None:
+        selected_species = ["Setosa", "Versicolor", "Virginica"]
+        
+    box_data = []
+    labels = []
+    colors_list = []
+    
+    for sp in selected_species:
+        sub = df[df["species"] == sp]
+        if not sub.empty:
+            box_data.append(sub[feature_col].to_numpy())
+            labels.append(sp)
+            colors_list.append(SPECIES_COLORS.get(sp, "#2563eb"))
+            
+    if box_data:
+        bp = ax.boxplot(
+            box_data, tick_labels=labels, patch_artist=True,
+            medianprops=dict(color="#0f172a", linewidth=2),
+            boxprops=dict(linewidth=1.2),
+            whiskerprops=dict(linewidth=1.2, color="#475569"),
+            capprops=dict(linewidth=1.2, color="#475569"),
+            flierprops=dict(marker='o', markersize=5, markerfacecolor='#dc2626', markeredgecolor='none')
+        )
+        for patch, col in zip(bp['boxes'], colors_list):
+            patch.set_facecolor(col)
+            patch.set_alpha(0.4)
+            patch.set_edgecolor(col)
+            
+    feat_title = FEATURE_LABELS.get(feature_col, feature_col.replace("_", " ").title())
+    ax.set_title(f"Dispersion Across Species: {feat_title}", fontsize=11, fontweight="bold", pad=10)
+    ax.set_ylabel(f"{feat_title}", fontsize=9.5, fontweight="bold")
+    ax.grid(True, linestyle=":", alpha=0.6)
     fig.tight_layout()
     return fig
 

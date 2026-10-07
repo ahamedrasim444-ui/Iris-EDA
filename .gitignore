@@ -3,3 +3,5 @@ __pycache__/
 *$py.class
 .streamlit/
 .pytest_cache/
+cloudflared.exe
+data/*.db

@@ -1,7 +1,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.streamlit/
+.streamlit/*
+!.streamlit/config.toml
 .pytest_cache/
 cloudflared.exe
 data/*.db

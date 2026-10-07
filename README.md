@@ -116,7 +116,7 @@ iris_eda_streamlit_dashboard/
 
 ### 1. Instant Public Access via Cloudflare Tunnel
 A live, secure HTTPS public tunnel is connected directly to the server:
-- **Public URL:** `https://independence-ridge-involved-worm.trycloudflare.com`
+- **Public URL:** `https://upc-design-water-considers.trycloudflare.com`
 
 To re-launch the Cloudflare public domain at any time on Windows:
 ```bash

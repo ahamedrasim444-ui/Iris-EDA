@@ -607,3 +607,31 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+
+# ==============================================================================
+# Vercel Serverless Function Compatibility Handler
+# ==============================================================================
+def app(environ, start_response):
+    """
+    Top-level WSGI callable exported for Vercel Serverless Python runtime.
+    Serves the pre-compiled Stlite WebAssembly bundle (index.html).
+    """
+    import os
+    index_file = os.path.join(os.path.dirname(__file__), "index.html")
+    if os.path.exists(index_file):
+        with open(index_file, "rb") as f:
+            body = f.read()
+    else:
+        body = b"<!DOCTYPE html><html><body><h3>Iris EDA Dashboard loading...</h3></body></html>"
+
+    start_response("200 OK", [
+        ("Content-Type", "text/html; charset=utf-8"),
+        ("Content-Length", str(len(body))),
+        ("Cache-Control", "no-cache"),
+    ])
+    return [body]
+
+# Alias for Vercel handler
+handler = app
+

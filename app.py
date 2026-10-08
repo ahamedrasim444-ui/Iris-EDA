@@ -350,7 +350,7 @@ with tab2:
 
         col_n1, col_n2 = st.columns(2)
         with col_n1:
-            st.markdown("#### Sample Mean Vector $\mathbf{\mu}$ (NumPy):")
+            st.markdown(r"#### Sample Mean Vector $\mathbf{\mu}$ (NumPy):")
             mean_vector = np.mean(df_filtered[FEATURE_COLS].to_numpy(), axis=0)
             mean_df = pd.DataFrame(
                 mean_vector.reshape(1, 4), 
@@ -358,7 +358,7 @@ with tab2:
             )
             st.dataframe(mean_df.round(3), use_container_width=True, hide_index=True)
 
-            st.markdown("#### $4 \\times 4$ Sample Covariance Matrix $\mathbf{\Sigma}$:")
+            st.markdown(r"#### $4 \times 4$ Sample Covariance Matrix $\mathbf{\Sigma}$:")
             cov_df = pd.DataFrame(
                 manual_cov,
                 index=["Sepal L", "Sepal W", "Petal L", "Petal W"],
@@ -367,7 +367,7 @@ with tab2:
             st.dataframe(cov_df.round(4), use_container_width=True)
 
         with col_n2:
-            st.markdown("#### $4 \\times 4$ Pearson Correlation Matrix $\mathbf{R}$:")
+            st.markdown(r"#### $4 \times 4$ Pearson Correlation Matrix $\mathbf{R}$:")
             corr_df = pd.DataFrame(
                 manual_corr,
                 index=["Sepal L", "Sepal W", "Petal L", "Petal W"],
@@ -607,31 +607,4 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-
-# ==============================================================================
-# Vercel Serverless Function Compatibility Handler
-# ==============================================================================
-def app(environ, start_response):
-    """
-    Top-level WSGI callable exported for Vercel Serverless Python runtime.
-    Serves the pre-compiled Stlite WebAssembly bundle (index.html).
-    """
-    import os
-    index_file = os.path.join(os.path.dirname(__file__), "index.html")
-    if os.path.exists(index_file):
-        with open(index_file, "rb") as f:
-            body = f.read()
-    else:
-        body = b"<!DOCTYPE html><html><body><h3>Iris EDA Dashboard loading...</h3></body></html>"
-
-    start_response("200 OK", [
-        ("Content-Type", "text/html; charset=utf-8"),
-        ("Content-Length", str(len(body))),
-        ("Cache-Control", "no-cache"),
-    ])
-    return [body]
-
-# Alias for Vercel handler
-handler = app
 

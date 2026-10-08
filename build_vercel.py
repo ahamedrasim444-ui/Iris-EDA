@@ -102,6 +102,19 @@ def build_vercel_bundle():
       ).then(() => {{
         const loader = document.getElementById("loading");
         if (loader) loader.style.display = "none";
+      }}).catch((err) => {{
+        const loader = document.getElementById("loading");
+        if (loader) {{
+          loader.innerHTML = `
+            <div style="max-width: 500px; padding: 2rem; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+              <h2 style="color: #dc2626; margin-bottom: 0.5rem;">Application Failed to Load</h2>
+              <p style="color: #475569; font-size: 0.9rem;">${{err.message || err}}</p>
+              <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.6rem 1.2rem; background: #2563eb; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                Reload Page
+              </button>
+            </div>
+          `;
+        }}
       }});
     </script>
   </body>

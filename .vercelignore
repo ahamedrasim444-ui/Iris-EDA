@@ -1,7 +1,10 @@
-# Exclude Python serverless runtime detection
-*.py
-requirements.txt
+# Exclude server-side Python files not needed by Vercel Lambda
+streamlit_app.py
+data_engine.py
+visualizations.py
+styles.py
+database.py
 cloudflared.exe
 push_to_github.bat
+requirements.txt
 *.db
-.streamlit/

@@ -12,7 +12,8 @@ def build_vercel_bundle():
     
     # Read core files
     files_to_bundle = {
-        "app.py": "app.py",
+        "streamlit_app.py": "streamlit_app.py",
+        "app.py": "streamlit_app.py",
         "data_engine.py": "data_engine.py",
         "visualizations.py": "visualizations.py",
         "styles.py": "styles.py",
@@ -95,7 +96,7 @@ def build_vercel_bundle():
       stlite.mount(
         {{
           requirements: ["numpy", "pandas", "matplotlib"],
-          entrypoint: "app.py",
+          entrypoint: "streamlit_app.py",
           files: bundledFiles,
         }},
         document.getElementById("root")

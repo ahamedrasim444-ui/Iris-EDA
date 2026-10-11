@@ -48,8 +48,8 @@ def build_vercel_bundle():
         padding: 0;
         width: 100%;
         height: 100%;
-        background-color: #f5f5f9;
-        color: #384551;
+        background-color: #232333;
+        color: #e1def5;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       }}
       #root {{
@@ -62,15 +62,15 @@ def build_vercel_bundle():
         justify-content: center;
         align-items: center;
         height: 100vh;
-        color: #384551;
-        background: #f5f5f9;
+        color: #e1def5;
+        background: #232333;
         text-align: center;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }}
       .spinner {{
         width: 48px;
         height: 48px;
-        border: 4px solid #e7e7ff;
+        border: 4px solid #3b3e5b;
         border-top: 4px solid #696cff;
         border-radius: 50%;
         animation: spin 1s linear infinite;
@@ -86,8 +86,8 @@ def build_vercel_bundle():
     <div id="root">
       <div class="loading-screen" id="loading">
         <div class="spinner"></div>
-        <h2 style="margin: 0 0 8px 0; font-size: 1.3rem; color: #384551;">🌸 Loading Sneat Iris Data Analysis...</h2>
-        <p style="margin: 0; color: #697a8d; font-size: 0.95rem;">
+        <h2 style="margin: 0 0 8px 0; font-size: 1.3rem; color: #e1def5;">🌸 Loading Sneat Dark Iris Data Analysis...</h2>
+        <p style="margin: 0; color: #b2b3ca; font-size: 0.95rem;">
           Initializing NumPy, Pandas & Matplotlib engine via WebAssembly
         </p>
       </div>
@@ -102,11 +102,11 @@ def build_vercel_bundle():
           entrypoint: "streamlit_app.py",
           files: bundledFiles,
           streamlitConfig: {{
-            "theme.base": "light",
+            "theme.base": "dark",
             "theme.primaryColor": "#696cff",
-            "theme.backgroundColor": "#f5f5f9",
-            "theme.secondaryBackgroundColor": "#ffffff",
-            "theme.textColor": "#384551"
+            "theme.backgroundColor": "#232333",
+            "theme.secondaryBackgroundColor": "#2b2c40",
+            "theme.textColor": "#e1def5"
           }}
         }},
         document.getElementById("root")

@@ -105,14 +105,6 @@ with st.sidebar:
     st.markdown("#### 🔍 Global Slicing Filters")
     st.caption("Filter botanical observations across all analytical tabs.")
 
-    # Quick Reset Filters Button
-    if st.button("🔄 Reset All Filters to Default", use_container_width=True):
-        st.session_state["filter_species"] = sorted(df_raw["species"].unique().tolist())
-        st.session_state["f_sl"] = (float(df_raw["sepal_length"].min()), float(df_raw["sepal_length"].max()))
-        st.session_state["f_sw"] = (float(df_raw["sepal_width"].min()), float(df_raw["sepal_width"].max()))
-        st.session_state["f_pl"] = (float(df_raw["petal_length"].min()), float(df_raw["petal_length"].max()))
-        st.session_state["f_pw"] = (float(df_raw["petal_width"].min()), float(df_raw["petal_width"].max()))
-        st.rerun()
 
     # Species Multi-select
     all_species = sorted(df_raw["species"].unique().tolist())

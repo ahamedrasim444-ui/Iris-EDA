@@ -1,8 +1,8 @@
 """
 visualizations.py
-Publication-ready Matplotlib visualization suite for the Iris EDA Dashboard.
+Sneat – Vuetify Vuejs 3 Dark Theme Publication-Ready Matplotlib Visualizations.
 Renders annotated heatmaps, bivariate cluster scatter plots with convex hulls & centroids,
-4-panel distribution histograms, and live prediction diagnostics.
+4-panel distribution histograms, live prediction diagnostics, and interactive flower morphometry.
 """
 
 from typing import Dict, List, Optional
@@ -15,21 +15,21 @@ import matplotlib.ticker as ticker
 from data_engine import FEATURE_LABELS, SPECIES_COLORS
 
 
-# Configure Sneat Vuetify modern matplotlib styling
+# Configure Sneat Vuetify Dark Theme matplotlib styling
 plt.rcParams.update({
     "font.family": "sans-serif",
     "font.sans-serif": ["Public Sans", "Segoe UI", "DejaVu Sans", "Helvetica", "Arial"],
-    "axes.edgecolor": "#d9dee3",
+    "axes.edgecolor": "#44476a",
     "axes.linewidth": 1.2,
-    "grid.color": "#ebeef0",
+    "grid.color": "#3b3e5b",
     "grid.linestyle": "--",
-    "grid.alpha": 0.8,
-    "xtick.color": "#566a7f",
-    "ytick.color": "#566a7f",
-    "figure.facecolor": "#ffffff",
-    "axes.facecolor": "#ffffff",
-    "axes.labelcolor": "#566a7f",
-    "axes.titlecolor": "#384551",
+    "grid.alpha": 0.65,
+    "xtick.color": "#b2b3ca",
+    "ytick.color": "#b2b3ca",
+    "figure.facecolor": "#2b2c40",
+    "axes.facecolor": "#2b2c40",
+    "axes.labelcolor": "#b2b3ca",
+    "axes.titlecolor": "#e1def5",
     "axes.titlesize": 12,
     "axes.titleweight": "bold",
 })
@@ -62,65 +62,67 @@ def _compute_convex_hull_2d(points: np.ndarray) -> np.ndarray:
 
 
 def plot_covariance_heatmap(cov_matrix: np.ndarray, feature_names: List[str]) -> plt.Figure:
-    """Renders annotated 4x4 sample covariance matrix heatmap."""
-    fig, ax = plt.subplots(figsize=(6.5, 5.2), dpi=160)
+    """Renders annotated 4x4 sample covariance matrix heatmap in Sneat Dark style."""
+    fig, ax = plt.subplots(figsize=(6.5, 5.2), dpi=160, facecolor="#2b2c40")
+    ax.set_facecolor("#2b2c40")
     
     labels = [FEATURE_LABELS.get(f, f).replace(" (cm)", "") for f in feature_names]
     
-    im = ax.imshow(cov_matrix, cmap="Blues", interpolation="nearest")
+    im = ax.imshow(cov_matrix, cmap="Purples", interpolation="nearest")
     cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-    cbar.ax.tick_params(labelsize=9)
-    cbar.set_label("Covariance Value ($cm^2$)", fontsize=9, fontweight="bold", labelpad=8)
+    cbar.ax.tick_params(labelsize=9, colors="#b2b3ca")
+    cbar.set_label("Covariance Value ($cm^2$)", fontsize=9, fontweight="bold", labelpad=8, color="#e1def5")
     
     # Tick marks
     n = len(feature_names)
     ax.set_xticks(np.arange(n))
     ax.set_yticks(np.arange(n))
-    ax.set_xticklabels(labels, rotation=30, ha="right", fontsize=9, fontweight="bold")
-    ax.set_yticklabels(labels, fontsize=9, fontweight="bold")
+    ax.set_xticklabels(labels, rotation=30, ha="right", fontsize=9, fontweight="bold", color="#e1def5")
+    ax.set_yticklabels(labels, fontsize=9, fontweight="bold", color="#e1def5")
     
     # Annotations with adaptive contrast
     threshold = (cov_matrix.max() + cov_matrix.min()) / 2.0
     for i in range(n):
         for j in range(n):
             val = cov_matrix[i, j]
-            text_color = "#ffffff" if val > threshold else "#0f172a"
+            text_color = "#ffffff" if val > threshold else "#e1def5"
             ax.text(j, i, f"{val:.3f}", ha="center", va="center",
                     color=text_color, fontsize=10, fontweight="bold")
             
     ax.set_title(r"Sample Covariance Tensor $\mathbf{\Sigma} \in \mathbb{R}^{4 \times 4}$", 
-                 pad=14, fontsize=11, fontweight="bold")
+                 pad=14, fontsize=11, fontweight="bold", color="#e1def5")
     ax.grid(False)
     fig.tight_layout()
     return fig
 
 
 def plot_correlation_heatmap(corr_matrix: np.ndarray, feature_names: List[str]) -> plt.Figure:
-    """Renders Pearson correlation matrix heatmap with diverging palette (-1 to +1)."""
-    fig, ax = plt.subplots(figsize=(6.5, 5.2), dpi=160)
+    """Renders Pearson correlation matrix heatmap with diverging palette in Sneat Dark style."""
+    fig, ax = plt.subplots(figsize=(6.5, 5.2), dpi=160, facecolor="#2b2c40")
+    ax.set_facecolor("#2b2c40")
     
     labels = [FEATURE_LABELS.get(f, f).replace(" (cm)", "") for f in feature_names]
     
     im = ax.imshow(corr_matrix, cmap="coolwarm", vmin=-1.0, vmax=1.0, interpolation="nearest")
     cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-    cbar.ax.tick_params(labelsize=9)
-    cbar.set_label("Pearson Correlation $r$", fontsize=9, fontweight="bold", labelpad=8)
+    cbar.ax.tick_params(labelsize=9, colors="#b2b3ca")
+    cbar.set_label("Pearson Correlation $r$", fontsize=9, fontweight="bold", labelpad=8, color="#e1def5")
     
     n = len(feature_names)
     ax.set_xticks(np.arange(n))
     ax.set_yticks(np.arange(n))
-    ax.set_xticklabels(labels, rotation=30, ha="right", fontsize=9, fontweight="bold")
-    ax.set_yticklabels(labels, fontsize=9, fontweight="bold")
+    ax.set_xticklabels(labels, rotation=30, ha="right", fontsize=9, fontweight="bold", color="#e1def5")
+    ax.set_yticklabels(labels, fontsize=9, fontweight="bold", color="#e1def5")
     
     for i in range(n):
         for j in range(n):
             val = corr_matrix[i, j]
-            text_color = "#ffffff" if abs(val) > 0.65 else "#0f172a"
+            text_color = "#ffffff" if abs(val) > 0.45 else "#232333"
             ax.text(j, i, f"{val:.2f}", ha="center", va="center",
                     color=text_color, fontsize=10, fontweight="bold")
             
     ax.set_title(r"Pearson Correlation Matrix $\mathbf{R} \in [-1, 1]^{4 \times 4}$", 
-                 pad=14, fontsize=11, fontweight="bold")
+                 pad=14, fontsize=11, fontweight="bold", color="#e1def5")
     ax.grid(False)
     fig.tight_layout()
     return fig
@@ -136,9 +138,10 @@ def plot_bivariate_scatter(
 ) -> plt.Figure:
     """
     Renders high-resolution bivariate scatter plot with species color coding,
-    convex hull decision envelopes, and centroid star markers.
+    convex hull decision envelopes, and centroid star markers in Sneat Dark style.
     """
-    fig, ax = plt.subplots(figsize=(8.5, 5.6), dpi=160)
+    fig, ax = plt.subplots(figsize=(8.5, 5.6), dpi=160, facecolor="#2b2c40")
+    ax.set_facecolor("#2b2c40")
     
     species_order = ["Setosa", "Versicolor", "Virginica"]
     
@@ -147,7 +150,7 @@ def plot_bivariate_scatter(
         if sub.empty:
             continue
             
-        color = SPECIES_COLORS.get(sp, "#6366F1")
+        color = SPECIES_COLORS.get(sp, "#696cff")
         x_vals = sub[x_col].to_numpy()
         y_vals = sub[y_col].to_numpy()
         
@@ -155,35 +158,24 @@ def plot_bivariate_scatter(
         ax.scatter(
             x_vals, y_vals,
             c=color, label=f"{sp} (n={len(sub)})",
-            alpha=0.75, edgecolors="#ffffff", linewidth=0.8, s=64, zorder=3
+            alpha=0.85, edgecolors="#ffffff", linewidth=0.8, s=64, zorder=3
         )
         
-        # 2. Convex Hull Decision Envelopes
+        # 2. Convex Hull Envelope
         if show_hulls and len(sub) >= 3:
-            pts = np.column_stack((x_vals, y_vals))
+            pts = np.column_stack([x_vals, y_vals])
             hull_pts = _compute_convex_hull_2d(pts)
             if len(hull_pts) >= 3:
-                poly = Polygon(
-                    hull_pts, closed=True,
-                    facecolor=color, alpha=0.12,
-                    edgecolor=color, linestyle="--", linewidth=1.5, zorder=2
-                )
+                poly = Polygon(hull_pts, closed=True, facecolor=color, alpha=0.18,
+                               edgecolor=color, linestyle="--", linewidth=1.5, zorder=2)
                 ax.add_patch(poly)
                 
-        # 3. Class Centroid Star Markers
-        if show_centroids:
-            if centroids and sp in centroids:
-                # If 4-dim vector is passed, index according to col
-                feature_keys = ["sepal_length", "sepal_width", "petal_length", "petal_width"]
-                if x_col in feature_keys and y_col in feature_keys:
-                    xi = feature_keys.index(x_col)
-                    yi = feature_keys.index(y_col)
-                    cx, cy = centroids[sp][xi], centroids[sp][yi]
-                else:
-                    cx, cy = np.mean(x_vals), np.mean(y_vals)
-            else:
-                cx, cy = np.mean(x_vals), np.mean(y_vals)
-                
+        # 3. Centroid Marker
+        if show_centroids and centroids and sp in centroids:
+            feature_keys = ["sepal_length", "sepal_width", "petal_length", "petal_width"]
+            xi = feature_keys.index(x_col)
+            yi = feature_keys.index(y_col)
+            cx, cy = centroids[sp][xi], centroids[sp][yi]
             ax.scatter(
                 cx, cy,
                 marker="*", s=260, c=color,
@@ -196,20 +188,20 @@ def plot_bivariate_scatter(
                 f"$\\mu_{{{sp[:3].lower()}}}$",
                 (cx, cy), textcoords="offset points", xytext=(8, 8),
                 fontsize=9, fontweight="bold", color=color,
-                bbox=dict(boxstyle="round,pad=0.2", fc="#ffffff", ec=color, alpha=0.9, lw=0.8)
+                bbox=dict(boxstyle="round,pad=0.2", fc="#232333", ec=color, alpha=0.9, lw=0.8)
             )
 
     # Setosa linear boundary cutoff (at Petal Length = 2.45 cm)
     if x_col == "petal_length":
-        ax.axvline(x=2.45, color="#dc2626", linestyle="--", linewidth=1.6, label="Setosa Linear Boundary (< 2.45 cm)")
+        ax.axvline(x=2.45, color="#ff3e1d", linestyle="--", linewidth=1.6, label="Setosa Linear Boundary (< 2.45 cm)")
 
     x_label = FEATURE_LABELS.get(x_col, x_col.replace("_", " ").title())
     y_label = FEATURE_LABELS.get(y_col, y_col.replace("_", " ").title())
     
-    ax.set_xlabel(x_label, fontsize=10, fontweight="bold", labelpad=8)
-    ax.set_ylabel(y_label, fontsize=10, fontweight="bold", labelpad=8)
-    ax.set_title(f"Bivariate Space: {x_label} vs. {y_label}", pad=12, fontsize=11, fontweight="bold")
-    ax.legend(frameon=True, facecolor="#ffffff", edgecolor="#cbd5e1", fontsize=8.5, loc="best")
+    ax.set_xlabel(x_label, fontsize=10, fontweight="bold", labelpad=8, color="#e1def5")
+    ax.set_ylabel(y_label, fontsize=10, fontweight="bold", labelpad=8, color="#e1def5")
+    ax.set_title(f"Bivariate Space: {x_label} vs. {y_label}", pad=12, fontsize=11, fontweight="bold", color="#e1def5")
+    ax.legend(frameon=True, facecolor="#2b2c40", edgecolor="#44476a", labelcolor="#e1def5", fontsize=8.5, loc="best")
     ax.grid(True, linestyle=":", alpha=0.6)
     
     fig.tight_layout()
@@ -222,10 +214,11 @@ def plot_boxplot_dispersion(
     selected_species: Optional[List[str]] = None,
     feature: Optional[str] = None,
 ) -> plt.Figure:
-    """Renders clean boxplot showing feature dispersion across species."""
+    """Renders clean boxplot showing feature dispersion across species in Sneat Dark style."""
     if feature is not None:
         feature_col = feature
-    fig, ax = plt.subplots(figsize=(6.5, 4.8), dpi=150)
+    fig, ax = plt.subplots(figsize=(6.5, 4.8), dpi=150, facecolor="#2b2c40")
+    ax.set_facecolor("#2b2c40")
     
     if selected_species is None:
         selected_species = ["Setosa", "Versicolor", "Virginica"]
@@ -239,25 +232,26 @@ def plot_boxplot_dispersion(
         if not sub.empty:
             box_data.append(sub[feature_col].to_numpy())
             labels.append(sp)
-            colors_list.append(SPECIES_COLORS.get(sp, "#2563eb"))
+            colors_list.append(SPECIES_COLORS.get(sp, "#696cff"))
             
     if box_data:
         bp = ax.boxplot(
             box_data, tick_labels=labels, patch_artist=True,
-            medianprops=dict(color="#0f172a", linewidth=2),
+            medianprops=dict(color="#ffffff", linewidth=2.2),
             boxprops=dict(linewidth=1.2),
-            whiskerprops=dict(linewidth=1.2, color="#475569"),
-            capprops=dict(linewidth=1.2, color="#475569"),
-            flierprops=dict(marker='o', markersize=5, markerfacecolor='#dc2626', markeredgecolor='none')
+            whiskerprops=dict(linewidth=1.2, color="#b2b3ca"),
+            capprops=dict(linewidth=1.2, color="#b2b3ca"),
+            flierprops=dict(marker='o', markersize=5, markerfacecolor='#ff3e1d', markeredgecolor='none')
         )
         for patch, col in zip(bp['boxes'], colors_list):
             patch.set_facecolor(col)
-            patch.set_alpha(0.4)
+            patch.set_alpha(0.55)
             patch.set_edgecolor(col)
             
     feat_title = FEATURE_LABELS.get(feature_col, feature_col.replace("_", " ").title())
-    ax.set_title(f"Dispersion Across Species: {feat_title}", fontsize=11, fontweight="bold", pad=10)
-    ax.set_ylabel(f"{feat_title}", fontsize=9.5, fontweight="bold")
+    ax.set_title(f"Dispersion Across Species: {feat_title}", fontsize=11, fontweight="bold", pad=10, color="#e1def5")
+    ax.set_ylabel(f"{feat_title}", fontsize=9.5, fontweight="bold", color="#e1def5")
+    ax.tick_params(colors="#e1def5")
     ax.grid(True, linestyle=":", alpha=0.6)
     fig.tight_layout()
     return fig
@@ -268,9 +262,9 @@ def plot_distributions_grid(
     feature_cols: Optional[List[str]] = None,
 ) -> plt.Figure:
     """
-    Renders 4-panel (2x2 grid) distribution histograms with mean markers for each dimension.
+    Renders 4-panel (2x2 grid) distribution histograms with mean markers in Sneat Dark style.
     """
-    fig, axes = plt.subplots(2, 2, figsize=(10.5, 7.5), dpi=160)
+    fig, axes = plt.subplots(2, 2, figsize=(10.5, 7.5), dpi=160, facecolor="#2b2c40")
     axes = axes.flatten()
     
     features = feature_cols if feature_cols is not None else ["sepal_length", "sepal_width", "petal_length", "petal_width"]
@@ -278,38 +272,40 @@ def plot_distributions_grid(
     
     for idx, feat in enumerate(features):
         ax = axes[idx]
+        ax.set_facecolor("#2b2c40")
         f_label = FEATURE_LABELS.get(feat, feat)
         
         for sp in species_order:
             sub = df[df["species"] == sp]
             if sub.empty:
                 continue
-            color = SPECIES_COLORS.get(sp, "#6366F1")
+            color = SPECIES_COLORS.get(sp, "#696cff")
             vals = sub[feat].to_numpy()
             
             # Histogram
             ax.hist(
-                vals, bins=12, alpha=0.45, color=color,
+                vals, bins=12, alpha=0.55, color=color,
                 label=sp if idx == 0 else None,
                 edgecolor=color, linewidth=1.2
             )
             
             # Species Mean Line
             mean_v = np.mean(vals)
-            ax.axvline(mean_v, color=color, linestyle="--", linewidth=1.4, alpha=0.85)
+            ax.axvline(mean_v, color=color, linestyle="--", linewidth=1.5, alpha=0.9)
             
-        ax.set_title(f_label, fontsize=10, fontweight="bold", pad=8)
-        ax.set_xlabel("Measurement (cm)", fontsize=8.5)
-        ax.set_ylabel("Frequency", fontsize=8.5)
+        ax.set_title(f_label, fontsize=10, fontweight="bold", pad=8, color="#e1def5")
+        ax.set_xlabel("Measurement (cm)", fontsize=8.5, color="#b2b3ca")
+        ax.set_ylabel("Frequency", fontsize=8.5, color="#b2b3ca")
+        ax.tick_params(colors="#b2b3ca")
         ax.grid(True, linestyle=":", alpha=0.5)
         
     # Global legend on top
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.5, 0.99),
-               ncol=3, frameon=True, facecolor="#ffffff", edgecolor="#cbd5e1", fontsize=9)
+               ncol=3, frameon=True, facecolor="#2b2c40", edgecolor="#44476a", labelcolor="#e1def5", fontsize=9)
     
     fig.suptitle("Multidimensional Feature Distribution Breakdown by Species", 
-                 fontsize=12, fontweight="bold", y=1.02)
+                 fontsize=12, fontweight="bold", y=1.02, color="#e1def5")
     fig.tight_layout()
     return fig
 
@@ -320,38 +316,39 @@ def plot_prediction_diagnostics(
     predicted_species: str,
 ) -> plt.Figure:
     """
-    Renders live diagnostic horizontal bar charts comparing Euclidean distances
-    and normalized proximity confidence scores to species centroids.
+    Renders live diagnostic horizontal bar charts in Sneat Dark style.
     """
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8.5, 3.2), dpi=160)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8.5, 3.2), dpi=160, facecolor="#2b2c40")
+    ax1.set_facecolor("#2b2c40")
+    ax2.set_facecolor("#2b2c40")
     
     species = list(distances.keys())
     dist_vals = [distances[s] for s in species]
     prox_vals = [proximity_pct[s] for s in species]
-    colors = [SPECIES_COLORS.get(s, "#6366F1") for s in species]
+    colors = [SPECIES_COLORS.get(s, "#696cff") for s in species]
     
     y_pos = np.arange(len(species))
     
     # 1. Euclidean Distances (Lower is better)
-    bars1 = ax1.barh(y_pos, dist_vals, color=colors, alpha=0.85, edgecolor="#0f172a", linewidth=0.8)
+    bars1 = ax1.barh(y_pos, dist_vals, color=colors, alpha=0.85, edgecolor="#ffffff", linewidth=0.8)
     ax1.set_yticks(y_pos)
-    ax1.set_yticklabels(species, fontweight="bold", fontsize=9)
-    ax1.set_xlabel(r"Euclidean Distance $\|\mathbf{x} - \mathbf{\mu}_k\|_2$ (cm)", fontsize=8.5, fontweight="bold")
-    ax1.set_title("Metric Distance to Centroid", fontsize=10, fontweight="bold", pad=8)
+    ax1.set_yticklabels(species, fontweight="bold", fontsize=9, color="#e1def5")
+    ax1.set_xlabel(r"Euclidean Distance $\|\mathbf{x} - \mathbf{\mu}_k\|_2$ (cm)", fontsize=8.5, fontweight="bold", color="#b2b3ca")
+    ax1.set_title("Distance to Centroid (cm)", fontsize=10, fontweight="bold", pad=8, color="#e1def5")
     ax1.invert_yaxis()
     ax1.grid(True, axis="x", linestyle=":", alpha=0.6)
     
     for bar in bars1:
         w = bar.get_width()
         ax1.text(w + 0.05, bar.get_y() + bar.get_height() / 2, f"{w:.2f} cm",
-                 va="center", fontsize=8.5, fontweight="bold", color="#334155")
+                 va="center", fontsize=8.5, fontweight="bold", color="#e1def5")
         
     # 2. Proximity Confidence % (Higher is better)
-    bars2 = ax2.barh(y_pos, prox_vals, color=colors, alpha=0.85, edgecolor="#0f172a", linewidth=0.8)
+    bars2 = ax2.barh(y_pos, prox_vals, color=colors, alpha=0.85, edgecolor="#ffffff", linewidth=0.8)
     ax2.set_yticks(y_pos)
     ax2.set_yticklabels([])
-    ax2.set_xlabel("Proximity Confidence (%)", fontsize=8.5, fontweight="bold")
-    ax2.set_title("Softmax Proximity Score", fontsize=10, fontweight="bold", pad=8)
+    ax2.set_xlabel("Proximity Confidence (%)", fontsize=8.5, fontweight="bold", color="#b2b3ca")
+    ax2.set_title("Softmax Confidence Score", fontsize=10, fontweight="bold", pad=8, color="#e1def5")
     ax2.set_xlim(0, 105)
     ax2.invert_yaxis()
     ax2.grid(True, axis="x", linestyle=":", alpha=0.6)
@@ -359,7 +356,7 @@ def plot_prediction_diagnostics(
     for bar in bars2:
         w = bar.get_width()
         ax2.text(w + 1.5, bar.get_y() + bar.get_height() / 2, f"{w:.1f}%",
-                 va="center", fontsize=8.5, fontweight="bold", color="#334155")
+                 va="center", fontsize=8.5, fontweight="bold", color="#e1def5")
         
     fig.tight_layout()
     return fig
@@ -375,9 +372,10 @@ def plot_query_point_projection(
 ) -> plt.Figure:
     """
     Renders 2D projection scatter plot showing the live test observation
-    in relation to class clusters and centroids.
+    in relation to class clusters and centroids in Sneat Dark style.
     """
-    fig, ax = plt.subplots(figsize=(7.5, 4.8), dpi=160)
+    fig, ax = plt.subplots(figsize=(7.5, 4.8), dpi=160, facecolor="#2b2c40")
+    ax.set_facecolor("#2b2c40")
     
     feature_keys = ["sepal_length", "sepal_width", "petal_length", "petal_width"]
     xi = feature_keys.index(x_col)
@@ -387,21 +385,21 @@ def plot_query_point_projection(
         sub = df[df["species"] == sp]
         if sub.empty:
             continue
-        color = SPECIES_COLORS.get(sp, "#6366F1")
-        ax.scatter(sub[x_col], sub[y_col], c=color, alpha=0.35, s=36, edgecolors="none")
+        color = SPECIES_COLORS.get(sp, "#696cff")
+        ax.scatter(sub[x_col], sub[y_col], c=color, alpha=0.45, s=40, edgecolors="none")
         
         # Centroid
         if sp in centroids:
             cx, cy = centroids[sp][xi], centroids[sp][yi]
-            ax.scatter(cx, cy, marker="*", s=160, c=color, edgecolors="#ffffff", lw=1.2)
+            ax.scatter(cx, cy, marker="*", s=180, c=color, edgecolors="#ffffff", lw=1.2)
             
     # Highlight User's Query Vector
     qx, qy = query_vector[xi], query_vector[yi]
-    pred_color = SPECIES_COLORS.get(predicted_species, "#4f46e5")
+    pred_color = SPECIES_COLORS.get(predicted_species, "#696cff")
     
     # Pulsing outer ring + diamond
     ax.scatter(qx, qy, s=260, facecolors="none", edgecolors=pred_color, linewidth=2.5, linestyle="--", zorder=6)
-    ax.scatter(qx, qy, marker="D", s=120, c="#fbbf24", edgecolors="#0f172a", linewidth=1.5, 
+    ax.scatter(qx, qy, marker="D", s=130, c="#ffab00", edgecolors="#ffffff", linewidth=1.5, 
                label=f"Query Point ({qx:.1f}, {qy:.1f})", zorder=7)
     
     # Line connecting query point to the closest centroid
@@ -411,11 +409,11 @@ def plot_query_point_projection(
     
     x_label = FEATURE_LABELS.get(x_col, x_col)
     y_label = FEATURE_LABELS.get(y_col, y_col)
-    ax.set_xlabel(x_label, fontsize=9.5, fontweight="bold")
-    ax.set_ylabel(y_label, fontsize=9.5, fontweight="bold")
+    ax.set_xlabel(x_label, fontsize=9.5, fontweight="bold", color="#e1def5")
+    ax.set_ylabel(y_label, fontsize=9.5, fontweight="bold", color="#e1def5")
     ax.set_title(f"Live Query Point Space Projection ({x_label} vs. {y_label})", 
-                 fontsize=10.5, fontweight="bold", pad=10)
-    ax.legend(frameon=True, facecolor="#ffffff", edgecolor="#cbd5e1", fontsize=8.5, loc="best")
+                 fontsize=10.5, fontweight="bold", pad=10, color="#e1def5")
+    ax.legend(frameon=True, facecolor="#2b2c40", edgecolor="#44476a", labelcolor="#e1def5", fontsize=8.5, loc="best")
     ax.grid(True, linestyle=":", alpha=0.5)
     
     fig.tight_layout()
@@ -430,12 +428,15 @@ def plot_interactive_iris_flower(
     predicted_species: Optional[str] = None,
 ) -> plt.Figure:
     """
-    Renders an anatomical, dynamically scaled Iris flower morphometry diagram.
+    Renders an anatomical, dynamically scaled Iris flower morphometry diagram in Sneat Dark style.
     The outer sepals and inner petals expand and reshape in real time according
     to the user's exact centimeter slider inputs.
     """
     fig, (ax_flower, ax_stats) = plt.subplots(1, 2, figsize=(11.5, 5.6), dpi=160, 
-                                             gridspec_kw={"width_ratios": [1.15, 1.0]})
+                                             gridspec_kw={"width_ratios": [1.15, 1.0]},
+                                             facecolor="#2b2c40")
+    ax_flower.set_facecolor("#2b2c40")
+    ax_stats.set_facecolor("#2b2c40")
     
     # -------------------------------------------------------------------------
     # LEFT PANEL: DYNAMIC BOTANICAL FLOWER DIAGRAM
@@ -445,29 +446,25 @@ def plot_interactive_iris_flower(
     ax_flower.set_aspect("equal")
     ax_flower.axis("off")
     ax_flower.set_title("Iris Flower Anatomical Scaling (Live Morphometry)", 
-                        fontsize=11.5, fontweight="bold", pad=12, color="#0f172a")
+                        fontsize=11.5, fontweight="bold", pad=12, color="#e1def5")
 
-    # 1. Stem and Base
-    ax_flower.plot([0, 0], [-5.0, -1.2], color="#15803d", linewidth=6, solid_capstyle="round", zorder=1)
-    # Stem leaves
-    leaf_t = np.linspace(0, 1, 30)
-    leaf_x = -0.1 - 1.2 * np.sin(leaf_t * np.pi)
-    leaf_y = -4.5 + 2.0 * leaf_t
-    ax_flower.plot(leaf_x, leaf_y, color="#16a34a", linewidth=3.5, zorder=1)
-    
-    # Receptacle (green flower base)
-    receptacle = plt.Polygon([[-0.5, -1.2], [0.5, -1.2], [0.35, -0.7], [-0.35, -0.7]], 
-                             color="#166534", zorder=2)
-    ax_flower.add_patch(receptacle)
+    # 1. Stem and Base (Green Botanical Stem)
+    stem_x = np.array([-0.18, 0.18, 0.14, -0.14])
+    stem_y = np.array([-0.8, -0.8, -4.8, -4.8])
+    ax_flower.fill(stem_x, stem_y, color="#22c55e", alpha=0.9, edgecolor="#15803d", linewidth=1.5, zorder=1)
 
-    # Scaling factors based on realistic cm inputs
-    sl_scale = sepal_length * 0.65
+    # Receptacle / Calyx Core
+    calyx = Polygon([(-0.6, -0.8), (0.6, -0.8), (0.3, -1.4), (-0.3, -1.4)], closed=True,
+                    facecolor="#16a34a", edgecolor="#15803d", linewidth=1.5, zorder=2)
+    ax_flower.add_patch(calyx)
+
+    # Scaling Factors based on live Centimeter inputs
+    sl_scale = sepal_length * 0.70
     sw_scale = sepal_width * 0.75
     pl_scale = petal_length * 0.70
     pw_scale = petal_width * 0.85
 
     # 2. Outer Drooping Sepals ("Falls") - Left and Right
-    # Parametric curve for outer falls
     theta = np.linspace(0, np.pi, 50)
     
     # Right Sepal (Falls)
@@ -475,47 +472,46 @@ def plot_interactive_iris_flower(
     sep_r_y = -0.8 - sl_scale * (1.0 - np.cos(theta * 0.5))
     ax_flower.fill(np.concatenate([[0.2], sep_r_x, [0.1]]), 
                    np.concatenate([[-0.8], sep_r_y, [-0.8]]), 
-                   color="#696cff", alpha=0.82, edgecolor="#5f61e6", linewidth=1.8, zorder=3)
+                   color="#696cff", alpha=0.88, edgecolor="#787bff", linewidth=1.8, zorder=3)
     # Golden Signal / Nectar Guide on Sepal
     ax_flower.fill(np.concatenate([[0.2], sep_r_x[:20] * 0.6, [0.2]]), 
                    np.concatenate([[-0.8], sep_r_y[:20] * 0.6, [-0.8]]), 
-                   color="#ffab00", alpha=0.9, edgecolor="#e09b00", linewidth=1, zorder=4)
+                   color="#ffab00", alpha=0.95, edgecolor="#ffffff", linewidth=1, zorder=4)
 
     # Left Sepal (Falls - Symmetrical)
     sep_l_x = -sep_r_x
     sep_l_y = sep_r_y
     ax_flower.fill(np.concatenate([[-0.2], sep_l_x, [-0.1]]), 
                    np.concatenate([[-0.8], sep_l_y, [-0.8]]), 
-                   color="#696cff", alpha=0.82, edgecolor="#5f61e6", linewidth=1.8, zorder=3)
+                   color="#696cff", alpha=0.88, edgecolor="#787bff", linewidth=1.8, zorder=3)
     # Golden Signal on Left Sepal
     ax_flower.fill(np.concatenate([[-0.2], sep_l_x[:20] * 0.6, [-0.2]]), 
                    np.concatenate([[-0.8], sep_l_y[:20] * 0.6, [-0.8]]), 
-                   color="#ffab00", alpha=0.9, edgecolor="#e09b00", linewidth=1, zorder=4)
+                   color="#ffab00", alpha=0.95, edgecolor="#ffffff", linewidth=1, zorder=4)
 
     # 3. Inner Upright Petals ("Standards") - Left, Center, Right
-    # Upward parametric curve
     pet_t = np.linspace(0, np.pi, 50)
     
     # Center Upright Petal
     pet_c_x = (pw_scale * 0.9) * np.sin(pet_t) - (pw_scale * 0.45)
     pet_c_y = -0.7 + pl_scale * np.sin(pet_t * 0.5 + 0.3)
-    ax_flower.fill(pet_c_x, pet_c_y, color="#03c3ec", alpha=0.85, 
-                   edgecolor="#02a6c8", linewidth=2.0, zorder=5)
+    ax_flower.fill(pet_c_x, pet_c_y, color="#03c3ec", alpha=0.88, 
+                   edgecolor="#26e7a6", linewidth=2.0, zorder=5)
 
     # Left Upright Petal
     pet_l_x = -0.3 - (pw_scale * 0.75) * np.sin(pet_t)
     pet_l_y = -0.7 + (pl_scale * 0.9) * np.sin(pet_t * 0.5)
-    ax_flower.fill(pet_l_x, pet_l_y, color="#26e7a6", alpha=0.80, 
-                   edgecolor="#16c784", linewidth=1.5, zorder=4)
+    ax_flower.fill(pet_l_x, pet_l_y, color="#26e7a6", alpha=0.82, 
+                   edgecolor="#71dd37", linewidth=1.5, zorder=4)
 
     # Right Upright Petal
     pet_r_x = 0.3 + (pw_scale * 0.75) * np.sin(pet_t)
     pet_r_y = -0.7 + (pl_scale * 0.9) * np.sin(pet_t * 0.5)
-    ax_flower.fill(pet_r_x, pet_r_y, color="#26e7a6", alpha=0.80, 
-                   edgecolor="#16c784", linewidth=1.5, zorder=4)
+    ax_flower.fill(pet_r_x, pet_r_y, color="#26e7a6", alpha=0.82, 
+                   edgecolor="#71dd37", linewidth=1.5, zorder=4)
 
     # Central Botanical Core / Style Arms
-    ax_flower.scatter([0], [-0.7], s=130, c="#71dd37", edgecolors="#384551", linewidth=1.8, zorder=7)
+    ax_flower.scatter([0], [-0.7], s=140, c="#71dd37", edgecolors="#ffffff", linewidth=2.0, zorder=7)
 
     # Dimension Calipers and Anatomical Callout Brackets
     # Petal dimension callout (top right)
@@ -523,9 +519,9 @@ def plot_interactive_iris_flower(
     ax_flower.annotate(
         f"PETALS (Standards)\nLength: {petal_length:.1f} cm\nWidth: {petal_width:.1f} cm",
         xy=(0.4, top_petal_y * 0.75), xytext=(2.6, 3.8),
-        arrowprops=dict(arrowstyle="->", color="#02a6c8", lw=1.5),
-        bbox=dict(boxstyle="round,pad=0.4", fc="#d7f5fc", ec="#03c3ec", lw=1),
-        fontsize=8.5, fontweight="bold", color="#0288a8"
+        arrowprops=dict(arrowstyle="->", color="#03c3ec", lw=1.5),
+        bbox=dict(boxstyle="round,pad=0.4", fc="#232333", ec="#03c3ec", lw=1.2),
+        fontsize=8.5, fontweight="bold", color="#03c3ec"
     )
 
     # Sepal dimension callout (bottom right)
@@ -533,19 +529,18 @@ def plot_interactive_iris_flower(
     ax_flower.annotate(
         f"SEPALS (Falls)\nLength: {sepal_length:.1f} cm\nWidth: {sepal_width:.1f} cm",
         xy=(sep_r_x.max() * 0.75, bot_sepal_y), xytext=(2.4, -3.2),
-        arrowprops=dict(arrowstyle="->", color="#696cff", lw=1.5),
-        bbox=dict(boxstyle="round,pad=0.4", fc="#e7e7ff", ec="#696cff", lw=1),
-        fontsize=8.5, fontweight="bold", color="#696cff"
+        arrowprops=dict(arrowstyle="->", color="#787bff", lw=1.5),
+        bbox=dict(boxstyle="round,pad=0.4", fc="#232333", ec="#696cff", lw=1.2),
+        fontsize=8.5, fontweight="bold", color="#787bff"
     )
 
     # Anatomical Key Legend at bottom of left panel
     ax_flower.text(-5.0, -5.2, "• Petals (Cyan): Inner upright flower standards\n• Sepals (Purple): Outer drooping falls with nectar signal", 
-                   fontsize=8, color="#566a7f", bbox=dict(boxstyle="round,pad=0.3", fc="#f5f5f9", ec="#d9dee3"))
+                   fontsize=8, color="#b2b3ca", bbox=dict(boxstyle="round,pad=0.3", fc="#232333", ec="#44476a"))
 
     # -------------------------------------------------------------------------
     # RIGHT PANEL: SPECIES AVERAGE BENCHMARKS & MORPHOMETRIC RATIOS
     # -------------------------------------------------------------------------
-    # Botanical averages from Fisher's canonical study
     benchmarks = {
         "Iris Setosa": [5.01, 3.42, 1.46, 0.24],
         "Iris Versicolor": [5.94, 2.77, 4.26, 1.33],
@@ -559,35 +554,36 @@ def plot_interactive_iris_flower(
 
     # Draw grouped horizontal comparison bars
     ax_stats.barh(y_pos - 1.5 * bar_height, benchmarks["Iris Setosa"], height=bar_height, 
-                  color="#e7e7ff", edgecolor="#696cff", label="Setosa Avg", alpha=0.85)
+                  color="#3b3e5b", edgecolor="#696cff", label="Setosa Avg", alpha=0.85)
     ax_stats.barh(y_pos - 0.5 * bar_height, benchmarks["Iris Versicolor"], height=bar_height, 
-                  color="#d7f5fc", edgecolor="#03c3ec", label="Versicolor Avg", alpha=0.85)
+                  color="#29435c", edgecolor="#03c3ec", label="Versicolor Avg", alpha=0.85)
     ax_stats.barh(y_pos + 0.5 * bar_height, benchmarks["Iris Virginica"], height=bar_height, 
-                  color="#e8fadf", edgecolor="#71dd37", label="Virginica Avg", alpha=0.85)
+                  color="#284d33", edgecolor="#71dd37", label="Virginica Avg", alpha=0.85)
     
     # Highlight User Flower in bold Sneat color
     user_color = SPECIES_COLORS.get(predicted_species, "#696cff") if predicted_species else "#696cff"
     user_bars = ax_stats.barh(y_pos + 1.5 * bar_height, benchmarks["Your Flower"], height=bar_height, 
-                              color=user_color, edgecolor="#384551", linewidth=1.5, 
+                              color=user_color, edgecolor="#ffffff", linewidth=1.5, 
                               label="Your Input Flower", zorder=5)
 
     # Add numeric labels to user flower bars
     for bar in user_bars:
         w = bar.get_width()
         ax_stats.text(w + 0.15, bar.get_y() + bar.get_height() / 2, f"{w:.1f} cm",
-                      va="center", fontsize=8.5, fontweight="bold", color="#384551")
+                      va="center", fontsize=8.5, fontweight="bold", color="#ffffff")
 
     ax_stats.set_yticks(y_pos)
-    ax_stats.set_yticklabels(categories, fontsize=9.5, fontweight="bold")
-    ax_stats.set_xlabel("Measurement (Centimeters)", fontsize=9, fontweight="bold", color="#566a7f")
+    ax_stats.set_yticklabels(categories, fontsize=9.5, fontweight="bold", color="#e1def5")
+    ax_stats.set_xlabel("Measurement (Centimeters)", fontsize=9, fontweight="bold", color="#b2b3ca")
     ax_stats.set_xlim(0, 8.5)
+    ax_stats.tick_params(colors="#b2b3ca")
     ax_stats.grid(True, axis="x", linestyle="--", alpha=0.6)
     
     # Title & Match banner
     match_str = f"Closest Match: {predicted_species}" if predicted_species else "Morphometric Benchmark"
     ax_stats.set_title(f"Comparison vs. Botanical Species Averages\n({match_str})", 
-                       fontsize=10.5, fontweight="bold", pad=8, color="#384551")
-    ax_stats.legend(frameon=True, facecolor="#ffffff", edgecolor="#d9dee3", fontsize=8, loc="upper right")
+                       fontsize=10.5, fontweight="bold", pad=8, color="#e1def5")
+    ax_stats.legend(frameon=True, facecolor="#2b2c40", edgecolor="#44476a", labelcolor="#e1def5", fontsize=8, loc="upper right")
 
     # Area & Ratio Summary Sub-Box
     sepal_area = sepal_length * sepal_width
@@ -601,9 +597,8 @@ def plot_interactive_iris_flower(
         f"• Petal Aspect Ratio: {ratio:.2f}"
     )
     ax_stats.text(0.04, 0.06, summary_text, transform=ax_stats.transAxes,
-                  fontsize=8.5, color="#384551",
-                  bbox=dict(boxstyle="round,pad=0.5", fc="#f5f5f9", ec="#d9dee3", lw=1))
+                  fontsize=8.5, color="#e1def5",
+                  bbox=dict(boxstyle="round,pad=0.5", fc="#232333", ec="#44476a", lw=1))
 
     fig.tight_layout()
     return fig
-

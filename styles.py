@@ -467,11 +467,11 @@ def render_top_navbar() -> str:
             </div>
         </div>
         <div class="nav-pills">
-            <span class="nav-pill-item nav-pill-active">ðŸŒ¸ Overview</span>
-            <span class="nav-pill-item">ðŸŒ¿ Botanical Anatomy</span>
-            <span class="nav-pill-item">ðŸ§® Mathematical Engine</span>
-            <span class="nav-pill-item">ðŸ“ˆ Visual Analytics</span>
-            <span class="nav-pill-item">ðŸŽ¯ Centroid Classifier</span>
+            <span class="nav-pill-item nav-pill-active">&#127800; Overview</span>
+            <span class="nav-pill-item">&#127807; Botanical Anatomy</span>
+            <span class="nav-pill-item">&#129518; Mathematical Engine</span>
+            <span class="nav-pill-item">&#128200; Visual Analytics</span>
+            <span class="nav-pill-item">&#127919; Centroid Classifier</span>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
             <div class="nav-status-pill">
@@ -506,10 +506,10 @@ def render_hero_banner() -> str:
             covariance & correlation tensor analysis, and interactive flower morphometry visualization.
         </p>
         <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 0.75rem;">
-            <span class="badge-sneat bg-label-primary">ðŸŒ™ Deep Tech Obsidian (#0B0F17)</span>
-            <span class="badge-sneat bg-label-info">ðŸŒ¸ 150 Botanical Specimens</span>
-            <span class="badge-sneat bg-label-warning">ðŸ“ 4 Morphometric Dimensions</span>
-            <span class="badge-sneat bg-label-success">ðŸŽ¯ 100% Setosa Linear Separability</span>
+            <span class="badge-sneat bg-label-primary">&#127769; Deep Tech Obsidian (#0B0F17)</span>
+            <span class="badge-sneat bg-label-info">&#127800; 150 Botanical Specimens</span>
+            <span class="badge-sneat bg-label-warning">&#128208; 4 Morphometric Dimensions</span>
+            <span class="badge-sneat bg-label-success">&#127919; 100% Setosa Linear Separability</span>
         </div>
     </div>
     """
@@ -535,7 +535,7 @@ def render_easter_egg_card() -> str:
     <div style="background: linear-gradient(135deg, #131B2E 0%, #1A253D 100%); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 14px; padding: 1rem 1.25rem; margin-top: 1rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <div>
-                <strong style="color: #F8FAFC; font-size: 0.92rem;">ðŸš€ Python Easter Egg: <code>import antigravity</code></strong>
+                <strong style="color: #F8FAFC; font-size: 0.92rem;">&#128640; Python Easter Egg: <code>import antigravity</code></strong>
                 <p style="margin: 4px 0 0 0; font-size: 0.84rem; color: #94A3B8;">
                     Homage to XKCD #353: <em>"I wrote 20 short programs in Python yesterday. It was wonderful. Now I am flying!"</em>
                 </p>
@@ -543,7 +543,7 @@ def render_easter_egg_card() -> str:
             <div>
                 <a href="https://xkcd.com/353/" target="_blank" 
                    style="background: #0284C7; color: #ffffff; padding: 0.4rem 0.85rem; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 600; display: inline-block; box-shadow: 0 2px 10px rgba(2, 132, 199, 0.4);">
-                    View XKCD #353 â†—
+                    View XKCD #353 &nearr;
                 </a>
             </div>
         </div>

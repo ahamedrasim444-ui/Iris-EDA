@@ -1,4 +1,4 @@
-﻿"""
+"""
 streamlit_app.py
 Iris Flower Data Analysis Suite
 Interactive Multidimensional Data Science, Real-Time Flower Morphometry,
@@ -44,16 +44,16 @@ from styles import (
 
 
 # ------------------------------------------------------------------------------
-# Page Configuration & Mono Bootstrap Theme
+# Page Configuration & Sneat Vuetify 3 Theme
 # ------------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Iris Flower Data Analysis | Morphometry & Statistics",
+    page_title="Sneat | Iris Flower Data Analysis & Morphometry",
     page_icon="🌸",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# Apply Mono Bootstrap CSS
+# Apply Sneat Vuetify 3 CSS Design System
 st.markdown(get_custom_css(antigravity_mode=st.session_state.get("antigravity_active", False)), unsafe_allow_html=True)
 
 # Initialize SQLite Database
@@ -171,17 +171,21 @@ if st.session_state.antigravity_active:
     st.markdown(render_easter_egg_card(), unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# Key Metric KPI Cards (Mono Bootstrap Theme)
+# Key Metric KPI Cards (Sneat Vuetify 3 Admin Theme)
 # ------------------------------------------------------------------------------
 col1, col2, col3, col4 = st.columns(4)
 with col1:
     pct_visible = (len(df_filtered) / len(df_raw) * 100) if len(df_raw) > 0 else 0
     st.markdown(
         f"""
-        <div class="stat-card">
-            <div class="stat-label">Active Filtered Flowers</div>
-            <div class="stat-value">{len(df_filtered)} <span style="font-size:1rem;font-weight:500;color:#64748b;">/ {len(df_raw)}</span></div>
-            <div class="stat-sub">{pct_visible:.1f}% of total specimen collection</div>
+        <div class="sneat-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="sneat-avatar-box bg-label-primary">🌸</div>
+                <span class="badge-sneat bg-label-success">{pct_visible:.1f}% Active</span>
+            </div>
+            <div class="sneat-card-label">Filtered Flowers</div>
+            <div class="sneat-card-value">{len(df_filtered)} <span style="font-size:1rem;font-weight:500;color:#8592a3;">/ {len(df_raw)}</span></div>
+            <div class="sneat-card-sub">Active biological specimens</div>
         </div>
         """, unsafe_allow_html=True
     )
@@ -189,10 +193,14 @@ with col1:
 with col2:
     st.markdown(
         """
-        <div class="stat-card">
-            <div class="stat-label">Morphometric Dimensions</div>
-            <div class="stat-value">4 Primary</div>
-            <div class="stat-sub">Sepal L/W + Petal L/W (cm)</div>
+        <div class="sneat-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="sneat-avatar-box bg-label-info">📐</div>
+                <span class="badge-sneat bg-label-info">4D Space</span>
+            </div>
+            <div class="sneat-card-label">Morphometry Traits</div>
+            <div class="sneat-card-value">4 Primary</div>
+            <div class="sneat-card-sub">Sepal & Petal Dimensions</div>
         </div>
         """, unsafe_allow_html=True
     )
@@ -201,10 +209,14 @@ with col3:
     active_classes = df_filtered["species"].nunique() if not df_filtered.empty else 0
     st.markdown(
         f"""
-        <div class="stat-card">
-            <div class="stat-label">Included Species</div>
-            <div class="stat-value">{active_classes} <span style="font-size:1rem;font-weight:500;color:#64748b;">Classes</span></div>
-            <div class="stat-sub">Setosa • Versicolor • Virginica</div>
+        <div class="sneat-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="sneat-avatar-box bg-label-success">🌿</div>
+                <span class="badge-sneat bg-label-primary">{active_classes}/3 Types</span>
+            </div>
+            <div class="sneat-card-label">Botanical Classes</div>
+            <div class="sneat-card-value">{active_classes} <span style="font-size:1rem;font-weight:500;color:#8592a3;">Species</span></div>
+            <div class="sneat-card-sub">Setosa • Versicolor • Virginica</div>
         </div>
         """, unsafe_allow_html=True
     )
@@ -212,10 +224,14 @@ with col3:
 with col4:
     st.markdown(
         f"""
-        <div class="stat-card">
-            <div class="stat-label">Saved Queries</div>
-            <div class="stat-value">{db_stats["total_records"]} <span style="font-size:1rem;font-weight:500;color:#64748b;">Logs</span></div>
-            <div class="stat-sub">Connected SQLite Database</div>
+        <div class="sneat-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="sneat-avatar-box bg-label-warning">🗄️</div>
+                <span class="badge-sneat bg-label-warning">SQLite</span>
+            </div>
+            <div class="sneat-card-label">Database Logs</div>
+            <div class="sneat-card-value">{db_stats["total_records"]} <span style="font-size:1rem;font-weight:500;color:#8592a3;">Queries</span></div>
+            <div class="sneat-card-sub">Saved classification records</div>
         </div>
         """, unsafe_allow_html=True
     )
@@ -227,11 +243,11 @@ st.write("")
 # Main Application Tabs
 # ------------------------------------------------------------------------------
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "🌸 Tab 1: Interactive Flower Visualizer",
-    "📊 Tab 2: Dataset & Flower Records",
-    "🧮 Tab 3: Statistical Engine (Formulas & Meanings)",
-    "📈 Tab 4: Visual Analytics Gallery (Matplotlib)",
-    "🎯 Tab 5: Live Species Classifier & History",
+    "🌸 Flower Morphometry",
+    "📊 Dataset Records",
+    "🧮 Statistical Engine",
+    "📈 Analytics Gallery",
+    "🎯 Species Classifier",
 ])
 
 
@@ -672,15 +688,15 @@ with tab5:
 
 
 # ------------------------------------------------------------------------------
-# Mono Bootstrap Clean Footer (No Academic / Student Names)
+# Sneat – Vuetify Vuejs 3 Clean Footer
 # ------------------------------------------------------------------------------
 st.markdown("---")
 st.markdown(
     """
-    <div style="text-align: center; color: #64748b; font-size: 0.85rem; padding: 1.5rem 0; line-height: 1.6;">
-        <strong>Iris Flower Data Analysis</strong> • Multidimensional Morphometry & Statistical Suite<br>
+    <div style="text-align: center; color: #8592a3; font-size: 0.85rem; padding: 1.5rem 0; line-height: 1.6;">
+        <strong style="color: #384551;">Iris Flower Data Analysis</strong> • Multidimensional Morphometry & Statistical Suite<br>
         Powered by NumPy, Pandas, Matplotlib, Streamlit & SQLite Database<br>
-        <span style="color: #0f172a; font-weight: 600;">Mono Bootstrap Architecture • 24/7 Production Deployment</span>
+        <span style="color: #696cff; font-weight: 600;">Sneat – Vuetify Vuejs 3 Admin Theme • 24/7 Production Deployment</span>
     </div>
     """,
     unsafe_allow_html=True,

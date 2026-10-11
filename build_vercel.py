@@ -20,6 +20,7 @@ def build_vercel_bundle():
         "database.py": "database.py",
         "data/iris.csv": "data/iris.csv",
         ".streamlit/config.toml": ".streamlit/config.toml",
+        "assets/iris_logo.svg": "assets/iris_logo.svg",
     }
     
     bundled_files = {}
@@ -38,7 +39,7 @@ def build_vercel_bundle():
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Iris Flower Data Analysis | Morphometry & Statistics Suite</title>
+    <title>Sneat | Iris Flower Data Analysis & Morphometry</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.63.1/build/stlite.css" />
     <style>
@@ -47,8 +48,8 @@ def build_vercel_bundle():
         padding: 0;
         width: 100%;
         height: 100%;
-        background-color: #ffffff;
-        color: #0f172a;
+        background-color: #f5f5f9;
+        color: #384551;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       }}
       #root {{
@@ -61,16 +62,16 @@ def build_vercel_bundle():
         justify-content: center;
         align-items: center;
         height: 100vh;
-        color: #0f172a;
-        background: #f8fafc;
+        color: #384551;
+        background: #f5f5f9;
         text-align: center;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }}
       .spinner {{
         width: 48px;
         height: 48px;
-        border: 4px solid #e2e8f0;
-        border-top: 4px solid #0f172a;
+        border: 4px solid #e7e7ff;
+        border-top: 4px solid #696cff;
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-bottom: 16px;
@@ -85,8 +86,8 @@ def build_vercel_bundle():
     <div id="root">
       <div class="loading-screen" id="loading">
         <div class="spinner"></div>
-        <h2 style="margin: 0 0 8px 0; font-size: 1.3rem;">🌸 Loading Iris Flower Data Analysis...</h2>
-        <p style="margin: 0; color: #475569; font-size: 0.95rem;">
+        <h2 style="margin: 0 0 8px 0; font-size: 1.3rem; color: #384551;">🌸 Loading Sneat Iris Data Analysis...</h2>
+        <p style="margin: 0; color: #697a8d; font-size: 0.95rem;">
           Initializing NumPy, Pandas & Matplotlib engine via WebAssembly
         </p>
       </div>
@@ -102,10 +103,10 @@ def build_vercel_bundle():
           files: bundledFiles,
           streamlitConfig: {{
             "theme.base": "light",
-            "theme.primaryColor": "#0f172a",
-            "theme.backgroundColor": "#ffffff",
-            "theme.secondaryBackgroundColor": "#f8fafc",
-            "theme.textColor": "#0f172a"
+            "theme.primaryColor": "#696cff",
+            "theme.backgroundColor": "#f5f5f9",
+            "theme.secondaryBackgroundColor": "#ffffff",
+            "theme.textColor": "#384551"
           }}
         }},
         document.getElementById("root")

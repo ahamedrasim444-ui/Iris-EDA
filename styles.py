@@ -1,12 +1,46 @@
 """
 styles.py
-Mono Bootstrap Theme & Botanical Branding for the Iris Flower Data Analysis Suite.
-Clean, ultra-high-contrast, monochromatic typography with structured Bootstrap component styling.
-Guarantees 100% readability across all headings, body text, widgets, sliders, tags, tabs, and tables.
+Sneat – Vuetify Vuejs 3 Admin Template Theme & Botanical Branding for the Iris Flower Data Analysis Suite.
+Clean, modern, high-contrast, professional admin dashboard styling based on Sneat Vuetify 3.
+Guarantees 100% visual logo display (Base64 img) and crystal-clear text readability.
 """
 
+import base64
+import os
+
+# Base64 encoded Sneat Botanical Iris Logo SVG (100% immune to markdown code indentation bugs)
+SNEAT_IRIS_LOGO_B64 = (
+    "PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InNuZWF0R3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjNjk2Y2ZmIiAvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iIzc4N2JmZiIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjODU1Y2Y2IiAvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9InNuZWF0R2xvdyIgeD0iLTIwJSIgeT0iLTIwJSIgd2lkdGg9IjE0MCUiIGhlaWdodD0iMTQwJSI+CiAgICAgIDxmZURyb3BTaGFkb3cgZHg9IjAiIGR5PSI0IiBzdGREZXZpYXRpb249IjYiIGZsb29kLWNvbG9yPSIjNjk2Y2ZmIiBmbG9vZC1vcGFjaXR5PSIwLjM1IiAvPgogICAgPC9maWx0ZXI+CiAgPC9kZWZzPgogIDwhLS0gU25lYXQgSWNvbmljIFJvdW5kZWQgQmFkZ2UgLS0+CiAgPHJlY3QgeD0iNCIgeT0iNCIgd2lkdGg9IjkyIiBoZWlnaHQ9IjkyIiByeD0iMjIiIGZpbGw9InVybCgjc25lYXRHcmFkaWVudCkiIGZpbHRlcj0idXJsKCNzbmVhdEdsb3cpIiAvPgogIDwhLS0gQm90YW5pY2FsIElyaXMgUGV0YWxzICYgU3ltbWV0cnkgLS0+CiAgPHBhdGggZD0iTTUwIDE4IEM0NSAzMiAzNiA0NCAyNiA1MCBDMzggNTIgNDYgNjIgNTAgODIgQzU0IDYyIDYyIDUyIDc0IDUwIEM2NCA0NCA1NSAzMiA1MCAxOCBaIiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuOTUiIC8+CiAgPCEtLSBJbm5lciBTdGFuZGFyZCBQZXRhbHMgLS0+CiAgPHBhdGggZD0iTTUwIDMwIEM0NyA0MCA0MyA0NyAzOCA1MCBDNDQgNTIgNDcgNTcgNTAgNzAgQzUzIDU3IDU2IDUyIDYyIDUwIEM1NyA0NyA1MyA0MCA1MCAzMCBaIiBmaWxsPSIjZTdlN2ZmIiAvPgogIDwhLS0gR29sZGVuIEJpb2xvZ2ljYWwgQ29yZSBTdGFtZW4gLS0+CiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNS41IiBmaWxsPSIjNzFkZDM3IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiIgLz4KICA8IS0tIEJvdGFuaWNhbCBDYWxpYnJhdGlvbiBBeGlzIExpbmUgLS0+CiAgPGxpbmUgeDE9IjUwIiB5MT0iNTAiIHgyPSI1MCIgeTI9IjgwIiBzdHJva2U9IiMwM2MzZWMiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIC8+CiAgPGxpbmUgeDE9IjI4IiB5MT0iNTAiIHgyPSI3MiIgeTI9IjUwIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtZGFzaGFycmF5PSIyIDIiIHN0cm9rZS1vcGFjaXR5PSIwLjgiIC8+Cjwvc3ZnPgo="
+)
+
+
+def get_iris_logo_img(size: int = 42) -> str:
+    """Returns an HTML img tag with base64 data URI to guarantee 100% visual display in Streamlit without code escaping."""
+    return f'<img src="data:image/svg+xml;base64,{SNEAT_IRIS_LOGO_B64}" width="{size}" height="{size}" alt="Sneat Logo" style="vertical-align:middle;display:inline-block;border-radius:10px;box-shadow:0 3px 8px rgba(105,108,255,0.35);" />'
+
+
+def get_iris_logo_svg(size: int = 42) -> str:
+    """Returns raw SVG if needed."""
+    return f"""
+    <svg width="{size}" height="{size}" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sneatGradInline" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#696cff" />
+          <stop offset="50%" stop-color="#787bff" />
+          <stop offset="100%" stop-color="#855cf6" />
+        </linearGradient>
+      </defs>
+      <rect x="4" y="4" width="92" height="92" rx="22" fill="url(#sneatGradInline)" />
+      <path d="M50 18 C45 32 36 44 26 50 C38 52 46 62 50 82 C54 62 62 52 74 50 C64 44 55 32 50 18 Z" fill="#ffffff" fill-opacity="0.95" />
+      <path d="M50 30 C47 40 43 47 38 50 C44 52 47 57 50 70 C53 57 56 52 62 50 C57 47 53 40 50 30 Z" fill="#e7e7ff" />
+      <circle cx="50" cy="50" r="5.5" fill="#71dd37" stroke="#ffffff" stroke-width="2" />
+      <line x1="50" y1="50" x2="50" y2="80" stroke="#03c3ec" stroke-width="2.5" stroke-linecap="round" />
+    </svg>
+    """
+
+
 def get_custom_css(antigravity_mode: bool = False) -> str:
-    """Returns Mono Bootstrap CSS styles with crisp borders, dark text, and clean typography."""
+    """Returns Sneat – Vuetify Vuejs 3 Admin Template CSS design system with ultra-readable typography."""
     
     antigravity_animation = ""
     if antigravity_mode:
@@ -24,26 +58,43 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     return f"""
     <style>
     /* =========================================================================
-       MONO BOOTSTRAP DESIGN SYSTEM & HIGH-CONTRAST TYPOGRAPHY
+       SNEAT – VUETIFY VUEJS 3 ADMIN TEMPLATE DESIGN SYSTEM
        ========================================================================= */
+    @import url('https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap');
+
     :root {{
-        --mono-dark: #0f172a;
-        --mono-body: #1e293b;
-        --mono-muted: #475569;
-        --mono-light-bg: #f8fafc;
-        --mono-card-border: #e2e8f0;
-        --mono-border-strong: #cbd5e1;
+        --sneat-primary: #696cff;
+        --sneat-primary-hover: #5f61e6;
+        --sneat-primary-light: #e7e7ff;
+        --sneat-secondary: #8592a3;
+        --sneat-success: #71dd37;
+        --sneat-success-light: #e8fadf;
+        --sneat-info: #03c3ec;
+        --sneat-info-light: #d7f5fc;
+        --sneat-warning: #ffab00;
+        --sneat-warning-light: #fff2d6;
+        --sneat-danger: #ff3e1d;
+        --sneat-danger-light: #ffe0db;
+        --sneat-heading: #384551;
+        --sneat-body: #566a7f;
+        --sneat-muted: #8592a3;
+        --sneat-bg: #f5f5f9;
+        --sneat-card-bg: #ffffff;
+        --sneat-border: #d9dee3;
+        --sneat-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.12);
+        --sneat-shadow-lg: 0 4px 16px 0 rgba(67, 89, 113, 0.16);
     }}
 
-    /* Global App Container & Base Font */
+    /* Global App Container & Base Font (Public Sans) */
     html, body, .stApp {{
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-        color: #0f172a !important;
-        background-color: #ffffff !important;
+        font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        color: #566a7f !important;
+        background-color: #f5f5f9 !important;
     }}
 
     .stApp [data-testid="stHeader"] {{
-        background-color: rgba(255, 255, 255, 0.95) !important;
+        background-color: rgba(245, 245, 249, 0.9) !important;
+        backdrop-filter: blur(8px);
     }}
 
     .block-container {{
@@ -53,38 +104,39 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     }}
 
     /* =========================================================================
-       HEADINGS & PARAGRAPHS (100% VISIBLE & HIGH-CONTRAST)
+       HEADINGS & PARAGRAPHS (CRISP SNEAT VUETIFY TYPOGRAPHY)
        ========================================================================= */
     h1, h2, h3, h4, h5, h6,
     .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {{
-        color: #0f172a !important;
-        font-weight: 700 !important;
-        letter-spacing: -0.015em !important;
+        color: #384551 !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.02em !important;
     }}
 
     p, li, .stMarkdown p, .stMarkdown li, [data-testid="stMarkdownContainer"] p {{
-        color: #1e293b !important;
-        font-size: 0.95rem;
-        line-height: 1.6;
+        color: #566a7f !important;
+        font-size: 0.9375rem;
+        line-height: 1.55;
     }}
 
     strong, b, .stMarkdown strong, .stMarkdown b {{
-        color: #0f172a !important;
-        font-weight: 700 !important;
+        color: #384551 !important;
+        font-weight: 600 !important;
     }}
 
     .stCaption, [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] p {{
-        color: #475569 !important;
-        font-size: 0.85rem !important;
+        color: #8592a3 !important;
+        font-size: 0.8125rem !important;
         font-weight: 500 !important;
     }}
 
     /* =========================================================================
-       SIDEBAR CONTROLS & LABELS
+       SIDEBAR (SNEAT VERTICAL NAVIGATION MENU)
        ========================================================================= */
     section[data-testid="stSidebar"] {{
-        background-color: #f8fafc !important;
-        border-right: 1px solid #e2e8f0 !important;
+        background-color: #ffffff !important;
+        border-right: 1px solid #d9dee3 !important;
+        box-shadow: 0 0.125rem 0.375rem 0 rgba(161, 172, 184, 0.12) !important;
     }}
 
     section[data-testid="stSidebar"] h1,
@@ -94,59 +146,64 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     section[data-testid="stSidebar"] p,
     section[data-testid="stSidebar"] span,
     section[data-testid="stSidebar"] label {{
-        color: #0f172a !important;
+        color: #384551 !important;
     }}
 
     section[data-testid="stSidebar"] .stCaption,
     section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {{
-        color: #475569 !important;
+        color: #8592a3 !important;
     }}
 
-    /* Widget Labels (Sliders, Selectors, Inputs) */
+    /* Widget Labels (Inputs, Sliders, Multi-selects) */
     [data-testid="stWidgetLabel"],
     [data-testid="stWidgetLabel"] label,
     [data-testid="stWidgetLabel"] p,
     [data-testid="stWidgetLabel"] span {{
-        color: #0f172a !important;
+        color: #384551 !important;
         font-weight: 600 !important;
-        font-size: 0.9rem !important;
+        font-size: 0.85rem !important;
+        letter-spacing: 0.02em;
     }}
 
     /* Sliders: Values, Min, Max & Numbers */
     div[data-testid="stThumbValue"],
     div[data-testid="stThumbValue"] * {{
-        color: #0f172a !important;
+        color: #696cff !important;
         font-weight: 700 !important;
-        font-size: 0.88rem !important;
+        font-size: 0.875rem !important;
     }}
 
     div[data-testid="stTickBarMin"],
     div[data-testid="stTickBarMax"],
     [data-testid="stSliderTickBar"] * {{
-        color: #475569 !important;
+        color: #8592a3 !important;
         font-weight: 600 !important;
-        font-size: 0.82rem !important;
+        font-size: 0.75rem !important;
     }}
 
     /* =========================================================================
-       TABS NAVIGATION (MONO BOOTSTRAP)
+       TABS NAVIGATION (VUETIFY 3 V-TABS PILL STYLE)
        ========================================================================= */
     div[data-baseweb="tab-list"] {{
-        border-bottom: 2px solid #e2e8f0 !important;
+        border-bottom: none !important;
         gap: 0.5rem !important;
-        background: transparent !important;
-        margin-bottom: 1rem !important;
+        background: #ffffff !important;
+        padding: 0.5rem 0.75rem !important;
+        border-radius: 0.5rem !important;
+        box-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.12) !important;
+        margin-bottom: 1.25rem !important;
+        border: 1px solid rgba(67, 89, 113, 0.06) !important;
     }}
 
     button[data-baseweb="tab"] {{
-        color: #475569 !important;
+        color: #697a8d !important;
         font-weight: 600 !important;
-        font-size: 0.92rem !important;
-        padding: 0.65rem 1.1rem !important;
-        border-radius: 0.375rem 0.375rem 0 0 !important;
-        border: 1px solid transparent !important;
+        font-size: 0.875rem !important;
+        padding: 0.55rem 1rem !important;
+        border-radius: 0.375rem !important;
+        border: none !important;
         background: transparent !important;
-        transition: all 0.15s ease-in-out !important;
+        transition: all 0.2s ease-in-out !important;
     }}
 
     button[data-baseweb="tab"] p,
@@ -157,25 +214,28 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     }}
 
     button[data-baseweb="tab"]:hover {{
-        color: #0f172a !important;
-        background-color: #f1f5f9 !important;
+        color: #696cff !important;
+        background-color: #e7e7ff !important;
     }}
 
     button[data-baseweb="tab"][aria-selected="true"] {{
-        color: #0f172a !important;
-        font-weight: 700 !important;
-        background-color: #ffffff !important;
-        border-color: #cbd5e1 #cbd5e1 #ffffff !important;
-        border-bottom: 3px solid #0f172a !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        background-color: #696cff !important;
+        box-shadow: 0 2px 6px 0 rgba(105, 108, 255, 0.45) !important;
+    }}
+
+    button[data-baseweb="tab"][aria-selected="true"] * {{
+        color: #ffffff !important;
     }}
 
     /* =========================================================================
-       MULTISELECT TAGS & DROPDOWNS
+       VUETIFY CHIPS & MULTISELECT (V-CHIP)
        ========================================================================= */
     div[data-baseweb="tag"] {{
-        background-color: #0f172a !important;
-        color: #ffffff !important;
-        border: 1px solid #0f172a !important;
+        background-color: #e7e7ff !important;
+        color: #696cff !important;
+        border: 1px solid #c8c9ff !important;
         border-radius: 4px !important;
         padding: 2px 8px !important;
     }}
@@ -183,63 +243,73 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     div[data-baseweb="tag"] span,
     div[data-baseweb="tag"] div,
     div[data-baseweb="tag"] [role="presentation"] {{
-        color: #ffffff !important;
-        fill: #ffffff !important;
+        color: #696cff !important;
+        fill: #696cff !important;
         font-weight: 600 !important;
     }}
 
     div[data-baseweb="select"] {{
         background-color: #ffffff !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 4px !important;
+        border: 1px solid #d9dee3 !important;
+        border-radius: 0.375rem !important;
+        box-shadow: 0 1px 3px rgba(67, 89, 113, 0.05) !important;
+    }}
+
+    div[data-baseweb="select"]:hover {{
+        border-color: #696cff !important;
     }}
 
     div[data-baseweb="select"] * {{
-        color: #0f172a !important;
+        color: #384551 !important;
     }}
 
     ul[role="listbox"] li, div[role="option"] {{
-        color: #0f172a !important;
+        color: #384551 !important;
         background-color: #ffffff !important;
         font-weight: 500 !important;
     }}
 
     ul[role="listbox"] li:hover, div[role="option"]:hover {{
-        background-color: #f1f5f9 !important;
+        background-color: #e7e7ff !important;
+        color: #696cff !important;
     }}
 
     /* =========================================================================
-       FORM INPUTS (TEXT & NUMBER)
+       FORM INPUTS (TEXT & NUMBER - V-TEXT-FIELD)
        ========================================================================= */
     input[type="text"], input[type="number"],
     .stTextInput input, .stNumberInput input {{
-        color: #0f172a !important;
+        color: #384551 !important;
         background-color: #ffffff !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 4px !important;
+        border: 1px solid #d9dee3 !important;
+        border-radius: 0.375rem !important;
         font-weight: 500 !important;
-        font-size: 0.95rem !important;
+        font-size: 0.9375rem !important;
+        padding: 0.45rem 0.85rem !important;
+        box-shadow: 0 1px 2px rgba(67, 89, 113, 0.05) !important;
     }}
 
     input[type="text"]:focus, input[type="number"]:focus {{
-        border-color: #0f172a !important;
-        box-shadow: 0 0 0 1px #0f172a !important;
+        border-color: #696cff !important;
+        box-shadow: 0 0 0 3px rgba(105, 108, 255, 0.15) !important;
     }}
 
     /* =========================================================================
-       BUTTONS (HIGH-CONTRAST & CRISP)
+       BUTTONS (VUETIFY V-BTN WITH SNEAT ELEVATION)
        ========================================================================= */
     .stButton > button {{
         border-radius: 0.375rem !important;
         font-weight: 600 !important;
-        font-size: 0.88rem !important;
-        transition: all 0.15s ease-in-out !important;
+        font-size: 0.875rem !important;
+        padding: 0.45rem 1.25rem !important;
+        transition: all 0.2s ease-in-out !important;
     }}
 
     .stButton > button[kind="primary"] {{
-        background-color: #0f172a !important;
+        background-color: #696cff !important;
         color: #ffffff !important;
-        border: 1px solid #0f172a !important;
+        border: none !important;
+        box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4) !important;
     }}
 
     .stButton > button[kind="primary"] p,
@@ -248,268 +318,281 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     }}
 
     .stButton > button[kind="primary"]:hover {{
-        background-color: #1e293b !important;
-        border-color: #1e293b !important;
+        background-color: #5f61e6 !important;
+        box-shadow: 0 0.125rem 0.375rem 0 rgba(105, 108, 255, 0.6) !important;
+        transform: translateY(-1px);
     }}
 
     .stButton > button[kind="secondary"],
     .stButton > button:not([kind="primary"]) {{
         background-color: #ffffff !important;
-        color: #0f172a !important;
-        border: 1px solid #cbd5e1 !important;
+        color: #696cff !important;
+        border: 1px solid #d9dee3 !important;
+        box-shadow: 0 1px 3px 0 rgba(67, 89, 113, 0.06) !important;
     }}
 
     .stButton > button[kind="secondary"] p,
     .stButton > button:not([kind="primary"]) p,
     .stButton > button:not([kind="primary"]) span {{
-        color: #0f172a !important;
+        color: #696cff !important;
     }}
 
     .stButton > button[kind="secondary"]:hover,
     .stButton > button:not([kind="primary"]):hover {{
-        background-color: #f8fafc !important;
-        border-color: #94a3b8 !important;
-        color: #0f172a !important;
+        background-color: #e7e7ff !important;
+        border-color: #696cff !important;
+        color: #696cff !important;
     }}
 
     /* Download Button */
     .stDownloadButton > button {{
         background-color: #ffffff !important;
-        color: #0f172a !important;
-        border: 1px solid #cbd5e1 !important;
+        color: #696cff !important;
+        border: 1px solid #d9dee3 !important;
         border-radius: 0.375rem !important;
         font-weight: 600 !important;
+        box-shadow: 0 1px 3px 0 rgba(67, 89, 113, 0.06) !important;
     }}
 
     .stDownloadButton > button p,
     .stDownloadButton > button span {{
-        color: #0f172a !important;
+        color: #696cff !important;
     }}
 
     .stDownloadButton > button:hover {{
-        background-color: #f1f5f9 !important;
-        border-color: #94a3b8 !important;
+        background-color: #e7e7ff !important;
+        border-color: #696cff !important;
     }}
 
     /* =========================================================================
-       DATAFRAME & TABLES
+       DATAFRAME & TABLES (VUETIFY V-DATA-TABLE)
        ========================================================================= */
     [data-testid="stDataFrame"] {{
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 0.375rem !important;
+        background-color: #ffffff !important;
+        border: 1px solid #d9dee3 !important;
+        border-radius: 0.5rem !important;
+        box-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.12) !important;
+        overflow: hidden;
     }}
 
     [data-testid="stDataFrame"] * {{
-        color: #0f172a !important;
+        color: #384551 !important;
     }}
 
-    /* Alerts */
+    /* Alerts (Vuetify V-Alert) */
     [data-testid="stAlert"] {{
-        border-radius: 0.375rem !important;
-        border: 1px solid #cbd5e1 !important;
+        border-radius: 0.5rem !important;
+        border: 1px solid #d9dee3 !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.08) !important;
         padding: 0.75rem 1rem !important;
     }}
 
     [data-testid="stAlert"] p,
     [data-testid="stAlert"] span,
     [data-testid="stAlert"] div {{
-        color: #0f172a !important;
+        color: #384551 !important;
         font-weight: 500 !important;
     }}
 
     /* =========================================================================
-       BOOTSTRAP HERO BANNER & CARDS
+       SNEAT CARDS, HERO BANNER & AVATAR BOXES (V-CARD)
        ========================================================================= */
-    .hero-banner {{
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+    .sneat-hero-card {{
+        background: #ffffff;
         border-radius: 0.5rem;
         padding: 1.5rem 1.75rem;
+        box-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.12);
+        border: 1px solid rgba(67, 89, 113, 0.06);
         margin-bottom: 1.5rem;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1.5rem;
-        flex-wrap: wrap;
+        position: relative;
+        overflow: hidden;
     }}
 
-    .hero-content {{
-        flex: 1;
-        min-width: 280px;
+    .sneat-hero-card::after {{
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 250px;
+        height: 100%;
+        background: radial-gradient(circle at top right, rgba(105, 108, 255, 0.14), transparent 70%);
+        pointer-events: none;
     }}
 
-    .hero-title-row {{
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 0.4rem;
-    }}
-
-    .hero-title {{
-        font-size: 1.75rem;
-        font-weight: 800;
-        color: #0f172a !important;
+    .sneat-hero-title {{
+        font-size: 1.65rem;
+        font-weight: 700;
+        color: #384551 !important;
         margin: 0;
         letter-spacing: -0.02em;
-        line-height: 1.2;
     }}
 
-    .hero-subtitle {{
-        font-size: 0.95rem;
-        color: #334155 !important;
-        margin: 0 0 0.85rem 0;
-        line-height: 1.5;
+    .sneat-hero-subtitle {{
+        font-size: 0.9375rem;
+        color: #697a8d !important;
+        margin: 0 0 1rem 0;
+        line-height: 1.55;
     }}
 
-    /* Mono Bootstrap Badges */
+    /* Sneat Colored Badges (Pills) */
     .badge-container {{
         display: flex;
         flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.5rem;
         align-items: center;
     }}
 
-    .badge-mono {{
+    .badge-sneat {{
         display: inline-flex;
         align-items: center;
         padding: 0.25rem 0.65rem;
         border-radius: 0.25rem;
-        font-size: 0.78rem;
-        font-weight: 600;
-        background: #f1f5f9;
-        color: #1e293b !important;
-        border: 1px solid #cbd5e1;
-        letter-spacing: 0.01em;
-    }}
-
-    .badge-mono-dark {{
-        background: #0f172a !important;
-        color: #ffffff !important;
-        border: 1px solid #0f172a !important;
-    }}
-
-    .badge-mono-blue {{
-        background: #eff6ff;
-        color: #1d4ed8 !important;
-        border: 1px solid #bfdbfe;
-    }}
-
-    /* Stat & Metric Cards */
-    .stat-card {{
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 0.375rem;
-        padding: 1rem 1.15rem;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        margin-bottom: 0.75rem;
-        transition: border-color 0.15s ease-in-out;
-    }}
-
-    .stat-card:hover {{
-        border-color: #94a3b8;
-    }}
-
-    .stat-label {{
         font-size: 0.75rem;
-        font-weight: 700;
-        color: #475569 !important;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }}
+
+    .bg-label-primary   {{ background-color: #e7e7ff !important; color: #696cff !important; }}
+    .bg-label-success   {{ background-color: #e8fadf !important; color: #71dd37 !important; }}
+    .bg-label-info      {{ background-color: #d7f5fc !important; color: #03c3ec !important; }}
+    .bg-label-warning   {{ background-color: #fff2d6 !important; color: #ffab00 !important; }}
+    .bg-label-danger    {{ background-color: #ffe0db !important; color: #ff3e1d !important; }}
+    .bg-label-secondary {{ background-color: #ebeef0 !important; color: #8592a3 !important; }}
+
+    /* Sneat Metric Cards (V-Card Stat) */
+    .sneat-card {{
+        background: #ffffff;
+        border-radius: 0.5rem;
+        padding: 1.25rem;
+        box-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.12);
+        border: 1px solid rgba(67, 89, 113, 0.06);
+        margin-bottom: 0.75rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }}
+
+    .sneat-card:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px 0 rgba(67, 89, 113, 0.16);
+    }}
+
+    .sneat-avatar-box {{
+        width: 38px;
+        height: 38px;
+        border-radius: 0.375rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }}
+
+    .sneat-card-label {{
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #8592a3 !important;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 0.25rem;
+        letter-spacing: 0.04em;
+        margin-top: 0.5rem;
+        margin-bottom: 0.2rem;
     }}
 
-    .stat-value {{
-        font-size: 1.7rem;
-        font-weight: 800;
-        color: #0f172a !important;
-        line-height: 1.1;
+    .sneat-card-value {{
+        font-size: 1.65rem;
+        font-weight: 700;
+        color: #384551 !important;
+        line-height: 1.15;
     }}
 
-    .stat-sub {{
-        font-size: 0.82rem;
-        color: #475569 !important;
+    .sneat-card-sub {{
+        font-size: 0.8125rem;
+        color: #8592a3 !important;
         margin-top: 0.35rem;
-        font-weight: 500;
     }}
 
-    /* Formula & Plain English Explanation Box */
-    .formula-card {{
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-left: 4px solid #0f172a;
-        border-radius: 0.25rem;
-        padding: 1.1rem 1.35rem;
+    /* Sneat Alert / Formula Card (V-Alert) */
+    .sneat-alert-card {{
+        background: #ffffff;
+        border: 1px solid #d9dee3;
+        border-left: 4px solid #696cff;
+        border-radius: 0.5rem;
+        padding: 1.15rem 1.35rem;
         margin: 1rem 0;
-        font-size: 0.93rem;
-        line-height: 1.6;
-        color: #1e293b !important;
+        box-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.08);
     }}
 
-    .formula-card strong {{
-        color: #0f172a !important;
-    }}
-
-    .formula-title {{
+    .sneat-alert-title {{
         font-size: 1rem;
         font-weight: 700;
-        color: #0f172a !important;
+        color: #696cff !important;
         margin-bottom: 0.45rem;
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
     }}
 
-    /* Anatomical Diagram Guides */
-    .anatomy-card {{
+    .sneat-alert-body {{
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: #566a7f !important;
+    }}
+
+    .sneat-alert-body strong {{
+        color: #384551 !important;
+    }}
+
+    /* Anatomical Guide Card */
+    .sneat-anatomy-card {{
         background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 0.375rem;
-        padding: 1.15rem;
+        border: 1px solid #d9dee3;
+        border-radius: 0.5rem;
+        padding: 1.25rem;
+        box-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.08);
         margin-bottom: 1rem;
-        color: #1e293b !important;
-        font-size: 0.92rem;
+        font-size: 0.9375rem;
         line-height: 1.55;
+        color: #566a7f !important;
     }}
 
-    .anatomy-card strong {{
-        color: #0f172a !important;
+    .sneat-anatomy-card strong {{
+        color: #384551 !important;
     }}
 
     /* Prediction Result Banner */
-    .prediction-card {{
-        background: #f8fafc;
-        border: 2px solid #0f172a;
+    .sneat-prediction-card {{
+        background: #ffffff;
         border-radius: 0.5rem;
+        border: 2px solid #696cff;
+        box-shadow: 0 4px 16px 0 rgba(105, 108, 255, 0.18);
         padding: 1.5rem;
         text-align: center;
         margin-bottom: 1rem;
     }}
 
-    .prediction-title {{
-        font-size: 0.85rem;
+    .sneat-prediction-title {{
+        font-size: 0.8125rem;
+        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        font-weight: 700;
-        color: #475569 !important;
-        margin-bottom: 0.5rem;
+        color: #696cff !important;
+        margin-bottom: 0.4rem;
     }}
 
-    .prediction-species {{
-        font-size: 2rem;
+    .sneat-prediction-species {{
+        font-size: 2.2rem;
         font-weight: 800;
-        color: #0f172a !important;
+        color: #384551 !important;
         letter-spacing: -0.02em;
         margin: 0.25rem 0;
     }}
 
     /* Easter egg clean banner */
-    .antigravity-banner {{
-        background: #f8fafc;
-        border: 1px solid #cbd5e1;
-        border-left: 4px solid #475569;
+    .sneat-banner {{
+        background: #ffffff;
+        border: 1px solid #d9dee3;
+        border-left: 4px solid #696cff;
         padding: 1rem 1.25rem;
-        border-radius: 0.375rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.08);
         margin-bottom: 1.25rem;
     }}
 
@@ -518,83 +601,56 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     """
 
 
-def get_iris_logo_svg(size: int = 40) -> str:
-    """Returns a sleek, modern botanical SVG logo for Iris Flower Data Analysis."""
-    return f"""
-    <svg width="{size}" height="{size}" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="46" fill="#0f172a" stroke="#334155" stroke-width="2"/>
-        <!-- Stylized Flower Petals & Data Grid -->
-        <path d="M50 16 C45 32 36 44 26 50 C38 52 46 62 50 82 C54 62 62 52 74 50 C64 44 55 32 50 16 Z" 
-              fill="#ffffff" fill-opacity="0.95"/>
-        <!-- Inner Petal Core -->
-        <path d="M50 30 C48 40 43 47 38 50 C44 52 48 57 50 70 C52 57 56 52 62 50 C57 47 52 40 50 30 Z" 
-              fill="#94a3b8"/>
-        <!-- Botanical Stamen & Node -->
-        <circle cx="50" cy="50" r="5" fill="#38bdf8"/>
-        <line x1="50" y1="50" x2="50" y2="82" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="26" y1="50" x2="74" y2="50" stroke="#38bdf8" stroke-width="1" stroke-dasharray="2 2"/>
-    </svg>
-    """
-
-
-def render_hero_banner():
-    """Renders the top branding banner with the Iris logo and Mono Bootstrap styling."""
-    logo = get_iris_logo_svg(46)
-    return f"""
-    <div class="hero-banner">
-        <div class="hero-content">
-            <div class="hero-title-row">
-                {logo}
-                <div>
-                    <h1 class="hero-title">Iris Flower Data Analysis</h1>
-                </div>
-            </div>
-            <p class="hero-subtitle">
-                Interactive multidimensional exploration, live morphometric flower visualization, 
-                and linear algebra statistical modeling based on the famous Fisher Iris dataset.
-            </p>
-            <div class="badge-container">
-                <span class="badge-mono badge-mono-dark">Mono Bootstrap Theme</span>
-                <span class="badge-mono">150 Botanical Specimens</span>
-                <span class="badge-mono">3 Species (Setosa • Versicolor • Virginica)</span>
-                <span class="badge-mono badge-mono-blue">Real-Time Flower Morphometry</span>
-            </div>
-        </div>
-    </div>
-    """
-
-
-def render_sidebar_header():
-    """Renders clean sidebar brand identity."""
-    logo = get_iris_logo_svg(34)
-    return f"""
-    <div style="display: flex; align-items: center; gap: 10px; padding: 0.5rem 0 1rem 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 1rem;">
+def render_hero_banner() -> str:
+    """Renders Sneat – Vuetify Vuejs 3 Admin Welcome Banner with 100% visible base64 logo image."""
+    logo = get_iris_logo_img(46)
+    return f"""<div class="sneat-hero-card">
+    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 0.75rem;">
         {logo}
         <div>
-            <div style="font-weight: 700; font-size: 1.05rem; color: #0f172a; line-height: 1.2;">Iris Flower</div>
-            <div style="font-size: 0.78rem; color: #64748b; font-weight: 500;">Data Analysis Suite</div>
+            <div class="badge-sneat bg-label-primary" style="margin-bottom: 4px;">Sneat • Vuetify Vuejs 3 Admin Suite</div>
+            <h2 class="sneat-hero-title">Iris Flower Data Analysis</h2>
         </div>
     </div>
-    """
+    <p class="sneat-hero-subtitle">
+        Interactive multidimensional data science, real-time flower morphometry scaling, and linear algebra statistical modeling.
+    </p>
+    <div class="badge-container">
+        <span class="badge-sneat bg-label-primary">💜 Vuetify 3 Admin Template</span>
+        <span class="badge-sneat bg-label-info">🌸 150 Botanical Specimens</span>
+        <span class="badge-sneat bg-label-success">🌱 3 Species Classes</span>
+        <span class="badge-sneat bg-label-warning">📐 Live Flower Morphometry</span>
+    </div>
+</div>"""
 
 
-def render_easter_egg_card():
-    """Renders clean Easter Egg homage card."""
-    return """
-    <div class="antigravity-banner">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <div>
-                <strong style="color: #0f172a; font-size: 0.95rem;">🚀 Python Easter Egg: <code>import antigravity</code></strong>
-                <p style="margin: 4px 0 0 0; font-size: 0.86rem; color: #475569;">
-                    Homage to XKCD #353: <em>"I wrote 20 short programs in Python yesterday. It was wonderful. Now I am flying!"</em>
-                </p>
-            </div>
-            <div>
-                <a href="https://xkcd.com/353/" target="_blank" 
-                   style="background: #0f172a; color: #ffffff; padding: 0.45rem 0.9rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.82rem; font-weight: 600; display: inline-block;">
-                    View XKCD #353 ↗
-                </a>
-            </div>
+def render_sidebar_header() -> str:
+    """Renders Sneat App Brand Header with 100% visible base64 logo image."""
+    logo = get_iris_logo_img(38)
+    return f"""<div style="display: flex; align-items: center; gap: 12px; padding: 0.4rem 0 1rem 0; border-bottom: 1px solid #d9dee3; margin-bottom: 1rem;">
+    {logo}
+    <div>
+        <div style="font-weight: 700; font-size: 1.25rem; color: #384551; line-height: 1.1; letter-spacing: -0.03em;">sneat</div>
+        <div style="font-size: 0.72rem; color: #696cff; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">IRIS ANALYTICS</div>
+    </div>
+</div>"""
+
+
+def render_easter_egg_card() -> str:
+    """Renders Sneat Easter Egg homage card."""
+    return """<div class="sneat-banner">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div>
+            <strong style="color: #384551; font-size: 0.95rem;">🚀 Python Easter Egg: <code>import antigravity</code></strong>
+            <p style="margin: 4px 0 0 0; font-size: 0.86rem; color: #566a7f;">
+                Homage to XKCD #353: <em>"I wrote 20 short programs in Python yesterday. It was wonderful. Now I am flying!"</em>
+            </p>
+        </div>
+        <div>
+            <a href="https://xkcd.com/353/" target="_blank" 
+               style="background: #696cff; color: #ffffff; padding: 0.45rem 0.9rem; border-radius: 0.375rem; text-decoration: none; font-size: 0.82rem; font-weight: 600; display: inline-block; box-shadow: 0 2px 4px rgba(105, 108, 255, 0.4);">
+                View XKCD #353 ↗
+            </a>
         </div>
     </div>
-    """
+</div>"""

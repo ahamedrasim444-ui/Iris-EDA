@@ -1,11 +1,12 @@
 """
 styles.py
 Mono Bootstrap Theme & Botanical Branding for the Iris Flower Data Analysis Suite.
-Clean, high-contrast, monochromatic typography with structured Bootstrap component styling.
+Clean, ultra-high-contrast, monochromatic typography with structured Bootstrap component styling.
+Guarantees 100% readability across all headings, body text, widgets, sliders, tags, tabs, and tables.
 """
 
 def get_custom_css(antigravity_mode: bool = False) -> str:
-    """Returns Mono Bootstrap CSS styles with crisp borders and clean typography."""
+    """Returns Mono Bootstrap CSS styles with crisp borders, dark text, and clean typography."""
     
     antigravity_animation = ""
     if antigravity_mode:
@@ -23,48 +24,302 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     return f"""
     <style>
     /* =========================================================================
-       MONO BOOTSTRAP DESIGN SYSTEM
+       MONO BOOTSTRAP DESIGN SYSTEM & HIGH-CONTRAST TYPOGRAPHY
        ========================================================================= */
-    html, body, [class*="css"] {{
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-        color: #0f172a !important;
-        background-color: #ffffff;
+    :root {{
+        --mono-dark: #0f172a;
+        --mono-body: #1e293b;
+        --mono-muted: #475569;
+        --mono-light-bg: #f8fafc;
+        --mono-card-border: #e2e8f0;
+        --mono-border-strong: #cbd5e1;
     }}
 
-    /* Global layout padding */
+    /* Global App Container & Base Font */
+    html, body, .stApp {{
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+    }}
+
+    .stApp [data-testid="stHeader"] {{
+        background-color: rgba(255, 255, 255, 0.95) !important;
+    }}
+
     .block-container {{
         padding-top: 1.25rem !important;
         padding-bottom: 3.5rem !important;
         max-width: 100% !important;
     }}
 
-    /* Mono Bootstrap Card */
-    .mono-card {{
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 0.375rem;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-        margin-bottom: 1.25rem;
-        overflow: hidden;
+    /* =========================================================================
+       HEADINGS & PARAGRAPHS (100% VISIBLE & HIGH-CONTRAST)
+       ========================================================================= */
+    h1, h2, h3, h4, h5, h6,
+    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {{
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.015em !important;
     }}
 
-    .mono-card-header {{
-        background-color: #f8fafc;
-        border-bottom: 1px solid #e2e8f0;
-        padding: 0.75rem 1.25rem;
+    p, li, .stMarkdown p, .stMarkdown li, [data-testid="stMarkdownContainer"] p {{
+        color: #1e293b !important;
         font-size: 0.95rem;
-        font-weight: 600;
-        color: #0f172a;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        line-height: 1.6;
     }}
 
-    .mono-card-body {{
-        padding: 1.25rem;
+    strong, b, .stMarkdown strong, .stMarkdown b {{
+        color: #0f172a !important;
+        font-weight: 700 !important;
     }}
 
-    /* Hero Banner: Clean Monochromatic Header */
+    .stCaption, [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] p {{
+        color: #475569 !important;
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+    }}
+
+    /* =========================================================================
+       SIDEBAR CONTROLS & LABELS
+       ========================================================================= */
+    section[data-testid="stSidebar"] {{
+        background-color: #f8fafc !important;
+        border-right: 1px solid #e2e8f0 !important;
+    }}
+
+    section[data-testid="stSidebar"] h1,
+    section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] h3,
+    section[data-testid="stSidebar"] h4,
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] span,
+    section[data-testid="stSidebar"] label {{
+        color: #0f172a !important;
+    }}
+
+    section[data-testid="stSidebar"] .stCaption,
+    section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {{
+        color: #475569 !important;
+    }}
+
+    /* Widget Labels (Sliders, Selectors, Inputs) */
+    [data-testid="stWidgetLabel"],
+    [data-testid="stWidgetLabel"] label,
+    [data-testid="stWidgetLabel"] p,
+    [data-testid="stWidgetLabel"] span {{
+        color: #0f172a !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+    }}
+
+    /* Sliders: Values, Min, Max & Numbers */
+    div[data-testid="stThumbValue"],
+    div[data-testid="stThumbValue"] * {{
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        font-size: 0.88rem !important;
+    }}
+
+    div[data-testid="stTickBarMin"],
+    div[data-testid="stTickBarMax"],
+    [data-testid="stSliderTickBar"] * {{
+        color: #475569 !important;
+        font-weight: 600 !important;
+        font-size: 0.82rem !important;
+    }}
+
+    /* =========================================================================
+       TABS NAVIGATION (MONO BOOTSTRAP)
+       ========================================================================= */
+    div[data-baseweb="tab-list"] {{
+        border-bottom: 2px solid #e2e8f0 !important;
+        gap: 0.5rem !important;
+        background: transparent !important;
+        margin-bottom: 1rem !important;
+    }}
+
+    button[data-baseweb="tab"] {{
+        color: #475569 !important;
+        font-weight: 600 !important;
+        font-size: 0.92rem !important;
+        padding: 0.65rem 1.1rem !important;
+        border-radius: 0.375rem 0.375rem 0 0 !important;
+        border: 1px solid transparent !important;
+        background: transparent !important;
+        transition: all 0.15s ease-in-out !important;
+    }}
+
+    button[data-baseweb="tab"] p,
+    button[data-baseweb="tab"] div,
+    button[data-baseweb="tab"] span {{
+        color: inherit !important;
+        font-weight: inherit !important;
+    }}
+
+    button[data-baseweb="tab"]:hover {{
+        color: #0f172a !important;
+        background-color: #f1f5f9 !important;
+    }}
+
+    button[data-baseweb="tab"][aria-selected="true"] {{
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        background-color: #ffffff !important;
+        border-color: #cbd5e1 #cbd5e1 #ffffff !important;
+        border-bottom: 3px solid #0f172a !important;
+    }}
+
+    /* =========================================================================
+       MULTISELECT TAGS & DROPDOWNS
+       ========================================================================= */
+    div[data-baseweb="tag"] {{
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        border: 1px solid #0f172a !important;
+        border-radius: 4px !important;
+        padding: 2px 8px !important;
+    }}
+
+    div[data-baseweb="tag"] span,
+    div[data-baseweb="tag"] div,
+    div[data-baseweb="tag"] [role="presentation"] {{
+        color: #ffffff !important;
+        fill: #ffffff !important;
+        font-weight: 600 !important;
+    }}
+
+    div[data-baseweb="select"] {{
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 4px !important;
+    }}
+
+    div[data-baseweb="select"] * {{
+        color: #0f172a !important;
+    }}
+
+    ul[role="listbox"] li, div[role="option"] {{
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+        font-weight: 500 !important;
+    }}
+
+    ul[role="listbox"] li:hover, div[role="option"]:hover {{
+        background-color: #f1f5f9 !important;
+    }}
+
+    /* =========================================================================
+       FORM INPUTS (TEXT & NUMBER)
+       ========================================================================= */
+    input[type="text"], input[type="number"],
+    .stTextInput input, .stNumberInput input {{
+        color: #0f172a !important;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 4px !important;
+        font-weight: 500 !important;
+        font-size: 0.95rem !important;
+    }}
+
+    input[type="text"]:focus, input[type="number"]:focus {{
+        border-color: #0f172a !important;
+        box-shadow: 0 0 0 1px #0f172a !important;
+    }}
+
+    /* =========================================================================
+       BUTTONS (HIGH-CONTRAST & CRISP)
+       ========================================================================= */
+    .stButton > button {{
+        border-radius: 0.375rem !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        transition: all 0.15s ease-in-out !important;
+    }}
+
+    .stButton > button[kind="primary"] {{
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        border: 1px solid #0f172a !important;
+    }}
+
+    .stButton > button[kind="primary"] p,
+    .stButton > button[kind="primary"] span {{
+        color: #ffffff !important;
+    }}
+
+    .stButton > button[kind="primary"]:hover {{
+        background-color: #1e293b !important;
+        border-color: #1e293b !important;
+    }}
+
+    .stButton > button[kind="secondary"],
+    .stButton > button:not([kind="primary"]) {{
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border: 1px solid #cbd5e1 !important;
+    }}
+
+    .stButton > button[kind="secondary"] p,
+    .stButton > button:not([kind="primary"]) p,
+    .stButton > button:not([kind="primary"]) span {{
+        color: #0f172a !important;
+    }}
+
+    .stButton > button[kind="secondary"]:hover,
+    .stButton > button:not([kind="primary"]):hover {{
+        background-color: #f8fafc !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+    }}
+
+    /* Download Button */
+    .stDownloadButton > button {{
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 0.375rem !important;
+        font-weight: 600 !important;
+    }}
+
+    .stDownloadButton > button p,
+    .stDownloadButton > button span {{
+        color: #0f172a !important;
+    }}
+
+    .stDownloadButton > button:hover {{
+        background-color: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+    }}
+
+    /* =========================================================================
+       DATAFRAME & TABLES
+       ========================================================================= */
+    [data-testid="stDataFrame"] {{
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.375rem !important;
+    }}
+
+    [data-testid="stDataFrame"] * {{
+        color: #0f172a !important;
+    }}
+
+    /* Alerts */
+    [data-testid="stAlert"] {{
+        border-radius: 0.375rem !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 0.75rem 1rem !important;
+    }}
+
+    [data-testid="stAlert"] p,
+    [data-testid="stAlert"] span,
+    [data-testid="stAlert"] div {{
+        color: #0f172a !important;
+        font-weight: 500 !important;
+    }}
+
+    /* =========================================================================
+       BOOTSTRAP HERO BANNER & CARDS
+       ========================================================================= */
     .hero-banner {{
         background: #f8fafc;
         border: 1px solid #e2e8f0;
@@ -93,7 +348,7 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
 
     .hero-title {{
         font-size: 1.75rem;
-        font-weight: 700;
+        font-weight: 800;
         color: #0f172a !important;
         margin: 0;
         letter-spacing: -0.02em;
@@ -102,7 +357,7 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
 
     .hero-subtitle {{
         font-size: 0.95rem;
-        color: #475569 !important;
+        color: #334155 !important;
         margin: 0 0 0.85rem 0;
         line-height: 1.5;
     }}
@@ -123,24 +378,24 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
         font-size: 0.78rem;
         font-weight: 600;
         background: #f1f5f9;
-        color: #1e293b;
+        color: #1e293b !important;
         border: 1px solid #cbd5e1;
         letter-spacing: 0.01em;
     }}
 
     .badge-mono-dark {{
-        background: #0f172a;
-        color: #ffffff;
-        border: 1px solid #0f172a;
+        background: #0f172a !important;
+        color: #ffffff !important;
+        border: 1px solid #0f172a !important;
     }}
 
     .badge-mono-blue {{
         background: #eff6ff;
-        color: #1d4ed8;
+        color: #1d4ed8 !important;
         border: 1px solid #bfdbfe;
     }}
 
-    /* Stat & Metric Cards (Bootstrap Mono) */
+    /* Stat & Metric Cards */
     .stat-card {{
         background: #ffffff;
         border: 1px solid #e2e8f0;
@@ -150,14 +405,15 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
         margin-bottom: 0.75rem;
         transition: border-color 0.15s ease-in-out;
     }}
+
     .stat-card:hover {{
         border-color: #94a3b8;
     }}
 
     .stat-label {{
         font-size: 0.75rem;
-        font-weight: 600;
-        color: #64748b !important;
+        font-weight: 700;
+        color: #475569 !important;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         margin-bottom: 0.25rem;
@@ -165,15 +421,16 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
 
     .stat-value {{
         font-size: 1.7rem;
-        font-weight: 700;
+        font-weight: 800;
         color: #0f172a !important;
         line-height: 1.1;
     }}
 
     .stat-sub {{
-        font-size: 0.8rem;
-        color: #64748b;
+        font-size: 0.82rem;
+        color: #475569 !important;
         margin-top: 0.35rem;
+        font-weight: 500;
     }}
 
     /* Formula & Plain English Explanation Box */
@@ -182,18 +439,22 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
         border: 1px solid #e2e8f0;
         border-left: 4px solid #0f172a;
         border-radius: 0.25rem;
-        padding: 1rem 1.25rem;
+        padding: 1.1rem 1.35rem;
         margin: 1rem 0;
-        font-size: 0.92rem;
+        font-size: 0.93rem;
         line-height: 1.6;
-        color: #1e293b;
+        color: #1e293b !important;
+    }}
+
+    .formula-card strong {{
+        color: #0f172a !important;
     }}
 
     .formula-title {{
-        font-size: 0.95rem;
+        font-size: 1rem;
         font-weight: 700;
-        color: #0f172a;
-        margin-bottom: 0.35rem;
+        color: #0f172a !important;
+        margin-bottom: 0.45rem;
         display: flex;
         align-items: center;
         gap: 0.4rem;
@@ -202,10 +463,17 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     /* Anatomical Diagram Guides */
     .anatomy-card {{
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #cbd5e1;
         border-radius: 0.375rem;
-        padding: 1.1rem;
+        padding: 1.15rem;
         margin-bottom: 1rem;
+        color: #1e293b !important;
+        font-size: 0.92rem;
+        line-height: 1.55;
+    }}
+
+    .anatomy-card strong {{
+        color: #0f172a !important;
     }}
 
     /* Prediction Result Banner */
@@ -222,15 +490,15 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        font-weight: 600;
-        color: #64748b;
+        font-weight: 700;
+        color: #475569 !important;
         margin-bottom: 0.5rem;
     }}
 
     .prediction-species {{
         font-size: 2rem;
         font-weight: 800;
-        color: #0f172a;
+        color: #0f172a !important;
         letter-spacing: -0.02em;
         margin: 0.25rem 0;
     }}
@@ -243,11 +511,6 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
         padding: 1rem 1.25rem;
         border-radius: 0.375rem;
         margin-bottom: 1.25rem;
-    }}
-
-    /* High contrast text */
-    h1, h2, h3, h4, p, span, label, div {{
-        color: inherit;
     }}
 
     {antigravity_animation}
@@ -335,4 +598,3 @@ def render_easter_egg_card():
         </div>
     </div>
     """
-

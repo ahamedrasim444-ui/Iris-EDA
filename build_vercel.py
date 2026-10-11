@@ -19,6 +19,7 @@ def build_vercel_bundle():
         "styles.py": "styles.py",
         "database.py": "database.py",
         "data/iris.csv": "data/iris.csv",
+        ".streamlit/config.toml": ".streamlit/config.toml",
     }
     
     bundled_files = {}
@@ -46,7 +47,8 @@ def build_vercel_bundle():
         padding: 0;
         width: 100%;
         height: 100%;
-        background-color: #f8fafc;
+        background-color: #ffffff;
+        color: #0f172a;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       }}
       #root {{
@@ -84,7 +86,7 @@ def build_vercel_bundle():
       <div class="loading-screen" id="loading">
         <div class="spinner"></div>
         <h2 style="margin: 0 0 8px 0; font-size: 1.3rem;">🌸 Loading Iris Flower Data Analysis...</h2>
-        <p style="margin: 0; color: #64748b; font-size: 0.95rem;">
+        <p style="margin: 0; color: #475569; font-size: 0.95rem;">
           Initializing NumPy, Pandas & Matplotlib engine via WebAssembly
         </p>
       </div>
@@ -98,6 +100,13 @@ def build_vercel_bundle():
           requirements: ["numpy", "pandas", "matplotlib"],
           entrypoint: "streamlit_app.py",
           files: bundledFiles,
+          streamlitConfig: {{
+            "theme.base": "light",
+            "theme.primaryColor": "#0f172a",
+            "theme.backgroundColor": "#ffffff",
+            "theme.secondaryBackgroundColor": "#f8fafc",
+            "theme.textColor": "#0f172a"
+          }}
         }},
         document.getElementById("root")
       ).then(() => {{

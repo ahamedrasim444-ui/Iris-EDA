@@ -220,8 +220,11 @@ def plot_boxplot_dispersion(
     df: pd.DataFrame,
     feature_col: str = "petal_length",
     selected_species: Optional[List[str]] = None,
+    feature: Optional[str] = None,
 ) -> plt.Figure:
     """Renders clean boxplot showing feature dispersion across species."""
+    if feature is not None:
+        feature_col = feature
     fig, ax = plt.subplots(figsize=(6.5, 4.8), dpi=150)
     
     if selected_species is None:
@@ -260,14 +263,17 @@ def plot_boxplot_dispersion(
     return fig
 
 
-def plot_distributions_grid(df: pd.DataFrame) -> plt.Figure:
+def plot_distributions_grid(
+    df: pd.DataFrame,
+    feature_cols: Optional[List[str]] = None,
+) -> plt.Figure:
     """
     Renders 4-panel (2x2 grid) distribution histograms with mean markers for each dimension.
     """
     fig, axes = plt.subplots(2, 2, figsize=(10.5, 7.5), dpi=160)
     axes = axes.flatten()
     
-    features = ["sepal_length", "sepal_width", "petal_length", "petal_width"]
+    features = feature_cols if feature_cols is not None else ["sepal_length", "sepal_width", "petal_length", "petal_width"]
     species_order = ["Setosa", "Versicolor", "Virginica"]
     
     for idx, feat in enumerate(features):

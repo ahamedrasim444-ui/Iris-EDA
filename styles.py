@@ -1,11 +1,11 @@
 """
 styles.py
-Clean, minimalist, high-contrast, professional styling for the Iris EDA Dashboard.
-Focuses on neatness, maximum font visibility, and uncluttered presentation.
+Mono Bootstrap Theme & Botanical Branding for the Iris Flower Data Analysis Suite.
+Clean, high-contrast, monochromatic typography with structured Bootstrap component styling.
 """
 
 def get_custom_css(antigravity_mode: bool = False) -> str:
-    """Returns clean, high-contrast CSS styles."""
+    """Returns Mono Bootstrap CSS styles with crisp borders and clean typography."""
     
     antigravity_animation = ""
     if antigravity_mode:
@@ -22,46 +22,92 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
 
     return f"""
     <style>
-    /* Clean System Typography */
+    /* =========================================================================
+       MONO BOOTSTRAP DESIGN SYSTEM
+       ========================================================================= */
     html, body, [class*="css"] {{
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
         color: #0f172a !important;
+        background-color: #ffffff;
     }}
 
     /* Global layout padding */
     .block-container {{
-        padding-top: 1.5rem !important;
+        padding-top: 1.25rem !important;
         padding-bottom: 3.5rem !important;
         max-width: 100% !important;
     }}
 
-    /* Neat, Minimalist Header Banner (Not overly colorful) */
+    /* Mono Bootstrap Card */
+    .mono-card {{
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.25rem;
+        overflow: hidden;
+    }}
+
+    .mono-card-header {{
+        background-color: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 0.75rem 1.25rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }}
+
+    .mono-card-body {{
+        padding: 1.25rem;
+    }}
+
+    /* Hero Banner: Clean Monochromatic Header */
     .hero-banner {{
         background: #f8fafc;
-        border: 1px solid #cbd5e1;
-        border-left: 5px solid #2563eb;
-        border-radius: 8px;
-        padding: 1.25rem 1.5rem;
-        margin-bottom: 1.25rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1.5rem 1.75rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }}
+
+    .hero-content {{
+        flex: 1;
+        min-width: 280px;
+    }}
+
+    .hero-title-row {{
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.4rem;
     }}
 
     .hero-title {{
-        font-size: 1.65rem;
+        font-size: 1.75rem;
         font-weight: 700;
         color: #0f172a !important;
-        margin: 0 0 0.35rem 0;
-        line-height: 1.3;
+        margin: 0;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
     }}
 
     .hero-subtitle {{
         font-size: 0.95rem;
-        color: #334155 !important;
-        margin: 0 0 0.75rem 0;
+        color: #475569 !important;
+        margin: 0 0 0.85rem 0;
         line-height: 1.5;
     }}
 
-    /* Neat Badges */
+    /* Mono Bootstrap Badges */
     .badge-container {{
         display: flex;
         flex-wrap: wrap;
@@ -69,141 +115,137 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
         align-items: center;
     }}
 
-    .badge {{
+    .badge-mono {{
         display: inline-flex;
         align-items: center;
-        padding: 0.2rem 0.6rem;
-        border-radius: 4px;
-        font-size: 0.76rem;
+        padding: 0.25rem 0.65rem;
+        border-radius: 0.25rem;
+        font-size: 0.78rem;
         font-weight: 600;
-        background: #e2e8f0;
+        background: #f1f5f9;
         color: #1e293b;
         border: 1px solid #cbd5e1;
+        letter-spacing: 0.01em;
     }}
 
-    /* Neat Metric Cards */
-    .metric-card {{
+    .badge-mono-dark {{
+        background: #0f172a;
+        color: #ffffff;
+        border: 1px solid #0f172a;
+    }}
+
+    .badge-mono-blue {{
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }}
+
+    /* Stat & Metric Cards (Bootstrap Mono) */
+    .stat-card {{
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 1rem 1.1rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-        margin-bottom: 0.5rem;
+        border-radius: 0.375rem;
+        padding: 1rem 1.15rem;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        margin-bottom: 0.75rem;
+        transition: border-color 0.15s ease-in-out;
+    }}
+    .stat-card:hover {{
+        border-color: #94a3b8;
     }}
 
-    .metric-label {{
-        font-size: 0.78rem;
+    .stat-label {{
+        font-size: 0.75rem;
         font-weight: 600;
         color: #64748b !important;
         text-transform: uppercase;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.05em;
         margin-bottom: 0.25rem;
     }}
 
-    .metric-value {{
-        font-size: 1.6rem;
+    .stat-value {{
+        font-size: 1.7rem;
         font-weight: 700;
         color: #0f172a !important;
         line-height: 1.1;
     }}
 
-    /* Sidebar Clean Card */
-    .sidebar-card {{
+    .stat-sub {{
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 0.35rem;
+    }}
+
+    /* Formula & Plain English Explanation Box */
+    .formula-card {{
         background: #f8fafc;
         border: 1px solid #e2e8f0;
-        border-radius: 6px;
-        padding: 0.85rem;
-        margin-bottom: 0.85rem;
-    }}
-
-    .team-member-item {{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.35rem 0;
-        border-bottom: 1px solid #e2e8f0;
-        font-size: 0.83rem;
-    }}
-
-    .team-member-item:last-child {{
-        border-bottom: none;
-    }}
-
-    .team-member-name {{
-        font-weight: 600;
-        color: #1e293b;
-    }}
-
-    .team-member-role {{
-        font-size: 0.72rem;
-        background: #e2e8f0;
-        color: #334155;
-        padding: 0.15rem 0.45rem;
-        border-radius: 4px;
-        font-weight: 500;
-    }}
-
-    /* Neat Plain-English Explanation Box */
-    .explain-box {{
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-left: 4px solid #3b82f6;
-        border-radius: 0 6px 6px 0;
-        padding: 0.85rem 1.1rem;
-        margin: 0.75rem 0;
+        border-left: 4px solid #0f172a;
+        border-radius: 0.25rem;
+        padding: 1rem 1.25rem;
+        margin: 1rem 0;
         font-size: 0.92rem;
-        line-height: 1.5;
+        line-height: 1.6;
         color: #1e293b;
     }}
 
-    /* Prediction Result Banner (Neat & Visible) */
-    .prediction-box {{
+    .formula-title {{
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }}
+
+    /* Anatomical Diagram Guides */
+    .anatomy-card {{
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        padding: 1.1rem;
+        margin-bottom: 1rem;
+    }}
+
+    /* Prediction Result Banner */
+    .prediction-card {{
         background: #f8fafc;
-        border: 2px solid #2563eb;
-        border-radius: 8px;
-        padding: 1.25rem;
+        border: 2px solid #0f172a;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
         text-align: center;
         margin-bottom: 1rem;
     }}
 
-    .species-tag {{
-        display: inline-block;
-        padding: 0.4rem 1.5rem;
-        border-radius: 6px;
-        font-size: 1.45rem;
-        font-weight: 700;
-        margin: 0.4rem 0;
+    .prediction-title {{
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 0.5rem;
     }}
 
-    .tag-setosa {{
-        background: #eff6ff;
-        color: #1d4ed8;
-        border: 1px solid #93c5fd;
-    }}
-
-    .tag-versicolor {{
-        background: #fdf2f8;
-        color: #be185d;
-        border: 1px solid #fbcfe8;
-    }}
-
-    .tag-virginica {{
-        background: #f0fdf4;
-        color: #15803d;
-        border: 1px solid #bbf7d0;
+    .prediction-species {{
+        font-size: 2rem;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.02em;
+        margin: 0.25rem 0;
     }}
 
     /* Easter egg clean banner */
     .antigravity-banner {{
         background: #f8fafc;
         border: 1px solid #cbd5e1;
-        border-left: 4px solid #8b5cf6;
+        border-left: 4px solid #475569;
         padding: 1rem 1.25rem;
-        border-radius: 6px;
-        margin-bottom: 1rem;
+        border-radius: 0.375rem;
+        margin-bottom: 1.25rem;
     }}
 
-    /* High contrast text overrides */
+    /* High contrast text */
     h1, h2, h3, h4, p, span, label, div {{
         color: inherit;
     }}
@@ -213,20 +255,61 @@ def get_custom_css(antigravity_mode: bool = False) -> str:
     """
 
 
+def get_iris_logo_svg(size: int = 40) -> str:
+    """Returns a sleek, modern botanical SVG logo for Iris Flower Data Analysis."""
+    return f"""
+    <svg width="{size}" height="{size}" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+        <!-- Stylized Flower Petals & Data Grid -->
+        <path d="M50 16 C45 32 36 44 26 50 C38 52 46 62 50 82 C54 62 62 52 74 50 C64 44 55 32 50 16 Z" 
+              fill="#ffffff" fill-opacity="0.95"/>
+        <!-- Inner Petal Core -->
+        <path d="M50 30 C48 40 43 47 38 50 C44 52 48 57 50 70 C52 57 56 52 62 50 C57 47 52 40 50 30 Z" 
+              fill="#94a3b8"/>
+        <!-- Botanical Stamen & Node -->
+        <circle cx="50" cy="50" r="5" fill="#38bdf8"/>
+        <line x1="50" y1="50" x2="50" y2="82" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="26" y1="50" x2="74" y2="50" stroke="#38bdf8" stroke-width="1" stroke-dasharray="2 2"/>
+    </svg>
+    """
+
+
 def render_hero_banner():
-    """Renders neat top title banner with clear typography."""
-    return """
+    """Renders the top branding banner with the Iris logo and Mono Bootstrap styling."""
+    logo = get_iris_logo_svg(46)
+    return f"""
     <div class="hero-banner">
-        <div class="hero-title">Multidimensional Exploratory Analysis of the Iris Dataset</div>
-        <div class="hero-subtitle">
-            An interactive data science application demonstrating <strong>NumPy array mathematics</strong>, 
-            <strong>Pandas data processing</strong>, and <strong>Matplotlib visual analytics</strong>.
+        <div class="hero-content">
+            <div class="hero-title-row">
+                {logo}
+                <div>
+                    <h1 class="hero-title">Iris Flower Data Analysis</h1>
+                </div>
+            </div>
+            <p class="hero-subtitle">
+                Interactive multidimensional exploration, live morphometric flower visualization, 
+                and linear algebra statistical modeling based on the famous Fisher Iris dataset.
+            </p>
+            <div class="badge-container">
+                <span class="badge-mono badge-mono-dark">Mono Bootstrap Theme</span>
+                <span class="badge-mono">150 Botanical Specimens</span>
+                <span class="badge-mono">3 Species (Setosa • Versicolor • Virginica)</span>
+                <span class="badge-mono badge-mono-blue">Real-Time Flower Morphometry</span>
+            </div>
         </div>
-        <div class="badge-container">
-            <span class="badge">CSE Mini-Project</span>
-            <span class="badge">NumPy • Pandas • Matplotlib</span>
-            <span class="badge">Fisher Iris (150 Samples)</span>
-            <span class="badge">Connected to SQLite Database</span>
+    </div>
+    """
+
+
+def render_sidebar_header():
+    """Renders clean sidebar brand identity."""
+    logo = get_iris_logo_svg(34)
+    return f"""
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0.5rem 0 1rem 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 1rem;">
+        {logo}
+        <div>
+            <div style="font-weight: 700; font-size: 1.05rem; color: #0f172a; line-height: 1.2;">Iris Flower</div>
+            <div style="font-size: 0.78rem; color: #64748b; font-weight: 500;">Data Analysis Suite</div>
         </div>
     </div>
     """
@@ -238,17 +321,18 @@ def render_easter_egg_card():
     <div class="antigravity-banner">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <div>
-                <strong style="color: #4c1d95; font-size: 1rem;">🚀 Python Easter Egg: <code>import antigravity</code></strong>
-                <p style="margin: 4px 0 0 0; font-size: 0.88rem; color: #334155;">
+                <strong style="color: #0f172a; font-size: 0.95rem;">🚀 Python Easter Egg: <code>import antigravity</code></strong>
+                <p style="margin: 4px 0 0 0; font-size: 0.86rem; color: #475569;">
                     Homage to XKCD #353: <em>"I wrote 20 short programs in Python yesterday. It was wonderful. Now I am flying!"</em>
                 </p>
             </div>
             <div>
                 <a href="https://xkcd.com/353/" target="_blank" 
-                   style="background: #2563eb; color: #ffffff; padding: 0.4rem 0.8rem; border-radius: 4px; text-decoration: none; font-size: 0.82rem; font-weight: 600;">
-                    Open XKCD #353 Comic ↗
+                   style="background: #0f172a; color: #ffffff; padding: 0.45rem 0.9rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.82rem; font-weight: 600; display: inline-block;">
+                    View XKCD #353 ↗
                 </a>
             </div>
         </div>
     </div>
     """
+

@@ -139,12 +139,17 @@ def test_visualizations(df):
     assert isinstance(fig6, plt.Figure)
     plt.close(fig6)
 
-    from visualizations import plot_boxplot_dispersion
+    from visualizations import plot_boxplot_dispersion, plot_interactive_iris_flower
     fig7 = plot_boxplot_dispersion(df, "petal_length")
     assert isinstance(fig7, plt.Figure)
     plt.close(fig7)
 
-    print("  [OK] All 7 Matplotlib figures generated successfully without errors.")
+    fig8 = plot_interactive_iris_flower(5.8, 3.0, 4.2, 1.3, "Versicolor")
+    assert isinstance(fig8, plt.Figure)
+    assert len(fig8.axes) == 2
+    plt.close(fig8)
+
+    print("  [OK] All 8 Matplotlib figures generated successfully without errors.")
 
 
 def test_database():
@@ -169,7 +174,7 @@ def test_styles():
     assert "floatEffect" in css_active
     
     banner = render_hero_banner()
-    assert "CSE Mini-Project" in banner
+    assert "Iris Flower Data Analysis" in banner
     
     easter_egg = render_easter_egg_card()
     assert "import antigravity" in easter_egg

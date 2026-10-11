@@ -1,6 +1,6 @@
-# 🌸 Multidimensional Exploratory Data Analysis of the Iris Dataset
-### Utilizing NumPy, Pandas, and Matplotlib
-**Department of Computer Science & Engineering | CSE Mini-Project**
+# 🌸 Iris Flower Data Analysis
+### Multidimensional Exploratory Data Science & Real-Time Morphometry Suite
+**Interactive Web Analytics with NumPy, Pandas, Matplotlib & Streamlit**
 
 ---
 
@@ -8,25 +8,12 @@
 This project presents an interactive, high-performance web dashboard engineered in **Python 3.10+** and **Streamlit** for multi-attribute exploratory data analysis (EDA) of the classic 1936 Fisher Iris botanical dataset. 
 
 It demonstrates foundational data science, linear algebra, and visual analytics principles using:
+- **Interactive Flower Morphometry**: Dynamic 2D botanical scaling where outer sepals and inner petals resize in real time according to user centimeter dimensions with dimension calipers.
+- **Mono Bootstrap Theme**: Clean, monochromatic Bootstrap styling with crisp cards, high contrast, and neutral palettes.
 - **Pandas**: Multi-criteria slicing, groupby aggregations, descriptive metrics, and feature engineering.
 - **NumPy**: Sample covariance matrix calculations, correlation tensors, class mean centroid vectors, eigen-decomposition, and live nearest-centroid classification via Euclidean metric distance.
 - **Matplotlib**: Publication-quality annotated heatmaps, bivariate cluster scatter plots with convex hull decision boundaries, and 4-panel distribution histograms.
 - **Easter Egg**: Functional Python `import antigravity` toggle with interactive floating animations and homage to XKCD #353.
-
----
-
-## 👥 Project Team & Academic Credentials
-
-- **Institution:** Department of Computer Science & Engineering
-- **Course:** Data Science & Multidimensional Analytics (CS601)
-- **Faculty Guide:** Prof. Keerthana, Department of Computer Science & Engineering
-
-| S.No. | Student Name | Project Contribution & Role |
-| :---: | :--- | :--- |
-| **1** | **Balaji (Team Lead)** | **Project Lead & System Architecture** |
-| **2** | **Ahamed Rasim** | **Data Pipeline & Pandas Engineering** |
-| **3** | **Kishore Kumar** | **NumPy Mathematical & Linear Algebra Engine** |
-| **4** | **Aadthiyan** | **Matplotlib Visual Analytics & Frontend UI** |
 
 ---
 

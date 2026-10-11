@@ -37,7 +37,7 @@ def build_vercel_bundle():
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Iris EDA & Analytics Suite | CSE Mini-Project</title>
+    <title>Iris Flower Data Analysis | Morphometry & Statistics Suite</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.63.1/build/stlite.css" />
     <style>
@@ -68,7 +68,7 @@ def build_vercel_bundle():
         width: 48px;
         height: 48px;
         border: 4px solid #e2e8f0;
-        border-top: 4px solid #2563eb;
+        border-top: 4px solid #0f172a;
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-bottom: 16px;
@@ -83,9 +83,9 @@ def build_vercel_bundle():
     <div id="root">
       <div class="loading-screen" id="loading">
         <div class="spinner"></div>
-        <h2 style="margin: 0 0 8px 0; font-size: 1.3rem;">🌸 Loading Iris EDA Dashboard...</h2>
+        <h2 style="margin: 0 0 8px 0; font-size: 1.3rem;">🌸 Loading Iris Flower Data Analysis...</h2>
         <p style="margin: 0; color: #64748b; font-size: 0.95rem;">
-          Initializing NumPy, Pandas & Matplotlib engine via WebAssembly for Vercel
+          Initializing NumPy, Pandas & Matplotlib engine via WebAssembly
         </p>
       </div>
     </div>

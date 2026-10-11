@@ -414,3 +414,190 @@ def plot_query_point_projection(
     
     fig.tight_layout()
     return fig
+
+
+def plot_interactive_iris_flower(
+    sepal_length: float,
+    sepal_width: float,
+    petal_length: float,
+    petal_width: float,
+    predicted_species: Optional[str] = None,
+) -> plt.Figure:
+    """
+    Renders an anatomical, dynamically scaled Iris flower morphometry diagram.
+    The outer sepals and inner petals expand and reshape in real time according
+    to the user's exact centimeter slider inputs.
+    """
+    fig, (ax_flower, ax_stats) = plt.subplots(1, 2, figsize=(11.5, 5.6), dpi=160, 
+                                             gridspec_kw={"width_ratios": [1.15, 1.0]})
+    
+    # -------------------------------------------------------------------------
+    # LEFT PANEL: DYNAMIC BOTANICAL FLOWER DIAGRAM
+    # -------------------------------------------------------------------------
+    ax_flower.set_xlim(-5.5, 5.5)
+    ax_flower.set_ylim(-5.5, 6.5)
+    ax_flower.set_aspect("equal")
+    ax_flower.axis("off")
+    ax_flower.set_title("Iris Flower Anatomical Scaling (Live Morphometry)", 
+                        fontsize=11.5, fontweight="bold", pad=12, color="#0f172a")
+
+    # 1. Stem and Base
+    ax_flower.plot([0, 0], [-5.0, -1.2], color="#15803d", linewidth=6, solid_capstyle="round", zorder=1)
+    # Stem leaves
+    leaf_t = np.linspace(0, 1, 30)
+    leaf_x = -0.1 - 1.2 * np.sin(leaf_t * np.pi)
+    leaf_y = -4.5 + 2.0 * leaf_t
+    ax_flower.plot(leaf_x, leaf_y, color="#16a34a", linewidth=3.5, zorder=1)
+    
+    # Receptacle (green flower base)
+    receptacle = plt.Polygon([[-0.5, -1.2], [0.5, -1.2], [0.35, -0.7], [-0.35, -0.7]], 
+                             color="#166534", zorder=2)
+    ax_flower.add_patch(receptacle)
+
+    # Scaling factors based on realistic cm inputs
+    sl_scale = sepal_length * 0.65
+    sw_scale = sepal_width * 0.75
+    pl_scale = petal_length * 0.70
+    pw_scale = petal_width * 0.85
+
+    # 2. Outer Drooping Sepals ("Falls") - Left and Right
+    # Parametric curve for outer falls
+    theta = np.linspace(0, np.pi, 50)
+    
+    # Right Sepal (Falls)
+    sep_r_x = 0.2 + sw_scale * 1.3 * np.sin(theta)
+    sep_r_y = -0.8 - sl_scale * (1.0 - np.cos(theta * 0.5))
+    ax_flower.fill(np.concatenate([[0.2], sep_r_x, [0.1]]), 
+                   np.concatenate([[-0.8], sep_r_y, [-0.8]]), 
+                   color="#3b82f6", alpha=0.78, edgecolor="#1d4ed8", linewidth=1.8, zorder=3)
+    # Golden Signal / Nectar Guide on Sepal
+    ax_flower.fill(np.concatenate([[0.2], sep_r_x[:20] * 0.6, [0.2]]), 
+                   np.concatenate([[-0.8], sep_r_y[:20] * 0.6, [-0.8]]), 
+                   color="#facc15", alpha=0.9, edgecolor="#ca8a04", linewidth=1, zorder=4)
+
+    # Left Sepal (Falls - Symmetrical)
+    sep_l_x = -sep_r_x
+    sep_l_y = sep_r_y
+    ax_flower.fill(np.concatenate([[-0.2], sep_l_x, [-0.1]]), 
+                   np.concatenate([[-0.8], sep_l_y, [-0.8]]), 
+                   color="#3b82f6", alpha=0.78, edgecolor="#1d4ed8", linewidth=1.8, zorder=3)
+    # Golden Signal on Left Sepal
+    ax_flower.fill(np.concatenate([[-0.2], sep_l_x[:20] * 0.6, [-0.2]]), 
+                   np.concatenate([[-0.8], sep_l_y[:20] * 0.6, [-0.8]]), 
+                   color="#facc15", alpha=0.9, edgecolor="#ca8a04", linewidth=1, zorder=4)
+
+    # 3. Inner Upright Petals ("Standards") - Left, Center, Right
+    # Upward parametric curve
+    pet_t = np.linspace(0, np.pi, 50)
+    
+    # Center Upright Petal
+    pet_c_x = (pw_scale * 0.9) * np.sin(pet_t) - (pw_scale * 0.45)
+    pet_c_y = -0.7 + pl_scale * np.sin(pet_t * 0.5 + 0.3)
+    ax_flower.fill(pet_c_x, pet_c_y, color="#8b5cf6", alpha=0.85, 
+                   edgecolor="#6d28d9", linewidth=2.0, zorder=5)
+
+    # Left Upright Petal
+    pet_l_x = -0.3 - (pw_scale * 0.75) * np.sin(pet_t)
+    pet_l_y = -0.7 + (pl_scale * 0.9) * np.sin(pet_t * 0.5)
+    ax_flower.fill(pet_l_x, pet_l_y, color="#7c3aed", alpha=0.75, 
+                   edgecolor="#5b21b6", linewidth=1.5, zorder=4)
+
+    # Right Upright Petal
+    pet_r_x = 0.3 + (pw_scale * 0.75) * np.sin(pet_t)
+    pet_r_y = -0.7 + (pl_scale * 0.9) * np.sin(pet_t * 0.5)
+    ax_flower.fill(pet_r_x, pet_r_y, color="#7c3aed", alpha=0.75, 
+                   edgecolor="#5b21b6", linewidth=1.5, zorder=4)
+
+    # Central Botanical Core / Style Arms
+    ax_flower.scatter([0], [-0.7], s=120, c="#f59e0b", edgecolors="#0f172a", linewidth=1.5, zorder=7)
+
+    # Dimension Calipers and Anatomical Callout Brackets
+    # Petal dimension callout (top right)
+    top_petal_y = -0.7 + pl_scale
+    ax_flower.annotate(
+        f"PETALS (Standards)\nLength: {petal_length:.1f} cm\nWidth: {petal_width:.1f} cm",
+        xy=(0.4, top_petal_y * 0.75), xytext=(2.6, 3.8),
+        arrowprops=dict(arrowstyle="->", color="#6d28d9", lw=1.5),
+        bbox=dict(boxstyle="round,pad=0.4", fc="#f5f3ff", ec="#c4b5fd", lw=1),
+        fontsize=8.5, fontweight="bold", color="#4c1d95"
+    )
+
+    # Sepal dimension callout (bottom right)
+    bot_sepal_y = -0.8 - sl_scale * 0.8
+    ax_flower.annotate(
+        f"SEPALS (Falls)\nLength: {sepal_length:.1f} cm\nWidth: {sepal_width:.1f} cm",
+        xy=(sep_r_x.max() * 0.75, bot_sepal_y), xytext=(2.4, -3.2),
+        arrowprops=dict(arrowstyle="->", color="#1d4ed8", lw=1.5),
+        bbox=dict(boxstyle="round,pad=0.4", fc="#eff6ff", ec="#bfdbfe", lw=1),
+        fontsize=8.5, fontweight="bold", color="#1e3a8a"
+    )
+
+    # Anatomical Key Legend at bottom of left panel
+    ax_flower.text(-5.0, -5.2, "• Petals (Violet): Inner upright flower blades\n• Sepals (Blue): Outer drooping petals with nectar signal", 
+                   fontsize=8, color="#475569", bbox=dict(boxstyle="round,pad=0.3", fc="#f8fafc", ec="#e2e8f0"))
+
+    # -------------------------------------------------------------------------
+    # RIGHT PANEL: SPECIES AVERAGE BENCHMARKS & MORPHOMETRIC RATIOS
+    # -------------------------------------------------------------------------
+    # Botanical averages from Fisher's canonical study
+    benchmarks = {
+        "Iris Setosa": [5.01, 3.42, 1.46, 0.24],
+        "Iris Versicolor": [5.94, 2.77, 4.26, 1.33],
+        "Iris Virginica": [6.59, 2.97, 5.55, 2.03],
+        "Your Flower": [sepal_length, sepal_width, petal_length, petal_width],
+    }
+    
+    categories = ["Sepal L", "Sepal W", "Petal L", "Petal W"]
+    y_pos = np.arange(len(categories))
+    bar_height = 0.20
+
+    # Draw grouped horizontal comparison bars
+    ax_stats.barh(y_pos - 1.5 * bar_height, benchmarks["Iris Setosa"], height=bar_height, 
+                  color="#94a3b8", label="Setosa Avg", alpha=0.7)
+    ax_stats.barh(y_pos - 0.5 * bar_height, benchmarks["Iris Versicolor"], height=bar_height, 
+                  color="#64748b", label="Versicolor Avg", alpha=0.7)
+    ax_stats.barh(y_pos + 0.5 * bar_height, benchmarks["Iris Virginica"], height=bar_height, 
+                  color="#334155", label="Virginica Avg", alpha=0.7)
+    
+    # Highlight User Flower in bold color
+    user_color = "#2563eb" if not predicted_species else SPECIES_COLORS.get(predicted_species, "#2563eb")
+    user_bars = ax_stats.barh(y_pos + 1.5 * bar_height, benchmarks["Your Flower"], height=bar_height, 
+                              color=user_color, edgecolor="#0f172a", linewidth=1.2, 
+                              label="Your Input Flower", zorder=5)
+
+    # Add numeric labels to user flower bars
+    for bar in user_bars:
+        w = bar.get_width()
+        ax_stats.text(w + 0.15, bar.get_y() + bar.get_height() / 2, f"{w:.1f} cm",
+                      va="center", fontsize=8.5, fontweight="bold", color="#0f172a")
+
+    ax_stats.set_yticks(y_pos)
+    ax_stats.set_yticklabels(categories, fontsize=9.5, fontweight="bold")
+    ax_stats.set_xlabel("Measurement (Centimeters)", fontsize=9, fontweight="bold", color="#334155")
+    ax_stats.set_xlim(0, 8.5)
+    ax_stats.grid(True, axis="x", linestyle="--", alpha=0.5)
+    
+    # Title & Match banner
+    match_str = f"Closest Match: {predicted_species}" if predicted_species else "Morphometric Benchmark"
+    ax_stats.set_title(f"Comparison vs. Botanical Species Averages\n({match_str})", 
+                       fontsize=10.5, fontweight="bold", pad=8, color="#0f172a")
+    ax_stats.legend(frameon=True, facecolor="#ffffff", edgecolor="#cbd5e1", fontsize=8, loc="upper right")
+
+    # Area & Ratio Summary Sub-Box
+    sepal_area = sepal_length * sepal_width
+    petal_area = petal_length * petal_width
+    ratio = (petal_length / petal_width) if petal_width > 0 else 0
+    
+    summary_text = (
+        f"Flower Metrics Summary:\n"
+        f"• Petal Area Proxy: {petal_area:.2f} cm²\n"
+        f"• Sepal Area Proxy: {sepal_area:.2f} cm²\n"
+        f"• Petal Aspect Ratio: {ratio:.2f}"
+    )
+    ax_stats.text(0.04, 0.06, summary_text, transform=ax_stats.transAxes,
+                  fontsize=8.5, color="#1e293b",
+                  bbox=dict(boxstyle="round,pad=0.5", fc="#f8fafc", ec="#cbd5e1", lw=1))
+
+    fig.tight_layout()
+    return fig
+

@@ -1,9 +1,8 @@
-"""
-app.py
-Multidimensional Exploratory Data Analysis of the Iris Dataset
-Utilizing NumPy, Pandas, Matplotlib, and SQLite Database.
-
-CSE Mini-Project Dashboard
+﻿"""
+streamlit_app.py
+Iris Flower Data Analysis Suite
+Interactive Multidimensional Data Science, Real-Time Flower Morphometry,
+and Statistical Modeling with Mono Bootstrap Styling.
 """
 
 import streamlit as st
@@ -27,6 +26,7 @@ from data_engine import (
     predict_nearest_centroid,
 )
 from visualizations import (
+    plot_interactive_iris_flower,
     plot_covariance_heatmap,
     plot_correlation_heatmap,
     plot_bivariate_scatter,
@@ -35,43 +35,51 @@ from visualizations import (
     plot_prediction_diagnostics,
     plot_query_point_projection,
 )
-from styles import get_custom_css, render_hero_banner, render_easter_egg_card
+from styles import (
+    get_custom_css,
+    render_hero_banner,
+    render_sidebar_header,
+    render_easter_egg_card,
+)
 
 
 # ------------------------------------------------------------------------------
-# Page Configuration & Theme
+# Page Configuration & Mono Bootstrap Theme
 # ------------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Iris EDA & Multidimensional Analytics | CSE Mini-Project",
+    page_title="Iris Flower Data Analysis | Morphometry & Statistics",
     page_icon="🌸",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# Apply Mono Bootstrap CSS
+st.markdown(get_custom_css(antigravity_mode=st.session_state.get("antigravity_active", False)), unsafe_allow_html=True)
 
 # Initialize SQLite Database
 database.init_db()
 
 
 # ------------------------------------------------------------------------------
-# Session State Initialization
+# Session State & Preset Management
 # ------------------------------------------------------------------------------
 if "antigravity_active" not in st.session_state:
     st.session_state.antigravity_active = False
 
-def set_classifier_preset(sl: float, sw: float, pl: float, pw: float):
-    st.session_state["slider_sl"] = float(sl)
-    st.session_state["slider_sw"] = float(sw)
-    st.session_state["slider_pl"] = float(pl)
-    st.session_state["slider_pw"] = float(pw)
+def set_flower_preset(sl: float, sw: float, pl: float, pw: float):
+    st.session_state["flower_sl"] = float(sl)
+    st.session_state["flower_sw"] = float(sw)
+    st.session_state["flower_pl"] = float(pl)
+    st.session_state["flower_pw"] = float(pw)
 
-if "slider_sl" not in st.session_state:
-    st.session_state["slider_sl"] = 5.8
-if "slider_sw" not in st.session_state:
-    st.session_state["slider_sw"] = 3.0
-if "slider_pl" not in st.session_state:
-    st.session_state["slider_pl"] = 4.2
-if "slider_pw" not in st.session_state:
-    st.session_state["slider_pw"] = 1.3
+if "flower_sl" not in st.session_state:
+    st.session_state["flower_sl"] = 5.8
+if "flower_sw" not in st.session_state:
+    st.session_state["flower_sw"] = 3.0
+if "flower_pl" not in st.session_state:
+    st.session_state["flower_pl"] = 4.2
+if "flower_pw" not in st.session_state:
+    st.session_state["flower_pw"] = 1.3
 
 
 # ------------------------------------------------------------------------------
@@ -89,184 +97,267 @@ except Exception as e:
 
 
 # ------------------------------------------------------------------------------
-# Sidebar Controls & Project Information
+# Sidebar Controls & Global Slicing Filters
 # ------------------------------------------------------------------------------
 with st.sidebar:
-    st.markdown("### 🎓 CSE Mini-Project")
-    st.caption("**Course:** Data Science & Multidimensional Analytics")
-    
-    # Team Credentials Card
-    with st.expander("👥 Team Members & Faculty Guide", expanded=True):
-        st.markdown(
-            """
-            <div class="sidebar-card">
-                <div class="team-member-item">
-                    <span class="team-member-name">1. Balaji (Team Lead)</span>
-                    <span class="team-member-role">Project Lead</span>
-                </div>
-                <div class="team-member-item">
-                    <span class="team-member-name">2. Ahamed Rasim</span>
-                    <span class="team-member-role">Data & Pandas</span>
-                </div>
-                <div class="team-member-item">
-                    <span class="team-member-name">3. Kishore Kumar</span>
-                    <span class="team-member-role">NumPy Engine</span>
-                </div>
-                <div class="team-member-item">
-                    <span class="team-member-name">4. Aadthiyan</span>
-                    <span class="team-member-role">Visual Analytics</span>
-                </div>
-                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #e2e8f0; font-size: 0.83rem;">
-                    <strong>Faculty Guide:</strong><br>
-                    Prof. Keerthana<br>
-                    <em>Department of Computer Science & Engineering</em>
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+    st.markdown(render_sidebar_header(), unsafe_allow_html=True)
 
-    st.markdown("---")
-    st.markdown("### 🔍 Global Slicing Filters")
+    st.markdown("#### 🔍 Global Slicing Filters")
+    st.caption("Filter botanical observations across all analytical tabs.")
+
+    # Quick Reset Filters Button
+    if st.button("🔄 Reset All Filters to Default", use_container_width=True):
+        st.session_state["filter_species"] = sorted(df_raw["species"].unique().tolist())
+        st.session_state["f_sl"] = (float(df_raw["sepal_length"].min()), float(df_raw["sepal_length"].max()))
+        st.session_state["f_sw"] = (float(df_raw["sepal_width"].min()), float(df_raw["sepal_width"].max()))
+        st.session_state["f_pl"] = (float(df_raw["petal_length"].min()), float(df_raw["petal_length"].max()))
+        st.session_state["f_pw"] = (float(df_raw["petal_width"].min()), float(df_raw["petal_width"].max()))
+        st.rerun()
 
     # Species Multi-select
     all_species = sorted(df_raw["species"].unique().tolist())
+    if "filter_species" not in st.session_state:
+        st.session_state["filter_species"] = all_species
+
     selected_species = st.multiselect(
-        "Filter by Botanical Species:",
+        "Botanical Species:",
         options=all_species,
-        default=all_species,
-        help="Select one or more Iris classes to focus the statistical analysis.",
+        default=st.session_state["filter_species"],
+        help="Select one, two, or all three Iris classes to include.",
+        key="filter_species",
     )
 
     if not selected_species:
-        st.warning("Please choose at least one species.")
+        st.warning("⚠️ Select at least one species. Defaulting to all.")
         selected_species = all_species
 
-    # Range Sliders
+    st.markdown("---")
+    st.markdown("**Dimension Range Limits (cm):**")
+
     sl_min, sl_max = float(df_raw["sepal_length"].min()), float(df_raw["sepal_length"].max())
     sw_min, sw_max = float(df_raw["sepal_width"].min()), float(df_raw["sepal_width"].max())
     pl_min, pl_max = float(df_raw["petal_length"].min()), float(df_raw["petal_length"].max())
     pw_min, pw_max = float(df_raw["petal_width"].min()), float(df_raw["petal_width"].max())
 
-    sepal_len_range = st.slider("Sepal Length Range (cm)", sl_min, sl_max, (sl_min, sl_max), step=0.1)
-    sepal_wid_range = st.slider("Sepal Width Range (cm)", sw_min, sw_max, (sw_min, sw_max), step=0.1)
-    petal_len_range = st.slider("Petal Length Range (cm)", pl_min, pl_max, (pl_min, pl_max), step=0.1)
-    petal_wid_range = st.slider("Petal Width Range (cm)", pw_min, pw_max, (pw_min, pw_max), step=0.1)
+    range_sl = st.slider("Sepal Length Range", sl_min, sl_max, (sl_min, sl_max), 0.1, key="f_sl")
+    range_sw = st.slider("Sepal Width Range", sw_min, sw_max, (sw_min, sw_max), 0.1, key="f_sw")
+    range_pl = st.slider("Petal Length Range", pl_min, pl_max, (pl_min, pl_max), 0.1, key="f_pl")
+    range_pw = st.slider("Petal Width Range", pw_min, pw_max, (pw_min, pw_max), 0.1, key="f_pw")
 
-    ranges = {
-        "sepal_length": sepal_len_range,
-        "sepal_width": sepal_wid_range,
-        "petal_length": petal_len_range,
-        "petal_width": petal_wid_range,
+    filter_ranges = {
+        "sepal_length": range_sl,
+        "sepal_width": range_sw,
+        "petal_length": range_pl,
+        "petal_width": range_pw,
     }
 
     st.markdown("---")
-    
-    # Python Antigravity Easter Egg Section
-    st.markdown("### 🚀 Python Easter Egg")
-    btn_label = "Disable Antigravity" if st.session_state.antigravity_active else "Trigger 'import antigravity'"
-    if st.button(btn_label, use_container_width=True):
+    st.markdown("#### 🚀 System Controls")
+    if st.button("🌌 Toggle Antigravity Mode", use_container_width=True):
         st.session_state.antigravity_active = not st.session_state.antigravity_active
         st.rerun()
 
-    if st.session_state.antigravity_active:
-        st.info("Launched XKCD #353 in your session! 'I wrote 20 short programs in Python... now I am flying!'")
-
-
-# Inject Neat Custom CSS
-st.markdown(get_custom_css(antigravity_mode=st.session_state.antigravity_active), unsafe_allow_html=True)
-
 
 # ------------------------------------------------------------------------------
-# Filter Data
+# Filter Application & Active Counts
 # ------------------------------------------------------------------------------
-df_filtered = filter_dataset(df_raw, selected_species, ranges)
+df_filtered = filter_dataset(df_raw, selected_species, filter_ranges)
+db_stats = database.get_prediction_stats()
 
-
-# ------------------------------------------------------------------------------
-# Main Dashboard Header & Hero
-# ------------------------------------------------------------------------------
+# Top Hero Branding Banner
 st.markdown(render_hero_banner(), unsafe_allow_html=True)
 
 if st.session_state.antigravity_active:
     st.markdown(render_easter_egg_card(), unsafe_allow_html=True)
 
-# Overview Metric Cards
-db_stats = database.get_prediction_stats()
+# ------------------------------------------------------------------------------
+# Key Metric KPI Cards (Mono Bootstrap Theme)
+# ------------------------------------------------------------------------------
 col1, col2, col3, col4 = st.columns(4)
-
 with col1:
-    st.metric(
-        label="Total Active Instances",
-        value=f"{len(df_filtered)} Samples",
-        delta=f"{len(df_filtered)} / {len(df_raw)} visible",
+    pct_visible = (len(df_filtered) / len(df_raw) * 100) if len(df_raw) > 0 else 0
+    st.markdown(
+        f"""
+        <div class="stat-card">
+            <div class="stat-label">Active Filtered Flowers</div>
+            <div class="stat-value">{len(df_filtered)} <span style="font-size:1rem;font-weight:500;color:#64748b;">/ {len(df_raw)}</span></div>
+            <div class="stat-sub">{pct_visible:.1f}% of total specimen collection</div>
+        </div>
+        """, unsafe_allow_html=True
     )
+
 with col2:
-    st.metric(
-        label="Morphological Features",
-        value="4 Primary + 4 Derived",
-        delta="8 Total Dimensions",
+    st.markdown(
+        """
+        <div class="stat-card">
+            <div class="stat-label">Morphometric Dimensions</div>
+            <div class="stat-value">4 Primary</div>
+            <div class="stat-sub">Sepal L/W + Petal L/W (cm)</div>
+        </div>
+        """, unsafe_allow_html=True
     )
+
 with col3:
     active_classes = df_filtered["species"].nunique() if not df_filtered.empty else 0
-    st.metric(
-        label="Active Classes",
-        value=f"{active_classes} Species",
-        delta="Setosa / Versi / Virg",
+    st.markdown(
+        f"""
+        <div class="stat-card">
+            <div class="stat-label">Included Species</div>
+            <div class="stat-value">{active_classes} <span style="font-size:1rem;font-weight:500;color:#64748b;">Classes</span></div>
+            <div class="stat-sub">Setosa • Versicolor • Virginica</div>
+        </div>
+        """, unsafe_allow_html=True
     )
+
 with col4:
-    st.metric(
-        label="SQLite Database Logs",
-        value=f"{db_stats['total_records']} Records",
-        delta="🟢 Connected & Persistent",
+    st.markdown(
+        f"""
+        <div class="stat-card">
+            <div class="stat-label">Saved Queries</div>
+            <div class="stat-value">{db_stats["total_records"]} <span style="font-size:1rem;font-weight:500;color:#64748b;">Logs</span></div>
+            <div class="stat-sub">Connected SQLite Database</div>
+        </div>
+        """, unsafe_allow_html=True
     )
 
 st.write("")
 
 
 # ------------------------------------------------------------------------------
-# Main Content Tabs
+# Main Application Tabs
 # ------------------------------------------------------------------------------
-tab1, tab2, tab3, tab4 = st.tabs([
-    "📊 Tab 1: Dataset & Pandas Profiling",
-    "🧮 Tab 2: NumPy Mathematical Engine",
-    "📈 Tab 3: Matplotlib Visual Suite",
-    "🎯 Tab 4: Interactive Classifier & Database Logger",
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "🌸 Tab 1: Interactive Flower Visualizer",
+    "📊 Tab 2: Dataset & Flower Records",
+    "🧮 Tab 3: Statistical Engine (Formulas & Meanings)",
+    "📈 Tab 4: Visual Analytics Gallery (Matplotlib)",
+    "🎯 Tab 5: Live Species Classifier & History",
 ])
 
 
 # ==============================================================================
-# TAB 1: DATASET & PANDAS PROFILING
+# TAB 1: INTERACTIVE IRIS FLOWER VISUALIZER
 # ==============================================================================
 with tab1:
-    st.subheader("Dataset Overview & Engineered Ratios")
+    st.subheader("🌸 Interactive Iris Flower Morphometry & Scaling")
     st.markdown(
         """
-        <div class="explain-box">
-            <strong>What this tab shows:</strong> The raw botanical records alongside two engineered features: 
-            <strong>Petal Aspect Ratio</strong> (Petal Length ÷ Petal Width) and <strong>Petal Area Proxy</strong> (Length × Width).
-            These ratios make it easy to see the physical shape differences between flower types.
+        <div class="formula-card">
+            <div class="formula-title">📖 How Iris Flower Anatomy Works (Sepal vs. Petal)</div>
+            An Iris flower is composed of two primary floral leaf structures that distinguish each species:
+            <ul style="margin: 0.4rem 0 0 1.25rem; padding: 0;">
+                <li><strong>Sepals (Outer Falls):</strong> The drooping, lower leaves that hang outward. They feature yellow nectar signals to guide pollinators.</li>
+                <li><strong>Petals (Inner Standards):</strong> The upright, inner blades that stand vertically above the flower core.</li>
+            </ul>
+            <strong>Try it below:</strong> Move the sliders to change Sepal and Petal lengths/widths. The flower diagram will <strong>resize dynamically</strong> to match your exact dimensions!
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    t1_col1, t1_col2 = st.columns([3, 1])
-    with t1_col1:
-        search_kw = st.text_input("🔍 Quick Search (filter by any value or text):", "")
-    with t1_col2:
+    # Preset Quick Buttons
+    st.markdown("**Quick Archetype Presets:**")
+    p1, p2, p3, p4 = st.columns(4)
+    with p1:
+        st.button("🌱 Typical Setosa (Tiny Petals)", on_click=set_flower_preset, args=(5.0, 3.4, 1.5, 0.2), use_container_width=True)
+    with p2:
+        st.button("🌿 Typical Versicolor (Medium)", on_click=set_flower_preset, args=(5.9, 2.8, 4.3, 1.3), use_container_width=True)
+    with p3:
+        st.button("🌺 Typical Virginica (Large)", on_click=set_flower_preset, args=(6.6, 3.0, 5.6, 2.0), use_container_width=True)
+    with p4:
+        st.button("🔄 Reset Default Flower", on_click=set_flower_preset, args=(5.8, 3.0, 4.2, 1.3), use_container_width=True)
+
+    # 4 Morphometric Sliders
+    st.markdown("#### Adjust Flower Dimensions in Centimeters (cm):")
+    f_c1, f_c2, f_c3, f_c4 = st.columns(4)
+    with f_c1:
+        curr_sl = st.slider("Sepal Length (cm)", 4.0, 8.0, float(st.session_state["flower_sl"]), 0.1, key="flower_sl")
+    with f_c2:
+        curr_sw = st.slider("Sepal Width (cm)", 2.0, 4.5, float(st.session_state["flower_sw"]), 0.1, key="flower_sw")
+    with f_c3:
+        curr_pl = st.slider("Petal Length (cm)", 1.0, 7.0, float(st.session_state["flower_pl"]), 0.1, key="flower_pl")
+    with f_c4:
+        curr_pw = st.slider("Petal Width (cm)", 0.1, 2.6, float(st.session_state["flower_pw"]), 0.1, key="flower_pw")
+
+    # Calculate live nearest species
+    input_vector = np.array([curr_sl, curr_sw, curr_pl, curr_pw], dtype=float)
+    baseline_centroids = compute_species_centroids(df_raw, FEATURE_COLS)
+    pred_res = predict_nearest_centroid(input_vector, baseline_centroids)
+    curr_predicted = pred_res["predicted_species"]
+
+    # Render Live Scaled Flower Diagram
+    fig_flower = plot_interactive_iris_flower(
+        sepal_length=curr_sl,
+        sepal_width=curr_sw,
+        petal_length=curr_pl,
+        petal_width=curr_pw,
+        predicted_species=curr_predicted,
+    )
+    st.pyplot(fig_flower, use_container_width=True)
+
+    # Anatomical Takeaway Guide
+    g_col1, g_col2 = st.columns(2)
+    with g_col1:
+        st.markdown(
+            f"""
+            <div class="anatomy-card">
+                <strong>🔍 Biological Classification for this Flower:</strong><br>
+                Based on your dimensions, this flower is classified as <strong>Iris {curr_predicted}</strong> 
+                (confidence score: <strong>{pred_res['proximity_pct'][curr_predicted]:.1f}%</strong>).<br><br>
+                • <strong>Petal Area:</strong> {curr_pl * curr_pw:.2f} cm²<br>
+                • <strong>Sepal Area:</strong> {curr_sl * curr_sw:.2f} cm²<br>
+                • <strong>Petal/Sepal Length Ratio:</strong> {(curr_pl / curr_sl):.2f}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with g_col2:
+        st.markdown(
+            """
+            <div class="anatomy-card">
+                <strong>💡 Botanical Rule of Thumb:</strong><br>
+                • <strong>Iris Setosa:</strong> Extremely short petals (< 2.45 cm) that appear as small inner tufts.<br>
+                • <strong>Iris Versicolor:</strong> Moderate, slender petals (~4.2 cm) with proportional sepals.<br>
+                • <strong>Iris Virginica:</strong> Large, majestic flowers with long, wide petals (> 5.0 cm).
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
+# ==============================================================================
+# TAB 2: DATASET & FLOWER RECORDS
+# ==============================================================================
+with tab2:
+    st.subheader("Botanical Dataset Records & Engineered Dimensions")
+    st.markdown(
+        """
+        <div class="formula-card">
+            <div class="formula-title">📊 About the Dataset Records</div>
+            This table contains the 150 historical observations recorded by botanist Edgar Anderson and popularized by statistician Ronald Fisher.
+            We have enriched the table with two practical engineered shape indicators:
+            <strong>Petal Ratio</strong> (Length ÷ Width) and <strong>Petal Area Proxy</strong> (Length × Width in cm²).
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    t2_col1, t2_col2 = st.columns([3, 1])
+    with t2_col1:
+        search_kw = st.text_input("🔍 Quick Search records (filter by species, number, or text):", "")
+    with t2_col2:
         st.write("")
         st.write("")
         csv_data = df_filtered.to_csv(index=False).encode("utf-8")
         st.download_button(
-            label="📥 Export Filtered CSV",
+            label="📥 Download Filtered CSV",
             data=csv_data,
-            file_name="iris_filtered.csv",
+            file_name="iris_flower_data.csv",
             mime="text/csv",
             use_container_width=True,
         )
 
-    # Display Data Table
+    # Filtered Table Display
     display_df = df_filtered.copy()
     if search_kw:
         mask = display_df.astype(str).apply(lambda row: row.str.contains(search_kw, case=False).any(), axis=1)
@@ -275,7 +366,7 @@ with tab1:
     st.dataframe(
         display_df,
         use_container_width=True,
-        height=260,
+        height=280,
         column_config={
             "sepal_length": st.column_config.NumberColumn("Sepal Length (cm)", format="%.1f"),
             "sepal_width": st.column_config.NumberColumn("Sepal Width (cm)", format="%.1f"),
@@ -289,53 +380,33 @@ with tab1:
     )
 
     st.markdown("---")
-    st.subheader("Species-Stratified Statistical Summary (Pandas GroupBy)")
+    st.subheader("Species Summary Statistics (Averages & Ranges)")
     
     numeric_cols = ["sepal_length", "sepal_width", "petal_length", "petal_width", "petal_ratio", "petal_area_proxy"]
     valid_cols = [c for c in numeric_cols if c in df_filtered.columns]
     
     if not df_filtered.empty:
-        agg_summary = df_filtered.groupby("species")[valid_cols].agg(["mean", "std", "min", "max"]).round(3)
+        agg_summary = df_filtered.groupby("species")[valid_cols].agg(["mean", "std", "min", "max"]).round(2)
         st.dataframe(agg_summary, use_container_width=True)
     else:
-        st.warning("No data rows available with current filter constraints.")
+        st.warning("No rows match the active filter constraints.")
 
-    st.markdown("---")
-    st.subheader("🗄️ Connected SQLite Database: Live Query Logs")
+
+# ==============================================================================
+# TAB 3: STATISTICAL ENGINE (UNDERSTANDABLE FORMULAS & MEANINGS)
+# ==============================================================================
+with tab3:
+    st.subheader("🧮 Statistical Foundation: Plain-English Guides & Formulas")
     st.markdown(
         """
-        <div class="explain-box">
-            Every classification query performed in <strong>Tab 4</strong> can be saved into the SQLite database file 
-            (<code>data/predictions.db</code>). Here are the most recent logged queries:
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    recent_db_df = database.get_recent_predictions(limit=10)
-    if not recent_db_df.empty:
-        st.dataframe(recent_db_df, use_container_width=True, hide_index=True)
-        if st.button("🗑️ Clear Database History"):
-            database.clear_prediction_history()
-            st.success("Database logs cleared.")
-            st.rerun()
-    else:
-        st.info("No queries saved yet. Open Tab 4 to test a sample and click 'Save Prediction to Database'!")
-
-
-# ==============================================================================
-# TAB 2: NUMPY MATHEMATICAL ENGINE
-# ==============================================================================
-with tab2:
-    st.subheader("Matrix Operations & Covariance Tensor (NumPy)")
-    st.markdown(
-        r"""
-        <div class="explain-box">
-            <strong>Understanding the Linear Algebra in Plain English:</strong>
+        <div class="formula-card">
+            <div class="formula-title">💡 Understanding the Mathematics Without Complex Jargon</div>
+            Data science is often wrapped in intimidating notation, but the underlying concepts are simple:
             <ul style="margin: 0.35rem 0 0 1.25rem; padding: 0;">
-                <li><strong>Sample Mean Vector ($\mathbf{\mu}$):</strong> The simple average measurement for each of the 4 dimensions.</li>
-                <li><strong>Covariance Matrix ($\mathbf{\Sigma}$):</strong> Tells us whether two features grow together. A positive number means as one feature increases, the other tends to increase as well.</li>
-                <li><strong>Pearson Correlation Matrix ($\mathbf{R}$):</strong> Scales covariance between -1.0 and +1.0 so we can immediately compare strength of relationships.</li>
+                <li><strong>Average (Mean):</strong> The typical center measurement for each flower trait.</li>
+                <li><strong>Covariance:</strong> Tells us whether two traits grow together or oppose each other.</li>
+                <li><strong>Pearson Correlation:</strong> A clean score from <strong>-1.0 to +1.0</strong> showing relationship strength.</li>
+                <li><strong>Principal Component Analysis (PCA):</strong> Identifies the single biggest trait difference between flowers.</li>
             </ul>
         </div>
         """,
@@ -343,46 +414,72 @@ with tab2:
     )
 
     if len(df_filtered) < 2:
-        st.warning("Covariance calculation requires at least 2 samples. Please broaden your sidebar filters.")
+        st.warning("Calculating relationships requires at least 2 flower samples. Please widen your sidebar filters.")
     else:
         manual_cov, np_cov = compute_covariance_matrix_manual(df_filtered, FEATURE_COLS)
         manual_corr, np_corr = compute_correlation_matrix_manual(df_filtered, FEATURE_COLS)
 
-        col_n1, col_n2 = st.columns(2)
-        with col_n1:
-            st.markdown(r"#### Sample Mean Vector $\mathbf{\mu}$ (NumPy):")
+        col_m1, col_m2 = st.columns(2)
+        with col_m1:
+            st.markdown("#### 1. Average (Mean) Measurements")
+            st.markdown(
+                r"""
+                **Formula:** $\mu = \frac{\sum x}{N}$ *(Sum of all values divided by count)*
+                """
+            )
             mean_vector = np.mean(df_filtered[FEATURE_COLS].to_numpy(), axis=0)
             mean_df = pd.DataFrame(
                 mean_vector.reshape(1, 4), 
                 columns=["Sepal Length", "Sepal Width", "Petal Length", "Petal Width"]
             )
-            st.dataframe(mean_df.round(3), use_container_width=True, hide_index=True)
+            st.dataframe(mean_df.round(2), use_container_width=True, hide_index=True)
+            st.caption("These are the typical baseline dimensions for the currently filtered flowers.")
 
-            st.markdown(r"#### $4 \times 4$ Sample Covariance Matrix $\mathbf{\Sigma}$:")
+            st.markdown("---")
+            st.markdown(r"#### 2. Covariance Matrix ($\mathbf{\Sigma}$)")
+            st.markdown(
+                r"""
+                **Formula:** $\text{Cov}(X, Y) = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{N - 1}$
+                <br><span style="color:#64748b;font-size:0.85rem;">
+                Positive values mean as one measurement grows, the other also tends to grow.
+                </span>
+                """,
+                unsafe_allow_html=True
+            )
             cov_df = pd.DataFrame(
                 manual_cov,
                 index=["Sepal L", "Sepal W", "Petal L", "Petal W"],
                 columns=["Sepal L", "Sepal W", "Petal L", "Petal W"],
             )
-            st.dataframe(cov_df.round(4), use_container_width=True)
+            st.dataframe(cov_df.round(3), use_container_width=True)
 
-        with col_n2:
-            st.markdown(r"#### $4 \times 4$ Pearson Correlation Matrix $\mathbf{R}$:")
+        with col_m2:
+            st.markdown("#### 3. Pearson Correlation Matrix ($r$)")
+            st.markdown(
+                r"""
+                **Formula:** $r = \frac{\text{Cov}(X, Y)}{\sigma_X \cdot \sigma_Y}$ *(Scaled from -1.0 to +1.0)*
+                <br><span style="color:#64748b;font-size:0.85rem;">
+                +1.0 = perfect direct link • 0.0 = completely unrelated • -1.0 = opposite.
+                </span>
+                """,
+                unsafe_allow_html=True
+            )
             corr_df = pd.DataFrame(
                 manual_corr,
                 index=["Sepal L", "Sepal W", "Petal L", "Petal W"],
                 columns=["Sepal L", "Sepal W", "Petal L", "Petal W"],
             )
             st.dataframe(corr_df.round(3), use_container_width=True)
-            
-            # Key Finding Callout
+
+            # Plain-English Key Finding
             st.info(
-                "💡 **Key Finding:** Petal Length and Petal Width exhibit an exceptional Pearson correlation of "
-                "**r ≈ 0.96**. This proves that longer petals almost always have wider petals."
+                "💡 **Clear Takeaway:** Petal Length and Petal Width have an astounding correlation of "
+                "**r = +0.96**. In simple terms: whenever an Iris flower has a longer petal, it is almost "
+                "guaranteed to have a wider petal!"
             )
 
         st.markdown("---")
-        st.subheader("Annotated Correlation & Covariance Heatmaps")
+        st.subheader("Visual Heatmaps (Covariance vs. Correlation)")
         h_col1, h_col2 = st.columns(2)
         with h_col1:
             fig_cov = plot_covariance_heatmap(manual_cov, FEATURE_COLS)
@@ -392,49 +489,55 @@ with tab2:
             st.pyplot(fig_corr, use_container_width=True)
 
         st.markdown("---")
-        st.subheader("Principal Eigen-Decomposition & Variance Explained")
+        st.subheader("Principal Component Analysis (PCA): What Matters Most")
+        st.markdown(
+            """
+            <div class="formula-card">
+                <strong>What does PCA do?</strong> Instead of analyzing 4 measurements separately, PCA combines them 
+                into master 'principal components'. <strong>Component 1 (PC1)</strong> represents overall flower size 
+                and alone accounts for the vast majority of the total variation!
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         eigen_res = compute_eigen_decomposition(manual_cov)
-        
         eigen_df = pd.DataFrame({
-            "Principal Component": ["PC1", "PC2", "PC3", "PC4"],
+            "Principal Component": ["PC1 (Overall Flower Size)", "PC2 (Sepal Ratio)", "PC3 (Subtle Variation)", "PC4 (Minor Noise)"],
             "Eigenvalue (λ)": eigen_res["eigenvalues"],
             "Variance Explained (%)": eigen_res["variance_explained_pct"],
-            "Cumulative Variance (%)": eigen_res["cumulative_variance_pct"],
+            "Cumulative Total (%)": eigen_res["cumulative_variance_pct"],
         })
         st.dataframe(
             eigen_df.style.format({
                 "Eigenvalue (λ)": "{:.4f}",
                 "Variance Explained (%)": "{:.2f}%",
-                "Cumulative Var (%)": "{:.2f}%",
+                "Cumulative Total (%)": "{:.2f}%",
             }),
             use_container_width=True,
             hide_index=True,
         )
-        st.caption(
-            f"**Takeaway:** The first principal component alone captures "
-            f"**{eigen_res['variance_explained_pct'][0]:.1f}%** of the total variance across all 4 flower measurements."
-        )
 
 
 # ==============================================================================
-# TAB 3: MATPLOTLIB VISUAL SUITE
+# TAB 4: VISUAL ANALYTICS GALLERY (MATPLOTLIB)
 # ==============================================================================
-with tab3:
-    st.subheader("Publication-Grade Visual Analytics (Matplotlib)")
+with tab4:
+    st.subheader("📈 Publication-Quality Visual Analytics Suite (Matplotlib)")
     st.markdown(
         """
-        <div class="explain-box">
-            <strong>What to look for:</strong> In Figure 1, notice the dashed crimson line at <strong>2.45 cm</strong>. 
-            Any flower with a petal length shorter than 2.45 cm is guaranteed to be an <strong>Iris Setosa</strong>! 
-            This makes Setosa 100% linearly separable from the other two species.
+        <div class="formula-card">
+            <div class="formula-title">👓 How to Read These Visualizations</div>
+            Each figure highlights a distinct biological relationship. Look at Figure 1: 
+            notice how the purple cluster (Setosa) sits completely on its own below the <strong>2.45 cm line</strong>. 
+            This visual boundary is why computer algorithms can classify Setosa with 100% precision!
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    col_v1, col_v2 = st.columns(2)
-    with col_v1:
-        st.markdown("#### Figure 1: Bivariate Scatter & Setosa Boundary")
+    vg_col1, vg_col2 = st.columns(2)
+    with vg_col1:
+        st.markdown("#### Figure 1: Petal Length vs. Petal Width Clusters")
         if not df_filtered.empty:
             all_centroids = compute_species_centroids(df_filtered, FEATURE_COLS)
             fig_scatter = plot_bivariate_scatter(
@@ -446,165 +549,139 @@ with tab3:
                 show_hulls=True,
             )
             st.pyplot(fig_scatter, use_container_width=True)
-        else:
-            st.write("No data available.")
+            st.caption("★ Stars indicate cluster centers (centroids). Polygons enclose all points per species.")
 
-    with col_v2:
+    with vg_col2:
         st.markdown("#### Figure 2: Boxplot Dispersion Across Species")
-        box_feat = st.selectbox(
-            "Select Feature to Compare:",
-            options=FEATURE_COLS,
-            index=2,
-            format_func=lambda x: FEATURE_LABELS.get(x, x),
-            key="box_feat_sel",
-        )
         if not df_filtered.empty:
-            fig_box = plot_boxplot_dispersion(df_filtered, feature_col=box_feat, selected_species=selected_species)
+            fig_box = plot_boxplot_dispersion(df_filtered, feature="petal_length")
             st.pyplot(fig_box, use_container_width=True)
-        else:
-            st.write("No data available.")
+            st.caption("Horizontal lines mark medians and interquartile ranges (IQR). Setosa shows zero overlap with the others.")
 
     st.markdown("---")
-    st.subheader("Figure 3: 4-Panel Multi-Attribute Distribution Histograms")
-    st.caption("Dashed vertical lines show the mean value for each species:")
+    st.markdown("#### Figure 3: Four-Panel Dimensional Distribution Histograms")
     if not df_filtered.empty:
-        fig_hist = plot_distributions_grid(df_filtered)
+        fig_hist = plot_distributions_grid(df_filtered, FEATURE_COLS)
         st.pyplot(fig_hist, use_container_width=True)
+        st.caption("Dashed vertical lines indicate species mean values. Notice the bimodal peaks in petal dimensions.")
 
 
 # ==============================================================================
-# TAB 4: INTERACTIVE CLASSIFIER & DATABASE LOGGER
+# TAB 5: LIVE SPECIES CLASSIFIER & DATABASE LOGGER
 # ==============================================================================
-with tab4:
-    st.subheader("Live Nearest-Centroid Classifier (NumPy Distance Vector)")
+with tab5:
+    st.subheader("🎯 Live Species Classifier (Nearest Centroid) & SQLite Logger")
     st.markdown(
         r"""
-        <div class="explain-box">
-            <strong>How this works:</strong>
-            We compute the mathematical center (centroid $\mathbf{\mu}_c$) for each flower species. 
-            When you adjust the sliders below, NumPy computes the straight-line Euclidean distance:
-            $$\|\mathbf{x} - \mathbf{\mu}_c\|_2 = \sqrt{\sum_{j=1}^4 (x_j - \mu_{c,j})^2}$$
-            The flower class with the shortest distance to your input is assigned as the live prediction.
+        <div class="formula-card">
+            <div class="formula-title">🧠 How the Classification Algorithm Works</div>
+            This classifier uses pure <strong>Euclidean distance in 4 dimensions</strong>:
+            <br>$$\text{Distance} = \sqrt{(sl - \mu_{sl})^2 + (sw - \mu_{sw})^2 + (pl - \mu_{pl})^2 + (pw - \mu_{pw})^2}$$
+            It compares your flower against typical Setosa, Versicolor, and Virginica averages. 
+            The species with the <strong>shortest distance</strong> is the predicted winner!
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    # Preset Quick Buttons
-    st.markdown("**Quick Preset Profiles (Click to Auto-Fill Values):**")
-    p_col1, p_col2, p_col3, p_col4 = st.columns(4)
-    with p_col1:
-        st.button("🌸 Typical Setosa", on_click=set_classifier_preset, args=(5.0, 3.4, 1.5, 0.2), use_container_width=True)
-    with p_col2:
-        st.button("🌿 Typical Versicolor", on_click=set_classifier_preset, args=(5.9, 2.8, 4.3, 1.3), use_container_width=True)
-    with p_col3:
-        st.button("🌺 Typical Virginica", on_click=set_classifier_preset, args=(6.6, 3.0, 5.6, 2.0), use_container_width=True)
-    with p_col4:
-        st.button("🔄 Reset Default", on_click=set_classifier_preset, args=(5.8, 3.0, 4.2, 1.3), use_container_width=True)
+    # Use the current flower slider values from Tab 1
+    t5_c1, t5_c2, t5_c3, t5_c4 = st.columns(4)
+    with t5_c1:
+        c_sl = st.number_input("Sepal Length (cm)", 4.0, 8.0, float(st.session_state["flower_sl"]), 0.1, key="num_sl")
+    with t5_c2:
+        c_sw = st.number_input("Sepal Width (cm)", 2.0, 4.5, float(st.session_state["flower_sw"]), 0.1, key="num_sw")
+    with t5_c3:
+        c_pl = st.number_input("Petal Length (cm)", 1.0, 7.0, float(st.session_state["flower_pl"]), 0.1, key="num_pl")
+    with t5_c4:
+        c_pw = st.number_input("Petal Width (cm)", 0.1, 2.6, float(st.session_state["flower_pw"]), 0.1, key="num_pw")
 
-    # 4 Clean Columns for Sliders (from user's snippet layout)
-    st.markdown("#### Adjust Morphological Parameters:")
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        in_sl = st.slider("Sepal Length (cm)", 4.0, 8.0, float(st.session_state["slider_sl"]), 0.1, key="slider_sl")
-    with c2:
-        in_sw = st.slider("Sepal Width (cm)", 2.0, 4.5, float(st.session_state["slider_sw"]), 0.1, key="slider_sw")
-    with c3:
-        in_pl = st.slider("Petal Length (cm)", 1.0, 7.0, float(st.session_state["slider_pl"]), 0.1, key="slider_pl")
-    with c4:
-        in_pw = st.slider("Petal Width (cm)", 0.1, 2.6, float(st.session_state["slider_pw"]), 0.1, key="slider_pw")
+    c_point = np.array([c_sl, c_sw, c_pl, c_pw], dtype=float)
+    c_centroids = compute_species_centroids(df_raw, FEATURE_COLS)
+    c_pred_res = predict_nearest_centroid(c_point, c_centroids)
 
-    # Construct Input Point Vector
-    input_point = np.array([in_sl, in_sw, in_pl, in_pw], dtype=float)
-
-    # Baseline Centroids
-    baseline_centroids = compute_species_centroids(df_raw, FEATURE_COLS)
-    prediction_result = predict_nearest_centroid(input_point, baseline_centroids)
-
-    pred_species = prediction_result["predicted_species"]
-    min_dist = prediction_result["min_distance"]
-    distances = prediction_result["distances"]
-    proximities = prediction_result["proximity_pct"]
+    c_species = c_pred_res["predicted_species"]
+    c_dist = c_pred_res["min_distance"]
+    c_dists = c_pred_res["distances"]
+    c_prox = c_pred_res["proximity_pct"]
 
     st.markdown("---")
-    
-    # Results Presentation
-    res_col1, res_col2 = st.columns([1, 1])
-    with res_col1:
-        st.success(f"### Predicted Species: **Iris {pred_species}**")
-        st.write(f"**Shortest Euclidean Distance:** `{min_dist:.4f} cm`")
-        st.write(f"**Softmax Confidence Score:** `{proximities[pred_species]:.1f}%`")
-        
-        # Save to Database Button
-        if st.button("💾 Save Prediction to SQLite Database", type="primary", use_container_width=True):
+    res_c1, res_c2 = st.columns([1, 1])
+    with res_c1:
+        st.markdown(
+            f'''
+            <div class="prediction-card">
+                <div class="prediction-title">Predicted Species Match</div>
+                <div class="prediction-species">🌸 Iris {c_species}</div>
+                <div style="color:#475569;font-size:0.95rem;margin-top:0.4rem;">
+                    Shortest Distance: <strong>{c_dist:.3f} cm</strong> • Confidence: <strong>{c_prox[c_species]:.1f}%</strong>
+                </div>
+            </div>
+            ''',
+            unsafe_allow_html=True
+        )
+
+        # Database Log Button
+        if st.button("💾 Save This Prediction to SQLite Database", type="primary", use_container_width=True):
             new_id = database.log_prediction(
-                sepal_length=in_sl,
-                sepal_width=in_sw,
-                petal_length=in_pl,
-                petal_width=in_pw,
-                predicted_species=pred_species,
-                confidence_pct=round(proximities[pred_species], 1),
-                distance_cm=round(min_dist, 4),
+                sepal_length=c_sl,
+                sepal_width=c_sw,
+                petal_length=c_pl,
+                petal_width=c_pw,
+                predicted_species=c_species,
+                confidence_pct=round(c_prox[c_species], 1),
+                distance_cm=round(c_dist, 4),
             )
             st.toast(f"✅ Prediction #{new_id} saved to database!", icon="💾")
+            st.rerun()
 
-    with res_col2:
+    with res_c2:
         dist_df = pd.DataFrame([
-            {"Species": sp, "Euclidean Distance (cm)": f"{distances[sp]:.4f}", "Confidence Match (%)": f"{proximities[sp]:.1f}%"}
+            {"Species": sp, "Distance to Center (cm)": f"{c_dists[sp]:.3f} cm", "Match Confidence (%)": f"{c_prox[sp]:.1f}%"}
             for sp in ["Setosa", "Versicolor", "Virginica"]
         ])
         st.dataframe(dist_df, use_container_width=True, hide_index=True)
 
-    # Visual Distance Diagnostics & 2D Projection
     st.markdown("---")
-    diag_c1, diag_c2 = st.columns(2)
-    with diag_c1:
-        st.markdown("#### Distance & Confidence Bar Charts")
-        fig_diag = plot_prediction_diagnostics(distances, proximities, pred_species)
+    st.markdown("#### 2D Spatial Projection & Diagnostics")
+    d_c1, d_c2 = st.columns(2)
+    with d_c1:
+        fig_diag = plot_prediction_diagnostics(c_dists, c_prox, c_species)
         st.pyplot(fig_diag, use_container_width=True)
-
-    with diag_c2:
-        st.markdown("#### Live Query Point Space Projection")
+    with d_c2:
         fig_proj = plot_query_point_projection(
             df_raw,
-            input_point,
-            baseline_centroids,
-            pred_species,
+            c_point,
+            c_centroids,
+            c_species,
             x_col="petal_length",
             y_col="petal_width",
         )
         st.pyplot(fig_proj, use_container_width=True)
 
-    # Step-by-Step Math Breakdown
-    with st.expander("📐 Step-by-Step Distance Calculation Breakdown"):
-        st.write(rf"**Your Input Vector $\mathbf{{x}}$:** `[{in_sl:.2f}, {in_sw:.2f}, {in_pl:.2f}, {in_pw:.2f}]`")
-        math_records = []
-        for sp in ["Setosa", "Versicolor", "Virginica"]:
-            c_vec = baseline_centroids[sp]
-            diff = input_point - c_vec
-            math_records.append({
-                "Species Class": sp,
-                r"Centroid $\mathbf{\mu}_c$": f"[{c_vec[0]:.2f}, {c_vec[1]:.2f}, {c_vec[2]:.2f}, {c_vec[3]:.2f}]",
-                r"Difference $(\mathbf{x} - \mathbf{\mu}_c)$": f"[{diff[0]:+.2f}, {diff[1]:+.2f}, {diff[2]:+.2f}, {diff[3]:+.2f}]",
-                "Euclidean Distance": f"{distances[sp]:.4f} cm",
-                "Winner": "🏆 Closest" if sp == pred_species else "-",
-            })
-        st.dataframe(pd.DataFrame(math_records), use_container_width=True, hide_index=True)
+    st.markdown("---")
+    st.subheader("🗄️ Saved Database Logs (SQLite `data/predictions.db`)")
+    recent_db_df = database.get_recent_predictions(limit=10)
+    if not recent_db_df.empty:
+        st.dataframe(recent_db_df, use_container_width=True, hide_index=True)
+        if st.button("🗑️ Clear All Database History"):
+            database.clear_prediction_history()
+            st.success("Database records cleared.")
+            st.rerun()
+    else:
+        st.info("No predictions saved yet. Click 'Save This Prediction to SQLite Database' above to log entries!")
 
 
 # ------------------------------------------------------------------------------
-# Footer
+# Mono Bootstrap Clean Footer (No Academic / Student Names)
 # ------------------------------------------------------------------------------
 st.markdown("---")
 st.markdown(
     """
-    <div style="text-align: center; color: #475569; font-size: 0.85rem; padding: 1.25rem 0; line-height: 1.6;">
-        <strong>CSE Mini-Project:</strong> Multidimensional Exploratory Data Analysis of the Iris Dataset<br>
-        <strong>Team Members:</strong> Balaji (Team Lead) • Ahamed Rasim • Kishore Kumar • Aadthiyan<br>
-        <strong>Faculty Guide:</strong> Prof. Keerthana • Department of Computer Science & Engineering<br>
-        <span style="color: #059669; font-weight: 600;">Connected Database: SQLite (data/predictions.db)</span>
+    <div style="text-align: center; color: #64748b; font-size: 0.85rem; padding: 1.5rem 0; line-height: 1.6;">
+        <strong>Iris Flower Data Analysis</strong> • Multidimensional Morphometry & Statistical Suite<br>
+        Powered by NumPy, Pandas, Matplotlib, Streamlit & SQLite Database<br>
+        <span style="color: #0f172a; font-weight: 600;">Mono Bootstrap Architecture • 24/7 Production Deployment</span>
     </div>
     """,
     unsafe_allow_html=True,
 )
-

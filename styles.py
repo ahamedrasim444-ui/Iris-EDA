@@ -648,47 +648,23 @@ def render_species_cards_html() -> str:
 def render_team_footer() -> str:
     """Renders Module 6: Footer with Team Members and CSE Department Credits."""
     return """
-    <div style="background: linear-gradient(135deg, #0D1424 0%, #131B2E 100%); border: 1px solid rgba(51, 65, 85, 0.45); border-radius: 16px; padding: 2rem 2.5rem; margin-top: 2.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem;">
-            <div>
-                <div style="font-size: 1.25rem; font-weight: 800; color: #F8FAFC; letter-spacing: -0.01em;">
-                    Department of Computer Science &amp; Engineering
-                </div>
-                <div style="font-size: 0.88rem; color: #38BDF8; font-weight: 600; margin-top: 4px;">
-                    Data Science &amp; Multidimensional Analytics (CS601) &bull; Mini-Project
-                </div>
-                <div style="font-size: 0.84rem; color: #94A3B8; margin-top: 8px;">
-                    Faculty Guide: <strong style="color: #F8FAFC;">Prof. Keerthana</strong>, Assistant Professor, Dept of CSE
-                </div>
-            </div>
-            <div style="text-align: right;">
-                <span style="background: rgba(56, 189, 248, 0.12); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.35); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 20px;">
-                    TEAM OF 4 &bull; CSE
-                </span>
-            </div>
+    <div style="background: linear-gradient(135deg, #0D1424 0%, #131B2E 100%); border: 1px solid rgba(51, 65, 85, 0.45); border-radius: 16px; padding: 1.75rem 2rem; margin-top: 2.5rem; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+        <div style="font-size: 1.15rem; font-weight: 800; color: #F8FAFC; letter-spacing: -0.01em;">
+            IRIS BOTANICAL ANALYTICS LAB
         </div>
-
-        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(51, 65, 85, 0.4); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
-            <div style="background: #0B0F17; padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(51,65,85,0.4);">
-                <div style="font-weight: 700; color: #F8FAFC; font-size: 0.92rem;">Balaji (Team Lead)</div>
-                <div style="font-size: 0.78rem; color: #38BDF8;">Project Lead &amp; System Architecture</div>
-            </div>
-            <div style="background: #0B0F17; padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(51,65,85,0.4);">
-                <div style="font-weight: 700; color: #F8FAFC; font-size: 0.92rem;">Ahamed Rasim</div>
-                <div style="font-size: 0.78rem; color: #34D399;">Data Pipeline &amp; Pandas Engineering</div>
-            </div>
-            <div style="background: #0B0F17; padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(51,65,85,0.4);">
-                <div style="font-weight: 700; color: #F8FAFC; font-size: 0.92rem;">Kishore Kumar</div>
-                <div style="font-size: 0.78rem; color: #F59E0B;">NumPy Mathematical &amp; Linear Algebra</div>
-            </div>
-            <div style="background: #0B0F17; padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(51,65,85,0.4);">
-                <div style="font-weight: 700; color: #F8FAFC; font-size: 0.92rem;">Aadthiyan</div>
-                <div style="font-size: 0.78rem; color: #A78BFA;">Matplotlib Visual Analytics &amp; Frontend UI</div>
-            </div>
+        <div style="font-size: 0.84rem; color: #38BDF8; font-weight: 600; margin-top: 4px;">
+            Multidimensional Exploratory Data Analysis Suite &bull; Python Scientific Stack
         </div>
-
-        <div style="margin-top: 1.25rem; text-align: center; font-size: 0.78rem; color: #64748B;">
-            Iris Dataset originally collected by Edgar Anderson (1935) &bull; Analyzed by Ronald A. Fisher (1936) &bull; Designed with Deep Tech Obsidian System
+        <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; margin: 1.1rem 0;">
+            <span style="background: rgba(255, 255, 255, 0.05); color: #94A3B8; border: 1px solid rgba(51, 65, 85, 0.4); border-radius: 14px; padding: 4px 12px; font-size: 0.76rem; font-weight: 500;">Python 3</span>
+            <span style="background: rgba(255, 255, 255, 0.05); color: #94A3B8; border: 1px solid rgba(51, 65, 85, 0.4); border-radius: 14px; padding: 4px 12px; font-size: 0.76rem; font-weight: 500;">Streamlit</span>
+            <span style="background: rgba(255, 255, 255, 0.05); color: #94A3B8; border: 1px solid rgba(51, 65, 85, 0.4); border-radius: 14px; padding: 4px 12px; font-size: 0.76rem; font-weight: 500;">NumPy Linear Algebra</span>
+            <span style="background: rgba(255, 255, 255, 0.05); color: #94A3B8; border: 1px solid rgba(51, 65, 85, 0.4); border-radius: 14px; padding: 4px 12px; font-size: 0.76rem; font-weight: 500;">Matplotlib Visualizations</span>
+            <span style="background: rgba(255, 255, 255, 0.05); color: #94A3B8; border: 1px solid rgba(51, 65, 85, 0.4); border-radius: 14px; padding: 4px 12px; font-size: 0.76rem; font-weight: 500;">SQLite Persistence</span>
+            <span style="background: rgba(255, 255, 255, 0.05); color: #94A3B8; border: 1px solid rgba(51, 65, 85, 0.4); border-radius: 14px; padding: 4px 12px; font-size: 0.76rem; font-weight: 500;">Fisher&#39;s Iris Dataset</span>
+        </div>
+        <div style="font-size: 0.78rem; color: #64748B; margin-top: 0.5rem;">
+            Enterprise Data Science Dashboard &bull; Pure Open-Source Scientific Computing
         </div>
     </div>
     """

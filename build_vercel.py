@@ -39,7 +39,7 @@ def build_vercel_bundle():
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Sneat | Iris Flower Data Analysis & Morphometry</title>
+    <title>Iris Analytics Lab | Deep Tech Obsidian</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.63.1/build/stlite.css" />
     <style>
@@ -48,8 +48,8 @@ def build_vercel_bundle():
         padding: 0;
         width: 100%;
         height: 100%;
-        background-color: #232333;
-        color: #e1def5;
+        background-color: #0B0F17;
+        color: #F8FAFC;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       }}
       #root {{
@@ -62,16 +62,16 @@ def build_vercel_bundle():
         justify-content: center;
         align-items: center;
         height: 100vh;
-        color: #e1def5;
-        background: #232333;
+        color: #F8FAFC;
+        background: #0B0F17;
         text-align: center;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }}
       .spinner {{
         width: 48px;
         height: 48px;
-        border: 4px solid #3b3e5b;
-        border-top: 4px solid #696cff;
+        border: 4px solid #1E293B;
+        border-top: 4px solid #38BDF8;
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-bottom: 16px;
@@ -86,9 +86,9 @@ def build_vercel_bundle():
     <div id="root">
       <div class="loading-screen" id="loading">
         <div class="spinner"></div>
-        <h2 style="margin: 0 0 8px 0; font-size: 1.3rem; color: #e1def5;">🌸 Loading Sneat Dark Iris Data Analysis...</h2>
-        <p style="margin: 0; color: #b2b3ca; font-size: 0.95rem;">
-          Initializing NumPy, Pandas & Matplotlib engine via WebAssembly
+        <h2 style="margin: 0 0 8px 0; font-size: 1.3rem; color: #F8FAFC;">🌸 Loading Iris Analytics Lab...</h2>
+        <p style="margin: 0; color: #94A3B8; font-size: 0.95rem;">
+          Initializing NumPy Linear Algebra &amp; Matplotlib Engine via WebAssembly
         </p>
       </div>
     </div>
@@ -103,10 +103,10 @@ def build_vercel_bundle():
           files: bundledFiles,
           streamlitConfig: {{
             "theme.base": "dark",
-            "theme.primaryColor": "#696cff",
-            "theme.backgroundColor": "#232333",
-            "theme.secondaryBackgroundColor": "#2b2c40",
-            "theme.textColor": "#e1def5"
+            "theme.primaryColor": "#38BDF8",
+            "theme.backgroundColor": "#0B0F17",
+            "theme.secondaryBackgroundColor": "#131B2E",
+            "theme.textColor": "#F8FAFC"
           }}
         }},
         document.getElementById("root")

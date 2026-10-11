@@ -18,9 +18,9 @@ FEATURE_LABELS = {
     "petal_width": "Petal Width (cm)",
 }
 SPECIES_COLORS = {
-    "Setosa": "#696cff",      # Sneat Primary Purple
-    "Versicolor": "#03c3ec",  # Sneat Info Cyan
-    "Virginica": "#71dd37",   # Sneat Success Green
+    "Setosa":     "#38BDF8",  # Electric Cyan
+    "Versicolor": "#F59E0B",  # Warm Amber
+    "Virginica":  "#A78BFA",  # Soft Lavender
 }
 
 

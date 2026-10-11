@@ -11,8 +11,8 @@ serverAddress = "localhost"
 
 [theme]
 base = "dark"
-primaryColor = "#696cff"
-backgroundColor = "#232333"
-secondaryBackgroundColor = "#2b2c40"
-textColor = "#e1def5"
+primaryColor = "#38BDF8"
+backgroundColor = "#0B0F17"
+secondaryBackgroundColor = "#131B2E"
+textColor = "#F8FAFC"
 font = "sans serif"

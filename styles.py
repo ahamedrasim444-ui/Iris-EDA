@@ -580,7 +580,7 @@ def render_species_cards_html() -> str:
                 <div><strong style="color:#F8FAFC;">Sepal Width:</strong> 2.3 &ndash; 4.4 cm</div>
             </div>
             <div style="margin-top:10px; padding-top:8px; border-top:1px solid rgba(51,65,85,0.4); font-size:0.75rem; color:#38BDF8;">
-                â˜… 100% clean threshold cut at Petal Length &le; 2.45 cm
+                &bull; 100% clean threshold cut at Petal Length &le; 2.45 cm
             </div>
         </div>
 
@@ -609,7 +609,7 @@ def render_species_cards_html() -> str:
                 <div><strong style="color:#F8FAFC;">Sepal Width:</strong> 2.0 &ndash; 3.4 cm</div>
             </div>
             <div style="margin-top:10px; padding-top:8px; border-top:1px solid rgba(51,65,85,0.4); font-size:0.75rem; color:#F59E0B;">
-                â˜… Minor overlap with Virginica near Petal Length 4.8 cm
+                &bull; Minor overlap with Virginica near Petal Length 4.8 cm
             </div>
         </div>
 
@@ -638,7 +638,7 @@ def render_species_cards_html() -> str:
                 <div><strong style="color:#F8FAFC;">Sepal Width:</strong> 2.2 &ndash; 3.8 cm</div>
             </div>
             <div style="margin-top:10px; padding-top:8px; border-top:1px solid rgba(51,65,85,0.4); font-size:0.75rem; color:#A78BFA;">
-                â˜… Highest petal area proxy (mean ~11.3 cmÂ²)
+                &bull; Highest petal area proxy (mean ~11.3 sq cm)
             </div>
         </div>
     </div>

@@ -4,7 +4,7 @@ app.py / streamlit_app.py
 Iris Botanical Analytics Lab - Multidimensional Exploratory Data Analysis Suite.
 Deep Tech Obsidian Dark Theme (#0B0F17) with High-Contrast Typography,
 Pure NumPy Mathematical Engine, Matplotlib Visual Analytics, and SQLite Persistence.
-Zero raw HTML dumps, zero mojibake, zero personal names, 100% production ready.
+Cross-platform verified for Mobile, Tablet, and Desktop. Zero mojibake, zero personal names.
 """
 
 import os
@@ -13,6 +13,9 @@ import sqlite3
 import numpy as np
 import pandas as pd
 import matplotlib
+
+# Force Agg backend immediately for 100% headless / cross-platform / mobile stability
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse, Circle
 from matplotlib.colors import LinearSegmentedColormap
@@ -29,19 +32,19 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------------------------------
-# 2. BULLETPROOF HTML RENDERER (ELIMINATES 4-SPACE MARKDOWN CODE BLOCKS)
+# 2. BULLETPROOF HTML RENDERER (COLLAPSES NEWLINES TO PREVENT MARKDOWN CODE BLOCKS)
 # ------------------------------------------------------------------------------
 def render_html(html_code: str):
     """
     Renders HTML safely with unsafe_allow_html=True.
-    Strips leading and trailing spaces from every line so CommonMark markdown
-    parsers will NEVER treat HTML tags or indented blocks as 4-space code blocks.
+    Collapses all line breaks into a single continuous stream so CommonMark markdown
+    parsers will NEVER split HTML tags or misinterpret 4-space indentation as code blocks.
     """
-    cleaned = "\n".join(line.strip() for line in html_code.strip().splitlines() if line.strip())
+    cleaned = " ".join(line.strip() for line in html_code.strip().splitlines() if line.strip())
     st.markdown(cleaned, unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# 3. DESIGN SYSTEM & CSS (OBSIDIAN DARK THEME #0B0F17)
+# 3. DESIGN SYSTEM & CSS (OBSIDIAN DARK THEME #0B0F17 - RESPONSIVE ON ALL DEVICES)
 # ------------------------------------------------------------------------------
 OBSIDIAN_CSS = """
 <style>
@@ -51,18 +54,19 @@ OBSIDIAN_CSS = """
     --bg-canvas: #0B0F17;
     --bg-card: #131B2E;
     --bg-card-hover: #1E293B;
-    --border-color: rgba(51, 65, 85, 0.45);
+    --border-color: rgba(51, 65, 85, 0.5);
     --border-highlight: rgba(56, 189, 248, 0.5);
     --cyan: #38BDF8;
     --emerald: #34D399;
     --amber: #F59E0B;
     --lavender: #A78BFA;
     --red: #F43F5E;
-    --text-white: #F8FAFC;
-    --text-slate: #94A3B8;
-    --text-muted: #64748B;
+    --text-white: #FFFFFF;
+    --text-slate: #E2E8F0;
+    --text-muted: #94A3B8;
 }
 
+/* Global Reset & Base Typography */
 html, body, .stApp {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     background-color: var(--bg-canvas) !important;
@@ -70,108 +74,118 @@ html, body, .stApp {
 }
 
 .stApp > header {
-    background-color: rgba(11, 15, 23, 0.9) !important;
-    backdrop-filter: blur(12px) !important;
-    border-bottom: 1px solid var(--border-color) !important;
+    background-color: transparent !important;
 }
 
 .block-container {
     padding-top: 1rem !important;
-    padding-bottom: 3rem !important;
+    padding-bottom: 2.5rem !important;
     max-width: 1400px !important;
+    padding-left: clamp(1rem, 3vw, 2.5rem) !important;
+    padding-right: clamp(1rem, 3vw, 2.5rem) !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
     color: var(--text-white) !important;
     font-weight: 700 !important;
-    letter-spacing: -0.02em !important;
+    letter-spacing: -0.01em !important;
 }
 
-p, li, span, div {
-    color: var(--text-slate);
-    line-height: 1.6;
+p, li {
+    color: var(--text-slate) !important;
+    line-height: 1.65 !important;
 }
 
 strong, b {
     color: var(--text-white) !important;
 }
 
-/* Sticky Executive Top Navigation Header */
+/* Top Navigation Bar (Fully Responsive across Mobile, Tablet, Laptop) */
 .top-header-banner {
-    position: sticky;
-    top: 0;
-    z-index: 99;
     width: 100%;
-    background: linear-gradient(135deg, rgba(19, 27, 46, 0.94) 0%, rgba(14, 21, 38, 0.98) 100%);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    box-sizing: border-box;
+    background: linear-gradient(135deg, rgba(19, 27, 46, 0.96) 0%, rgba(14, 21, 38, 0.98) 100%);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 1.1rem 1.6rem;
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
     margin-bottom: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.25rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    gap: 1rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
     flex-wrap: wrap;
 }
 
-.brand-section {
+.brand-container {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
+    min-width: 240px;
+}
+
+.brand-logo-wrap {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.brand-text-wrap {
+    display: flex;
+    flex-direction: column;
 }
 
 .brand-title {
-    font-size: 1.3rem;
+    font-size: clamp(1.05rem, 3.5vw, 1.3rem);
     font-weight: 800;
     color: var(--text-white);
     letter-spacing: -0.01em;
-    line-height: 1.15;
+    line-height: 1.2;
 }
 
 .brand-sub {
-    font-size: 0.8rem;
+    font-size: clamp(0.72rem, 2vw, 0.8rem);
     color: var(--cyan);
     font-weight: 500;
     margin-top: 3px;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
 }
 
 .badge-cluster {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
 .status-badge-active {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     background: rgba(52, 211, 153, 0.12);
     color: var(--emerald);
     border: 1px solid rgba(52, 211, 153, 0.4);
     border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 0.78rem;
+    padding: 5px 12px;
+    font-size: 0.76rem;
     font-weight: 700;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
 }
 
 .pulse-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background-color: var(--emerald);
-    box-shadow: 0 0 10px var(--emerald);
+    box-shadow: 0 0 8px var(--emerald);
     animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
     0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
-    70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
     100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
 }
 
@@ -180,10 +194,11 @@ strong, b {
     color: var(--cyan);
     border: 1px solid rgba(56, 189, 248, 0.4);
     border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 0.78rem;
+    padding: 5px 12px;
+    font-size: 0.76rem;
     font-weight: 600;
     letter-spacing: 0.02em;
+    white-space: nowrap;
 }
 
 .status-badge-dataset {
@@ -191,21 +206,44 @@ strong, b {
     color: var(--lavender);
     border: 1px solid rgba(167, 139, 250, 0.4);
     border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 0.78rem;
+    padding: 5px 12px;
+    font-size: 0.76rem;
     font-weight: 600;
     letter-spacing: 0.02em;
+    white-space: nowrap;
 }
 
-/* Metric KPI Cards */
+/* Mobile & Tablet Navbar Tweaks */
+@media (max-width: 768px) {
+    .top-header-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.85rem 1rem;
+        gap: 0.75rem;
+    }
+    .brand-container {
+        width: 100%;
+    }
+    .badge-cluster {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .status-badge-active, .status-badge-academic, .status-badge-dataset {
+        font-size: 0.72rem !important;
+        padding: 4px 10px !important;
+    }
+}
+
+/* Metric KPI Cards (Responsive Grid) */
 .obs-metric-card {
     background: linear-gradient(135deg, #131B2E 0%, #17233B 100%);
     border: 1px solid var(--border-color);
-    border-radius: 14px;
-    padding: 1.25rem 1.4rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
     transition: transform 0.2s ease, border-color 0.2s ease;
     height: 100%;
+    box-sizing: border-box;
 }
 
 .obs-metric-card:hover {
@@ -214,51 +252,53 @@ strong, b {
 }
 
 .metric-title {
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
 }
 
 .metric-value {
-    font-size: 1.85rem;
+    font-size: clamp(1.4rem, 3.5vw, 1.85rem);
     font-weight: 800;
     color: var(--text-white);
-    margin: 6px 0 2px 0;
+    margin: 5px 0 2px 0;
     font-feature-settings: "tnum";
 }
 
 .metric-subtitle {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--text-slate);
 }
 
 /* Botanical Guide Card */
 .obs-guide-card {
-    background: linear-gradient(135deg, rgba(19, 27, 46, 0.7) 0%, rgba(23, 35, 59, 0.7) 100%);
+    background: linear-gradient(135deg, rgba(19, 27, 46, 0.85) 0%, rgba(23, 35, 59, 0.85) 100%);
     border: 1px solid var(--border-color);
     border-left: 4px solid var(--cyan);
     border-radius: 12px;
-    padding: 1.25rem 1.5rem;
-    margin: 1.25rem 0;
+    padding: 1.1rem 1.35rem;
+    margin: 1.1rem 0;
+    color: var(--text-slate);
 }
 
 .obs-guide-title {
-    font-size: 1rem;
+    font-size: 0.98rem;
     font-weight: 700;
     color: var(--cyan);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.45rem;
 }
 
 /* Species Summary Panels */
 .obs-panel {
     background: #131B2E;
     border: 1px solid var(--border-color);
-    border-radius: 14px;
-    padding: 1.25rem 1.4rem;
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     height: 100%;
+    box-sizing: border-box;
 }
 
 /* Sidebar Custom Styling */
@@ -278,54 +318,60 @@ section[data-testid="stSidebar"] h3 {
 }
 
 .sidebar-info-card {
-    background: rgba(19, 27, 46, 0.85);
+    background: rgba(19, 27, 46, 0.9);
     border: 1px solid rgba(51, 65, 85, 0.5);
     border-radius: 12px;
-    padding: 1rem;
+    padding: 0.9rem;
     margin-top: 0.75rem;
     margin-bottom: 0.5rem;
 }
 
 .sidebar-info-title {
-    font-size: 0.74rem;
+    font-size: 0.72rem;
     font-weight: 700;
     color: var(--cyan);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
 }
 
 .sidebar-info-value {
-    font-size: 1.35rem;
+    font-size: 1.25rem;
     font-weight: 800;
     color: var(--text-white);
     margin-top: 4px;
 }
 
 .sidebar-info-sub {
-    font-size: 0.76rem;
+    font-size: 0.75rem;
     color: var(--text-slate);
     margin-top: 2px;
 }
 
-/* Streamlit Native Tabs */
+/* Streamlit Native Tabs (Horizontal Scrollable on Mobile) */
 .stTabs [data-baseweb="tab-list"] {
     background-color: #131B2E !important;
     border: 1px solid var(--border-color) !important;
-    border-radius: 14px !important;
-    padding: 6px !important;
-    gap: 8px !important;
+    border-radius: 12px !important;
+    padding: 5px !important;
+    gap: 6px !important;
     margin-bottom: 1.25rem !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
 }
 
 .stTabs [data-baseweb="tab"] {
     background-color: transparent !important;
     color: var(--text-muted) !important;
     font-weight: 600 !important;
-    font-size: 0.92rem !important;
-    border-radius: 10px !important;
-    padding: 10px 20px !important;
+    font-size: clamp(0.82rem, 2.5vw, 0.92rem) !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
     transition: all 0.2s ease !important;
     border: none !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
 }
 
 .stTabs [data-baseweb="tab"]:hover {
@@ -337,7 +383,7 @@ section[data-testid="stSidebar"] h3 {
     background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(14, 77, 107, 0.4) 100%) !important;
     color: var(--cyan) !important;
     border: 1px solid rgba(56, 189, 248, 0.5) !important;
-    box-shadow: 0 0 16px rgba(56, 189, 248, 0.25) !important;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.25) !important;
 }
 
 .stTabs [data-baseweb="tab-panel"] {
@@ -348,39 +394,39 @@ section[data-testid="stSidebar"] h3 {
 .prediction-banner {
     background: linear-gradient(145deg, #131B2E 0%, #1A2846 100%);
     border: 2px solid var(--cyan);
-    border-radius: 16px;
-    padding: 1.75rem 2rem;
-    box-shadow: 0 10px 32px rgba(56, 189, 248, 0.25);
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 8px 28px rgba(56, 189, 248, 0.25);
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .pred-species-title {
-    font-size: 2.25rem;
+    font-size: clamp(1.8rem, 5vw, 2.3rem);
     font-weight: 800;
     letter-spacing: -0.02em;
-    margin: 8px 0;
+    margin: 6px 0;
 }
 
 /* Product Footer */
 .product-footer {
     background: linear-gradient(135deg, #0D1424 0%, #131B2E 100%);
     border: 1px solid rgba(51, 65, 85, 0.45);
-    border-radius: 16px;
-    padding: 1.75rem 2rem;
-    margin-top: 2.5rem;
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    margin-top: 2.25rem;
     text-align: center;
 }
 
 .footer-title {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 800;
     color: var(--text-white);
     letter-spacing: -0.01em;
 }
 
 .footer-subtitle {
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     color: var(--cyan);
     font-weight: 600;
     margin-top: 4px;
@@ -392,7 +438,7 @@ section[data-testid="stSidebar"] h3 {
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    margin: 1.1rem 0;
+    margin: 1rem 0;
 }
 
 .footer-pill {
@@ -400,15 +446,15 @@ section[data-testid="stSidebar"] h3 {
     color: var(--text-slate);
     border: 1px solid rgba(51, 65, 85, 0.4);
     border-radius: 14px;
-    padding: 4px 12px;
-    font-size: 0.76rem;
+    padding: 4px 11px;
+    font-size: 0.75rem;
     font-weight: 500;
 }
 
 .footer-copy {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--text-muted);
-    margin-top: 0.5rem;
+    margin-top: 0.4rem;
 }
 
 /* Buttons, Sliders, Tables */
@@ -417,8 +463,8 @@ section[data-testid="stSidebar"] h3 {
     color: #F8FAFC !important;
     font-weight: 600 !important;
     border: 1px solid rgba(56, 189, 248, 0.5) !important;
-    border-radius: 10px !important;
-    padding: 0.6rem 1.4rem !important;
+    border-radius: 9px !important;
+    padding: 0.55rem 1.25rem !important;
     box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
     transition: all 0.2s ease !important;
 }
@@ -444,7 +490,7 @@ section[data-testid="stSidebar"] h3 {
 .stSelectbox > div > div, .stMultiSelect > div > div {
     background-color: #131B2E !important;
     border: 1px solid var(--border-color) !important;
-    border-radius: 10px !important;
+    border-radius: 9px !important;
     color: var(--text-white) !important;
 }
 
@@ -457,14 +503,14 @@ section[data-testid="stSidebar"] h3 {
 
 .stDataFrame {
     border: 1px solid var(--border-color) !important;
-    border-radius: 12px !important;
+    border-radius: 11px !important;
     overflow: hidden !important;
 }
 
 div[data-testid="stInfo"] {
     background-color: rgba(56, 189, 248, 0.08) !important;
     border-left: 4px solid var(--cyan) !important;
-    border-radius: 0 10px 10px 0 !important;
+    border-radius: 0 9px 9px 0 !important;
     color: var(--text-slate) !important;
 }
 </style>
@@ -474,7 +520,7 @@ render_html(OBSIDIAN_CSS)
 # ------------------------------------------------------------------------------
 # 4. EMBEDDED INLINE SVG FLOWER LOGO
 # ------------------------------------------------------------------------------
-LOGO_SVG = """<svg width="46" height="46" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+LOGO_SVG = """<svg width="44" height="44" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <linearGradient id="logoBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
 <stop offset="0%" stop-color="#0B0F17" />
@@ -591,7 +637,7 @@ with st.sidebar:
     <div style="display:flex; align-items:center; gap:12px; padding:0.25rem 0 0.85rem 0; border-bottom:1px solid rgba(51,65,85,0.45); margin-bottom:1rem;">
         {LOGO_SVG}
         <div>
-            <div style="font-size:1.15rem; font-weight:800; color:#F8FAFC; letter-spacing:-0.01em; line-height:1.15;">Iris Analytics Lab</div>
+            <div style="font-size:1.15rem; font-weight:800; color:#FFFFFF; letter-spacing:-0.01em; line-height:1.15;">Iris Analytics Lab</div>
             <div style="font-size:0.72rem; color:#38BDF8; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;">Control Panel</div>
         </div>
     </div>
@@ -636,7 +682,7 @@ with st.sidebar:
     render_html(f"""
     <div class="sidebar-info-card">
         <div class="sidebar-info-title">Filter Active Status</div>
-        <div class="sidebar-info-value">{len(df_filtered_sidebar)} <span style="font-size:0.85rem; color:#64748B;">/ {len(df_raw)}</span></div>
+        <div class="sidebar-info-value">{len(df_filtered_sidebar)} <span style="font-size:0.85rem; color:#94A3B8;">/ {len(df_raw)}</span></div>
         <div class="sidebar-info-sub">{pct_match:.0f}% of total specimens selected</div>
     </div>
     """)
@@ -660,27 +706,29 @@ df_filtered = df_filtered[
 ]
 
 # ------------------------------------------------------------------------------
-# 9. STICKY TOP PRODUCT HEADER (ANONYMOUS & ELEGANT)
+# 9. RESPONSIVE TOP PRODUCT HEADER (CROSS-PLATFORM SAFE)
 # ------------------------------------------------------------------------------
 render_html(f"""
 <div class="top-header-banner">
-    <div class="brand-section">
-        {LOGO_SVG}
-        <div>
+    <div class="brand-container">
+        <div class="brand-logo-wrap">
+            {LOGO_SVG}
+        </div>
+        <div class="brand-text-wrap">
             <div class="brand-title">IRIS BOTANICAL ANALYTICS LAB</div>
             <div class="brand-sub">Multidimensional Exploratory Data Analysis Suite &bull; Python Scientific Stack</div>
         </div>
     </div>
     <div class="badge-cluster">
         <div class="status-badge-active">
-            <div class="pulse-dot"></div>
+            <span class="pulse-dot"></span>
             <span>Status: Active</span>
         </div>
         <div class="status-badge-academic">
-            <span>Stack: NumPy &bull; Pandas &bull; Matplotlib</span>
+            <span>NumPy &bull; Pandas &bull; Matplotlib</span>
         </div>
         <div class="status-badge-dataset">
-            <span>Dataset: Fisher&#39;s Iris (150 Samples)</span>
+            <span>Fisher&#39;s Iris (150 Samples)</span>
         </div>
     </div>
 </div>
@@ -706,7 +754,7 @@ with tab1:
         render_html(f"""
         <div class="obs-metric-card">
             <div class="metric-title">Total Analyzed Flowers</div>
-            <div class="metric-value" style="color:#38BDF8;">{len(df_filtered)} <span style="font-size:1.05rem; color:#64748B; font-weight:500;">/ 150</span></div>
+            <div class="metric-value" style="color:#38BDF8;">{len(df_filtered)} <span style="font-size:1.05rem; color:#94A3B8; font-weight:500;">/ 150</span></div>
             <div class="metric-subtitle">Sample Size: 150 Flowers (50 per species)</div>
         </div>
         """)
@@ -746,8 +794,8 @@ with tab1:
         <div class="obs-guide-title">Plain-English Botanical Guide: Sepals vs. Petals</div>
         Every Iris flower has two primary leaf structures used for species identification:
         <ul style="margin: 0.35rem 0 0 1.25rem; padding: 0;">
-            <li><strong style="color:#F8FAFC;">Sepals (Falls):</strong> The lower, spreading leaves that droop outward to support the blossom. They protect the flower bud before it opens.</li>
-            <li><strong style="color:#F8FAFC;">Petals (Standards):</strong> The upright, colorful inner petals standing vertically above the floral core.</li>
+            <li><strong style="color:#FFFFFF;">Sepals (Falls):</strong> The lower, spreading leaves that droop outward to support the blossom. They protect the flower bud before it opens.</li>
+            <li><strong style="color:#FFFFFF;">Petals (Standards):</strong> The upright, colorful inner petals standing vertically above the floral core.</li>
         </ul>
         <div style="margin-top: 8px; color:#38BDF8; font-weight: 600;">
             Why Petals Matter Most: While sepals have overlapping sizes across species, petal length and width provide an immediate, clear distinction between Setosa, Versicolor, and Virginica.
@@ -761,10 +809,10 @@ with tab1:
         render_html("""
         <div class="obs-panel" style="border-top: 4px solid #38BDF8;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <h4 style="margin:0; color:#F8FAFC;">Iris Setosa</h4>
+                <h4 style="margin:0; color:#FFFFFF;">Iris Setosa</h4>
                 <span style="background:rgba(56,189,248,0.15); color:#38BDF8; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:12px;">SMALL PETALS</span>
             </div>
-            <div style="font-size:0.83rem; line-height:1.6; color:#94A3B8;">
+            <div style="font-size:0.83rem; line-height:1.6; color:#CBD5E1;">
                 <div>&bull; <strong>Petal Length:</strong> 1.0 &ndash; 1.9 cm (Mean: 1.46 cm)</div>
                 <div>&bull; <strong>Petal Width:</strong> 0.1 &ndash; 0.6 cm (Mean: 0.25 cm)</div>
                 <div>&bull; <strong>Sepal Length:</strong> 4.3 &ndash; 5.8 cm (Mean: 5.01 cm)</div>
@@ -780,10 +828,10 @@ with tab1:
         render_html("""
         <div class="obs-panel" style="border-top: 4px solid #F59E0B;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <h4 style="margin:0; color:#F8FAFC;">Iris Versicolor</h4>
+                <h4 style="margin:0; color:#FFFFFF;">Iris Versicolor</h4>
                 <span style="background:rgba(245,158,11,0.15); color:#F59E0B; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:12px;">MEDIUM PETALS</span>
             </div>
-            <div style="font-size:0.83rem; line-height:1.6; color:#94A3B8;">
+            <div style="font-size:0.83rem; line-height:1.6; color:#CBD5E1;">
                 <div>&bull; <strong>Petal Length:</strong> 3.0 &ndash; 5.1 cm (Mean: 4.26 cm)</div>
                 <div>&bull; <strong>Petal Width:</strong> 1.0 &ndash; 1.8 cm (Mean: 1.33 cm)</div>
                 <div>&bull; <strong>Sepal Length:</strong> 4.9 &ndash; 7.0 cm (Mean: 5.94 cm)</div>
@@ -799,10 +847,10 @@ with tab1:
         render_html("""
         <div class="obs-panel" style="border-top: 4px solid #A78BFA;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <h4 style="margin:0; color:#F8FAFC;">Iris Virginica</h4>
+                <h4 style="margin:0; color:#FFFFFF;">Iris Virginica</h4>
                 <span style="background:rgba(167,139,250,0.15); color:#A78BFA; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:12px;">LARGE PETALS</span>
             </div>
-            <div style="font-size:0.83rem; line-height:1.6; color:#94A3B8;">
+            <div style="font-size:0.83rem; line-height:1.6; color:#CBD5E1;">
                 <div>&bull; <strong>Petal Length:</strong> 4.5 &ndash; 6.9 cm (Mean: 5.55 cm)</div>
                 <div>&bull; <strong>Petal Width:</strong> 1.4 &ndash; 2.5 cm (Mean: 2.03 cm)</div>
                 <div>&bull; <strong>Sepal Length:</strong> 4.9 &ndash; 7.9 cm (Mean: 6.59 cm)</div>
@@ -847,42 +895,49 @@ with tab1:
             "petal_length": st.column_config.NumberColumn("Petal Length (cm)", format="%.1f"),
             "petal_width": st.column_config.NumberColumn("Petal Width (cm)", format="%.1f"),
             "petal_ratio": st.column_config.NumberColumn("Petal Ratio (L/W)", format="%.2f"),
-            "petal_area_proxy": st.column_config.NumberColumn("Petal Area (cm²)", format="%.2f"),
+            "petal_area_proxy": st.column_config.NumberColumn("Petal Area (sq cm)", format="%.2f"),
             "species": st.column_config.TextColumn("Species"),
         },
     )
 
 # ==============================================================================
-# TAB 2: VISUAL ANALYTICS (MATPLOTLIB)
+# TAB 2: VISUAL ANALYTICS (MATPLOTLIB) - CROSS-PLATFORM SAFE
 # ==============================================================================
 with tab2:
     st.subheader("Visual Analytics & Distribution Gallery")
     st.caption("Custom high-contrast visualizations rendered on Deep Obsidian (#0B0F17) canvas.")
 
-    # Matplotlib Global Obsidian Styling
+    # Safe data fallback ensuring charts NEVER disappear on any platform
+    if df_filtered.empty:
+        st.warning("Notice: Active slider filters matched 0 flowers. Displaying all 150 specimens below so visual charts remain active.")
+        plot_df = df_raw.copy()
+    else:
+        plot_df = df_filtered.copy()
+
+    # Matplotlib Global Obsidian Styling (High Contrast for Mobile, Tablet, Laptop)
     plt.rcParams.update({
         "figure.facecolor": "#0B0F17",
         "axes.facecolor": "#131B2E",
-        "axes.edgecolor": "#334155",
-        "axes.labelcolor": "#94A3B8",
-        "axes.titlecolor": "#F8FAFC",
-        "xtick.color": "#94A3B8",
-        "ytick.color": "#94A3B8",
-        "text.color": "#F8FAFC",
+        "axes.edgecolor": "#475569",
+        "axes.labelcolor": "#E2E8F0",
+        "axes.titlecolor": "#FFFFFF",
+        "xtick.color": "#CBD5E1",
+        "ytick.color": "#CBD5E1",
+        "text.color": "#FFFFFF",
         "grid.color": "#334155",
         "grid.linewidth": 0.6,
-        "legend.facecolor": "#1E293B",
-        "legend.edgecolor": "#334155",
-        "legend.labelcolor": "#F8FAFC",
+        "legend.facecolor": "#131B2E",
+        "legend.edgecolor": "#475569",
+        "legend.labelcolor": "#FFFFFF",
     })
 
     v_col1, v_col2 = st.columns(2)
 
     with v_col1:
         st.markdown("#### Figure 1: Petal Length vs. Petal Width Decision Map")
-        fig1, ax1 = plt.subplots(figsize=(6.5, 4.8))
+        fig1, ax1 = plt.subplots(figsize=(6.5, 4.8), dpi=100)
         for sp in ["Setosa", "Versicolor", "Virginica"]:
-            sub = df_filtered[df_filtered["species"] == sp]
+            sub = plot_df[plot_df["species"] == sp]
             if not sub.empty:
                 ax1.scatter(
                     sub["petal_length"], sub["petal_width"],
@@ -894,10 +949,10 @@ with tab2:
         ax1.axvline(x=2.45, color="#F43F5E", linestyle="--", linewidth=2.0, label="Setosa Boundary (2.45 cm)")
         ax1.text(2.55, ax1.get_ylim()[1] * 0.88 if ax1.get_ylim()[1] else 2.1, "2.45 cm\nBoundary", color="#F43F5E", fontsize=8.5, fontweight="bold")
 
-        ax1.set_xlabel("Petal Length (cm)")
-        ax1.set_ylabel("Petal Width (cm)")
-        ax1.set_title("Petal Dimensions & Decision Boundary", fontsize=11, fontweight="bold", pad=10)
-        ax1.legend(loc="upper left", framealpha=0.4, fontsize=8.5)
+        ax1.set_xlabel("Petal Length (cm)", color="#E2E8F0", fontsize=9.5)
+        ax1.set_ylabel("Petal Width (cm)", color="#E2E8F0", fontsize=9.5)
+        ax1.set_title("Petal Dimensions & Decision Boundary", fontsize=11, fontweight="bold", pad=10, color="#FFFFFF")
+        ax1.legend(loc="upper left", framealpha=0.5, fontsize=8.5)
         ax1.grid(True, alpha=0.3)
         fig1.tight_layout()
         st.pyplot(fig1, use_container_width=True)
@@ -912,30 +967,35 @@ with tab2:
 
     with v_col2:
         st.markdown("#### Figure 2: Box Plot Distributions Across Species")
-        fig2, ax2 = plt.subplots(figsize=(6.5, 4.8))
-        species_order = [s for s in ["Setosa", "Versicolor", "Virginica"] if s in df_filtered["species"].unique()]
-        if species_order:
-            box_data = [df_filtered[df_filtered["species"] == s]["petal_length"].dropna().values for s in species_order]
-            bp = ax2.boxplot(
-                box_data, patch_artist=True,
-                medianprops=dict(color="#F8FAFC", linewidth=2),
-                whiskerprops=dict(color="#94A3B8", linewidth=1.2),
-                capprops=dict(color="#94A3B8", linewidth=1.5),
-                flierprops=dict(marker="o", markerfacecolor="#F43F5E", markersize=4, alpha=0.7),
-            )
-            for patch, s in zip(bp["boxes"], species_order):
-                patch.set_facecolor(SPECIES_COLORS.get(s, "#38BDF8"))
-                patch.set_alpha(0.75)
-                patch.set_edgecolor("#F8FAFC")
+        fig2, ax2 = plt.subplots(figsize=(6.5, 4.8), dpi=100)
+        species_order = [s for s in ["Setosa", "Versicolor", "Virginica"] if s in plot_df["species"].unique()]
+        if not species_order:
+            species_order = ["Setosa", "Versicolor", "Virginica"]
 
-            ax2.set_xticklabels(species_order)
-            ax2.set_xlabel("Species")
-            ax2.set_ylabel("Petal Length (cm)")
-            ax2.set_title("Petal Length Dispersion & Interquartile Spread", fontsize=11, fontweight="bold", pad=10)
-            ax2.grid(axis="y", alpha=0.3)
-            fig2.tight_layout()
-            st.pyplot(fig2, use_container_width=True)
-            plt.close(fig2)
+        box_data = [plot_df[plot_df["species"] == s]["petal_length"].dropna().values for s in species_order]
+        # Guarantee fallback data if an individual category had zero entries
+        box_data = [d if len(d) > 0 else df_raw[df_raw["species"] == s]["petal_length"].values for s, d in zip(species_order, box_data)]
+
+        bp = ax2.boxplot(
+            box_data, patch_artist=True,
+            medianprops=dict(color="#FFFFFF", linewidth=2),
+            whiskerprops=dict(color="#CBD5E1", linewidth=1.2),
+            capprops=dict(color="#CBD5E1", linewidth=1.5),
+            flierprops=dict(marker="o", markerfacecolor="#F43F5E", markersize=4, alpha=0.7),
+        )
+        for patch, s in zip(bp["boxes"], species_order):
+            patch.set_facecolor(SPECIES_COLORS.get(s, "#38BDF8"))
+            patch.set_alpha(0.75)
+            patch.set_edgecolor("#FFFFFF")
+
+        ax2.set_xticklabels(species_order, color="#E2E8F0", fontsize=9.5)
+        ax2.set_xlabel("Species", color="#E2E8F0", fontsize=9.5)
+        ax2.set_ylabel("Petal Length (cm)", color="#E2E8F0", fontsize=9.5)
+        ax2.set_title("Petal Length Dispersion & Interquartile Spread", fontsize=11, fontweight="bold", pad=10, color="#FFFFFF")
+        ax2.grid(axis="y", alpha=0.3)
+        fig2.tight_layout()
+        st.pyplot(fig2, use_container_width=True)
+        plt.close(fig2)
 
         render_html("""
         <div style="background:rgba(19,27,46,0.6); border:1px solid rgba(51,65,85,0.4); border-radius:10px; padding:12px; margin-top:-8px; font-size:0.84rem;">
@@ -946,22 +1006,23 @@ with tab2:
 
     st.markdown("---")
     st.markdown("#### Figure 3: Four-Panel Feature Distribution Histograms")
-    fig3, axes = plt.subplots(2, 2, figsize=(10, 6.5))
+    fig3, axes = plt.subplots(2, 2, figsize=(9.5, 6.2), dpi=100)
     axes = axes.flatten()
     feat_names = ["Sepal Length", "Sepal Width", "Petal Length", "Petal Width"]
 
     for idx, (col_name, feat_title) in enumerate(zip(FEATURE_COLS, feat_names)):
         ax = axes[idx]
         for sp in ["Setosa", "Versicolor", "Virginica"]:
-            sub_vals = df_filtered[df_filtered["species"] == sp][col_name].dropna().values
+            sub_vals = plot_df[plot_df["species"] == sp][col_name].dropna().values
             if len(sub_vals) > 0:
-                ax.hist(sub_vals, bins=12, alpha=0.6, label=sp, color=SPECIES_COLORS.get(sp, "#38BDF8"), edgecolor="#0B0F17")
-        ax.set_title(f"{feat_title} (cm)", fontsize=10, fontweight="bold")
-        ax.set_xlabel("Value (cm)", fontsize=8.5)
-        ax.set_ylabel("Frequency", fontsize=8.5)
+                ax.hist(sub_vals, bins=10, alpha=0.6, label=sp, color=SPECIES_COLORS.get(sp, "#38BDF8"), edgecolor="#0B0F17")
+        ax.set_title(f"{feat_title} (cm)", fontsize=10, fontweight="bold", color="#FFFFFF")
+        ax.set_xlabel("Value (cm)", fontsize=8.5, color="#CBD5E1")
+        ax.set_ylabel("Frequency", fontsize=8.5, color="#CBD5E1")
+        ax.tick_params(colors="#94A3B8", labelsize=8)
         ax.grid(alpha=0.25)
         if idx == 0:
-            ax.legend(fontsize=7.5, loc="upper right")
+            ax.legend(fontsize=7.5, loc="upper right", facecolor="#131B2E", edgecolor="#334155", labelcolor="#FFFFFF")
 
     fig3.tight_layout()
     st.pyplot(fig3, use_container_width=True)
@@ -981,16 +1042,18 @@ with tab3:
     st.subheader("NumPy Linear Algebra & Statistical Foundations")
     st.caption("Rigorous mathematical formulations executed directly via pure NumPy matrix operations.")
 
+    math_df = df_filtered if not df_filtered.empty else df_raw
+
     # 1. Sample Mean Vector Comparison
     st.markdown("#### 1. Sample Mean Vector Comparison Table")
-    mean_summary = df_filtered.groupby("species")[FEATURE_COLS].mean().round(2)
+    mean_summary = math_df.groupby("species")[FEATURE_COLS].mean().round(2)
     mean_summary.columns = ["Sepal Length (Mean)", "Sepal Width (Mean)", "Petal Length (Mean)", "Petal Width (Mean)"]
     st.dataframe(mean_summary, use_container_width=True)
 
     st.markdown("---")
 
     # 2. Covariance and Correlation Matrices
-    X_vals = df_filtered[FEATURE_COLS].to_numpy(dtype=float)
+    X_vals = math_df[FEATURE_COLS].to_numpy(dtype=float)
     N_samples = len(X_vals)
 
     if N_samples >= 2:
@@ -1009,31 +1072,31 @@ with tab3:
 
         with m_col1:
             st.markdown("#### Covariance Matrix (&Sigma;)")
-            fig_cov, ax_c = plt.subplots(figsize=(5.5, 4.2))
+            fig_cov, ax_c = plt.subplots(figsize=(5.5, 4.2), dpi=100)
             cmap_cov = LinearSegmentedColormap.from_list("cov_c", ["#0B0F17", "#0E4D6B", "#38BDF8"], N=256)
             im_c = ax_c.imshow(cov_matrix, cmap=cmap_cov)
             labels_short = ["SL", "SW", "PL", "PW"]
             ax_c.set_xticks(range(4)); ax_c.set_yticks(range(4))
-            ax_c.set_xticklabels(labels_short); ax_c.set_yticklabels(labels_short)
-            ax_c.set_title("Sample Covariance Matrix", fontsize=10, fontweight="bold")
+            ax_c.set_xticklabels(labels_short, color="#CBD5E1"); ax_c.set_yticklabels(labels_short, color="#CBD5E1")
+            ax_c.set_title("Sample Covariance Matrix", fontsize=10, fontweight="bold", color="#FFFFFF")
             for i in range(4):
                 for j in range(4):
-                    ax_c.text(j, i, f"{cov_matrix[i, j]:.2f}", ha="center", va="center", color="#F8FAFC", fontsize=8.5)
+                    ax_c.text(j, i, f"{cov_matrix[i, j]:.2f}", ha="center", va="center", color="#FFFFFF", fontsize=8.5)
             fig_cov.tight_layout()
             st.pyplot(fig_cov, use_container_width=True)
             plt.close(fig_cov)
 
         with m_col2:
             st.markdown("#### Pearson Correlation Matrix (R)")
-            fig_cor, ax_r = plt.subplots(figsize=(5.5, 4.2))
+            fig_cor, ax_r = plt.subplots(figsize=(5.5, 4.2), dpi=100)
             cmap_cor = LinearSegmentedColormap.from_list("cor_c", ["#7C3AED", "#0B0F17", "#34D399"], N=256)
             im_r = ax_r.imshow(corr_matrix, cmap=cmap_cor, vmin=-1, vmax=1)
             ax_r.set_xticks(range(4)); ax_r.set_yticks(range(4))
-            ax_r.set_xticklabels(labels_short); ax_r.set_yticklabels(labels_short)
-            ax_r.set_title("Pearson Correlation Matrix", fontsize=10, fontweight="bold")
+            ax_r.set_xticklabels(labels_short, color="#CBD5E1"); ax_r.set_yticklabels(labels_short, color="#CBD5E1")
+            ax_r.set_title("Pearson Correlation Matrix", fontsize=10, fontweight="bold", color="#FFFFFF")
             for i in range(4):
                 for j in range(4):
-                    ax_r.text(j, i, f"{corr_matrix[i, j]:.2f}", ha="center", va="center", color="#F8FAFC", fontsize=8.5)
+                    ax_r.text(j, i, f"{corr_matrix[i, j]:.2f}", ha="center", va="center", color="#FFFFFF", fontsize=8.5)
             fig_cor.tight_layout()
             st.pyplot(fig_cor, use_container_width=True)
             plt.close(fig_cor)
@@ -1044,7 +1107,7 @@ with tab3:
     render_html("""
     <div class="obs-guide-card" style="border-left-color: #F59E0B;">
         <div class="obs-guide-title" style="color:#F59E0B;">Important Insight: Simpson's Paradox in Iris Data</div>
-        <p style="margin: 0; line-height: 1.6;">
+        <p style="margin: 0; line-height: 1.65; color: #E2E8F0;">
             Across the entire dataset, <strong>Sepal Length and Sepal Width have an overall negative correlation (r &approx; -0.12)</strong>. 
             However, when analyzing each species individually, the correlation is <strong>strongly positive</strong>:
             <br>&bull; <strong>Setosa:</strong> +0.74 &nbsp;|&nbsp; <strong>Versicolor:</strong> +0.53 &nbsp;|&nbsp; <strong>Virginica:</strong> +0.46
@@ -1146,8 +1209,8 @@ with tab4:
     <div class="prediction-banner">
         <div style="font-size: 0.85rem; color: #38BDF8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">PREDICTED SPECIES</div>
         <div class="pred-species-title" style="color: {pred_color};">Iris {predicted_sp}</div>
-        <div style="font-size: 1rem; color: #94A3B8; margin-top: 6px;">
-            Calculated Confidence: <strong style="color:#34D399;">{pred_conf:.1f}%</strong> &bull; Distance to Center: <strong style="color:#F8FAFC;">{min_dist:.2f} cm</strong>
+        <div style="font-size: 1rem; color: #E2E8F0; margin-top: 6px;">
+            Calculated Confidence: <strong style="color:#34D399;">{pred_conf:.1f}%</strong> &bull; Distance to Center: <strong style="color:#FFFFFF;">{min_dist:.2f} cm</strong>
         </div>
     </div>
     """)
@@ -1174,20 +1237,20 @@ with tab4:
 
     with res_c2:
         st.markdown("#### 2D Spatial Projection (Petal Length vs Width)")
-        fig_proj, ax_p = plt.subplots(figsize=(6, 4.2))
+        fig_proj, ax_p = plt.subplots(figsize=(6, 4.2), dpi=100)
         for sp in species_list:
             sub = df_raw[df_raw["species"] == sp]
             ax_p.scatter(sub["petal_length"], sub["petal_width"], color=SPECIES_COLORS.get(sp, "#38BDF8"), alpha=0.35, s=30)
             ax_p.scatter(centroids[sp][2], centroids[sp][3], color=SPECIES_COLORS.get(sp, "#38BDF8"), marker="X", s=140, edgecolors="#F8FAFC", linewidths=1.2)
 
         # Plot query point
-        ax_p.scatter(q_pl, q_pw, color="#34D399", marker="*", s=300, edgecolors="#F8FAFC", linewidths=1.5, label="Your Flower")
+        ax_p.scatter(q_pl, q_pw, color="#34D399", marker="*", s=300, edgecolors="#FFFFFF", linewidths=1.5, label="Your Flower")
         ax_p.plot([q_pl, centroids[predicted_sp][2]], [q_pw, centroids[predicted_sp][3]], color="#34D399", linestyle=":", linewidth=2)
 
-        ax_p.set_xlabel("Petal Length (cm)")
-        ax_p.set_ylabel("Petal Width (cm)")
-        ax_p.set_title("Input Vector vs. Species Centroids", fontsize=10, fontweight="bold")
-        ax_p.legend(framealpha=0.4, fontsize=8)
+        ax_p.set_xlabel("Petal Length (cm)", color="#E2E8F0")
+        ax_p.set_ylabel("Petal Width (cm)", color="#E2E8F0")
+        ax_p.set_title("Input Vector vs. Species Centroids", fontsize=10, fontweight="bold", color="#FFFFFF")
+        ax_p.legend(framealpha=0.5, fontsize=8, facecolor="#131B2E", edgecolor="#334155", labelcolor="#FFFFFF")
         ax_p.grid(alpha=0.25)
         fig_proj.tight_layout()
         st.pyplot(fig_proj, use_container_width=True)
@@ -1197,7 +1260,7 @@ with tab4:
     st.subheader("Interactive Iris Flower Morphometric Diagram")
     st.caption("Visual representation of user measurements scaling live with slider values.")
 
-    fig_flower, ax_fl = plt.subplots(figsize=(7, 4.2))
+    fig_flower, ax_fl = plt.subplots(figsize=(6.8, 4.2), dpi=100)
     ax_fl.set_facecolor("#131B2E")
     fig_flower.patch.set_facecolor("#0B0F17")
 
@@ -1212,9 +1275,9 @@ with tab4:
 
     # Draw Petals (inner colorful petals)
     petal_color = SPECIES_COLORS.get(predicted_sp, "#38BDF8")
-    petal_top = Ellipse((50, 48), width=q_pw * 7.5, height=q_pl * 7.0, angle=0, facecolor=petal_color, edgecolor="#F8FAFC", alpha=0.85, linewidth=1.5)
-    petal_left = Ellipse((38, 54), width=q_pw * 6.8, height=q_pl * 6.5, angle=-30, facecolor=petal_color, edgecolor="#F8FAFC", alpha=0.85, linewidth=1.5)
-    petal_right = Ellipse((62, 54), width=q_pw * 6.8, height=q_pl * 6.5, angle=30, facecolor=petal_color, edgecolor="#F8FAFC", alpha=0.85, linewidth=1.5)
+    petal_top = Ellipse((50, 48), width=q_pw * 7.5, height=q_pl * 7.0, angle=0, facecolor=petal_color, edgecolor="#FFFFFF", alpha=0.85, linewidth=1.5)
+    petal_left = Ellipse((38, 54), width=q_pw * 6.8, height=q_pl * 6.5, angle=-30, facecolor=petal_color, edgecolor="#FFFFFF", alpha=0.85, linewidth=1.5)
+    petal_right = Ellipse((62, 54), width=q_pw * 6.8, height=q_pl * 6.5, angle=30, facecolor=petal_color, edgecolor="#FFFFFF", alpha=0.85, linewidth=1.5)
 
     ax_fl.add_patch(petal_top)
     ax_fl.add_patch(petal_left)
@@ -1230,7 +1293,7 @@ with tab4:
     ax_fl.axis("off")
 
     ax_fl.text(50, 16, f"Sepals: {q_sl:.1f} x {q_sw:.1f} cm (Muted Leaves) | Petals: {q_pl:.1f} x {q_pw:.1f} cm ({predicted_sp} Color)", 
-               ha="center", va="center", color="#F8FAFC", fontsize=9.5, fontweight="bold")
+               ha="center", va="center", color="#FFFFFF", fontsize=9.2, fontweight="bold")
 
     fig_flower.tight_layout()
     st.pyplot(fig_flower, use_container_width=True)

@@ -38,9 +38,9 @@ def build_vercel_bundle():
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Iris Analytics Lab | Deep Tech Obsidian</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no" />
+    <title>Iris Botanical Analytics Lab | Deep Tech Obsidian</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%2338BDF8%22/></svg>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.63.1/build/stlite.css" />
     <style>
       body, html {{
@@ -86,7 +86,7 @@ def build_vercel_bundle():
     <div id="root">
       <div class="loading-screen" id="loading">
         <div class="spinner"></div>
-        <h2 style="margin: 0 0 8px 0; font-size: 1.3rem; color: #F8FAFC;">🌸 Loading Iris Analytics Lab...</h2>
+        <h2 style="margin: 0 0 8px 0; font-size: 1.3rem; color: #F8FAFC;">Loading Iris Botanical Analytics Lab...</h2>
         <p style="margin: 0; color: #94A3B8; font-size: 0.95rem;">
           Initializing NumPy Linear Algebra &amp; Matplotlib Engine via WebAssembly
         </p>

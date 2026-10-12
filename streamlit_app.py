@@ -4,7 +4,7 @@ app.py / streamlit_app.py
 Iris Botanical Analytics Lab - Multidimensional Exploratory Data Analysis Suite.
 Deep Tech Obsidian Dark Theme (#0B0F17) with High-Contrast Typography,
 Pure NumPy Mathematical Engine, Matplotlib Visual Analytics, and SQLite Persistence.
-Cross-platform verified for Mobile, Tablet, and Desktop. Zero mojibake, zero personal names.
+Cross-platform responsive design for Mobile, Tablet, and Desktop. Zero personal names.
 """
 
 import os
@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 import matplotlib
 
-# Force Agg backend immediately for 100% headless / cross-platform / mobile stability
+# Headless raster Agg backend for 100% stable cross-platform and mobile rendering
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse, Circle
@@ -32,7 +32,7 @@ st.set_page_config(
 )
 
 # ------------------------------------------------------------------------------
-# 2. BULLETPROOF HTML RENDERER (COLLAPSES NEWLINES TO PREVENT MARKDOWN CODE BLOCKS)
+# 2. BULLETPROOF HTML RENDERER
 # ------------------------------------------------------------------------------
 def render_html(html_code: str):
     """
@@ -44,7 +44,7 @@ def render_html(html_code: str):
     st.markdown(cleaned, unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# 3. DESIGN SYSTEM & CSS (OBSIDIAN DARK THEME #0B0F17 - RESPONSIVE ON ALL DEVICES)
+# 3. DESIGN SYSTEM & RESPONSIVE CSS (OBSIDIAN DARK THEME #0B0F17)
 # ------------------------------------------------------------------------------
 OBSIDIAN_CSS = """
 <style>
@@ -66,23 +66,25 @@ OBSIDIAN_CSS = """
     --text-muted: #94A3B8;
 }
 
-/* Global Reset & Base Typography */
+/* Base Body & App Styling */
 html, body, .stApp {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     background-color: var(--bg-canvas) !important;
     color: var(--text-slate) !important;
 }
 
-.stApp > header {
-    background-color: transparent !important;
+/* Streamlit Header Bar */
+header[data-testid="stHeader"] {
+    background: transparent !important;
 }
 
+/* Exact Container Padding Fix: prevents header clipping beneath top edge */
 .block-container {
-    padding-top: 1rem !important;
-    padding-bottom: 2.5rem !important;
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
     max-width: 1400px !important;
-    padding-left: clamp(1rem, 3vw, 2.5rem) !important;
-    padding-right: clamp(1rem, 3vw, 2.5rem) !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -100,14 +102,16 @@ strong, b {
     color: var(--text-white) !important;
 }
 
-/* Top Navigation Bar (Fully Responsive across Mobile, Tablet, Laptop) */
+/* Top Header Banner in Normal Document Flow (Zero Clipping) */
 .top-header-banner {
+    position: relative;
+    margin-top: 0.5rem;
     width: 100%;
     box-sizing: border-box;
     background: linear-gradient(135deg, rgba(19, 27, 46, 0.96) 0%, rgba(14, 21, 38, 0.98) 100%);
     border: 1px solid var(--border-color);
     border-radius: 14px;
-    padding: 1rem 1.25rem;
+    padding: 1.1rem 1.4rem;
     margin-bottom: 1.25rem;
     display: flex;
     align-items: center;
@@ -121,7 +125,7 @@ strong, b {
     display: flex;
     align-items: center;
     gap: 12px;
-    min-width: 240px;
+    min-width: 250px;
 }
 
 .brand-logo-wrap {
@@ -136,7 +140,7 @@ strong, b {
 }
 
 .brand-title {
-    font-size: clamp(1.05rem, 3.5vw, 1.3rem);
+    font-size: clamp(1.05rem, 3.2vw, 1.3rem);
     font-weight: 800;
     color: var(--text-white);
     letter-spacing: -0.01em;
@@ -144,7 +148,7 @@ strong, b {
 }
 
 .brand-sub {
-    font-size: clamp(0.72rem, 2vw, 0.8rem);
+    font-size: clamp(0.72rem, 1.8vw, 0.8rem);
     color: var(--cyan);
     font-weight: 500;
     margin-top: 3px;
@@ -213,33 +217,12 @@ strong, b {
     white-space: nowrap;
 }
 
-/* Mobile & Tablet Navbar Tweaks */
-@media (max-width: 768px) {
-    .top-header-banner {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 0.85rem 1rem;
-        gap: 0.75rem;
-    }
-    .brand-container {
-        width: 100%;
-    }
-    .badge-cluster {
-        width: 100%;
-        justify-content: flex-start;
-    }
-    .status-badge-active, .status-badge-academic, .status-badge-dataset {
-        font-size: 0.72rem !important;
-        padding: 4px 10px !important;
-    }
-}
-
-/* Metric KPI Cards (Responsive Grid) */
+/* Metric KPI Cards (Fluid Grid) */
 .obs-metric-card {
     background: linear-gradient(135deg, #131B2E 0%, #17233B 100%);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 1.1rem 1.25rem;
+    padding: 1.15rem 1.25rem;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
     transition: transform 0.2s ease, border-color 0.2s ease;
     height: 100%;
@@ -260,7 +243,7 @@ strong, b {
 }
 
 .metric-value {
-    font-size: clamp(1.4rem, 3.5vw, 1.85rem);
+    font-size: clamp(1.4rem, 3.2vw, 1.85rem);
     font-weight: 800;
     color: var(--text-white);
     margin: 5px 0 2px 0;
@@ -347,7 +330,7 @@ section[data-testid="stSidebar"] h3 {
     margin-top: 2px;
 }
 
-/* Streamlit Native Tabs (Horizontal Scrollable on Mobile) */
+/* Streamlit Native Tabs */
 .stTabs [data-baseweb="tab-list"] {
     background-color: #131B2E !important;
     border: 1px solid var(--border-color) !important;
@@ -513,9 +496,79 @@ div[data-testid="stInfo"] {
     border-radius: 0 9px 9px 0 !important;
     color: var(--text-slate) !important;
 }
+
+/* =========================================================================
+   RESPONSIVE BREAKPOINTS (TABLET & MOBILE)
+   ========================================================================= */
+
+/* Tablet Viewport (768px to 1023px): 2x2 grid for metrics */
+@media (min-width: 768px) and (max-width: 1023px) {
+    div[data-testid="column"] {
+        min-width: calc(50% - 0.75rem) !important;
+        flex: 1 1 calc(50% - 0.75rem) !important;
+        margin-bottom: 0.75rem !important;
+    }
+    .top-header-banner {
+        padding: 1.1rem 1.25rem !important;
+    }
+}
+
+/* Mobile Viewport (< 768px): clean stacked layout without clipping */
+@media (max-width: 767px) {
+    .block-container {
+        padding-top: 2rem !important;
+        padding-left: 0.85rem !important;
+        padding-right: 0.85rem !important;
+        padding-bottom: 2rem !important;
+    }
+    .top-header-banner {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 0.85rem 1rem !important;
+        gap: 0.75rem !important;
+        margin-top: 0.25rem !important;
+    }
+    .brand-container {
+        width: 100% !important;
+        gap: 10px !important;
+    }
+    .brand-logo-wrap svg {
+        width: 36px !important;
+        height: 36px !important;
+    }
+    .brand-title {
+        font-size: 1.1rem !important;
+        line-height: 1.25 !important;
+    }
+    .brand-sub {
+        font-size: 0.74rem !important;
+        line-height: 1.3 !important;
+    }
+    .badge-cluster {
+        width: 100% !important;
+        justify-content: flex-start !important;
+        gap: 6px !important;
+        flex-wrap: wrap !important;
+    }
+    .status-badge-active,
+    .status-badge-academic,
+    .status-badge-dataset {
+        font-size: 0.72rem !important;
+        padding: 4px 10px !important;
+    }
+    /* Single column stacked cards and metrics on mobile */
+    div[data-testid="column"] {
+        min-width: 100% !important;
+        flex: 1 1 100% !important;
+        margin-bottom: 0.75rem !important;
+    }
+    .pred-species-title {
+        font-size: 1.75rem !important;
+    }
+}
 </style>
 """
-render_html(OBSIDIAN_CSS)
+st.markdown(OBSIDIAN_CSS, unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
 # 4. EMBEDDED INLINE SVG FLOWER LOGO
@@ -706,7 +759,7 @@ df_filtered = df_filtered[
 ]
 
 # ------------------------------------------------------------------------------
-# 9. RESPONSIVE TOP PRODUCT HEADER (CROSS-PLATFORM SAFE)
+# 9. RESPONSIVE TOP PRODUCT HEADER (IN NORMAL DOCUMENT FLOW - ZERO CLIPPING)
 # ------------------------------------------------------------------------------
 render_html(f"""
 <div class="top-header-banner">
@@ -748,7 +801,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
 # TAB 1: OVERVIEW & DATASET
 # ==============================================================================
 with tab1:
-    # 4 Executive Metric Cards
+    # 4 Executive Metric Cards (Responsive Grid: 4 Desktop / 2x2 Tablet / 1 Mobile)
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         render_html(f"""
@@ -803,7 +856,7 @@ with tab1:
     </div>
     """)
 
-    # 3 Side-by-Side Species Cards
+    # 3 Side-by-Side Species Cards (Responsive Grid: 3 Desktop / Stacked Mobile)
     s_col1, s_col2, s_col3 = st.columns(3)
     with s_col1:
         render_html("""
@@ -901,13 +954,13 @@ with tab1:
     )
 
 # ==============================================================================
-# TAB 2: VISUAL ANALYTICS (MATPLOTLIB) - CROSS-PLATFORM SAFE
+# TAB 2: VISUAL ANALYTICS (MATPLOTLIB) - CROSS-PLATFORM & RESPONSIVE
 # ==============================================================================
 with tab2:
     st.subheader("Visual Analytics & Distribution Gallery")
     st.caption("Custom high-contrast visualizations rendered on Deep Obsidian (#0B0F17) canvas.")
 
-    # Safe data fallback ensuring charts NEVER disappear on any platform
+    # Safe data fallback: guarantees charts NEVER disappear on any platform
     if df_filtered.empty:
         st.warning("Notice: Active slider filters matched 0 flowers. Displaying all 150 specimens below so visual charts remain active.")
         plot_df = df_raw.copy()

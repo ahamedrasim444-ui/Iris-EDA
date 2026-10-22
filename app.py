@@ -12,6 +12,7 @@ import os
 import sys
 import io
 import math
+import base64
 import urllib.parse
 import sqlite3
 import numpy as np
@@ -843,12 +844,40 @@ SPECIES_COLORS = {
     "Virginica": "#A78BFA",  # Soft Lavender / Royal Violet
 }
 
-# Strict Requirement 1: Verified authentic botanical Iris photographs (violet-blue monocots with standards and falls)
+# Primary Direct Photo URLs: Verified authentic Iris photographs (blue/violet perennial monocots with standards and falls)
 SPECIES_HERO_PHOTOS = {
-    "Setosa": "https://images.unsplash.com/photo-1596728325488-58c87691e9af?auto=format&fit=crop&w=600&q=80",
-    "Versicolor": "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80",
-    "Virginica": "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80",
+    "Setosa": "https://images.pexels.com/photos/1086178/pexels-photo-1086178.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "Versicolor": "https://images.pexels.com/photos/1169084/pexels-photo-1169084.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "Virginica": "https://images.pexels.com/photos/54323/iris-flower-purple-flowered-54323.jpeg?auto=compress&cs=tinysrgb&w=600",
 }
+
+@st.cache_data
+def get_species_image_source(species_name: str) -> str:
+    """
+    Returns image source URI for species:
+    1. Local Repo Fallback: Checks if local file exists in assets/ (e.g., assets/setosa.jpg, assets/versicolor.jpg, assets/virginica.jpg).
+       If present, loads from disk as base64 data URI for 100% offline reliability.
+    2. Otherwise, returns public botanical CDN URL.
+    """
+    clean_sp = str(species_name).strip().capitalize()
+    local_filename = f"{clean_sp.lower()}.jpg"
+
+    base_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else "."
+    candidate_paths = [
+        os.path.join(base_dir, "assets", local_filename),
+        os.path.join("assets", local_filename),
+        local_filename,
+    ]
+    for p in candidate_paths:
+        if p and os.path.exists(p) and os.path.getsize(p) > 1000:
+            try:
+                with open(p, "rb") as img_f:
+                    encoded = base64.b64encode(img_f.read()).decode("utf-8")
+                    return f"data:image/jpeg;base64,{encoded}"
+            except Exception:
+                pass
+
+    return SPECIES_HERO_PHOTOS.get(clean_sp, SPECIES_HERO_PHOTOS.get("Setosa", ""))
 
 # ------------------------------------------------------------------------------
 # 7. RESILIENT DATASET LOADING WITH API & CLOUD PIPELINE (CACHED)
@@ -1319,7 +1348,7 @@ with tab2:
         species_subset = df_raw.copy().reset_index(drop=True)
 
     # Species Header Showcase Card with Verified Authentic Iris Photo (Requirement 1)
-    hero_photo_url = SPECIES_HERO_PHOTOS.get(target_species_name, SPECIES_HERO_PHOTOS["Setosa"])
+    hero_photo_url = get_species_image_source(target_species_name)
     hero_fallback_svg = SPECIES_FALLBACK_SVGS.get(target_species_name, SPECIES_FALLBACK_SVGS["Setosa"])
     tag_accent_color = SPECIES_COLORS.get(target_species_name, "#38BDF8")
 
@@ -1340,6 +1369,8 @@ with tab2:
     <div class="species-hero-banner" style="border-left: 5px solid {tag_accent_color};">
         <div class="species-hero-img-wrap">
             <img src="{hero_photo_url}" 
+                 loading="lazy"
+                 referrerpolicy="no-referrer"
                  onerror="this.onerror=null; this.src='{hero_fallback_svg}';"
                  alt="Authentic Iris {target_species_name}" 
                  class="species-hero-img" />
@@ -1415,7 +1446,7 @@ with tab2:
             with cols[c_idx]:
                 sp_name = item["species"]
                 card_accent = SPECIES_COLORS.get(sp_name, "#38BDF8")
-                card_img = SPECIES_HERO_PHOTOS.get(sp_name, SPECIES_HERO_PHOTOS["Setosa"])
+                card_img = get_species_image_source(sp_name)
                 card_fallback_svg = SPECIES_FALLBACK_SVGS.get(sp_name, SPECIES_FALLBACK_SVGS["Setosa"])
 
                 aspect_ratio = item["petal_length"] / max(item["petal_width"], 0.01)
@@ -1434,7 +1465,7 @@ with tab2:
                     rel_tag_bg = "rgba(52, 211, 153, 0.15)"
                     rel_tag_color = "#34D399"
                 else:
-                    rel_tag = "Average Size"
+                    rel_tag = "Average"
                     rel_tag_bg = "rgba(56, 189, 248, 0.15)"
                     rel_tag_color = "#38BDF8"
 
@@ -1442,39 +1473,43 @@ with tab2:
                 <div class="specimen-card-3d" style="border-top: 3px solid {card_accent};">
                     <div class="specimen-img-container">
                         <img src="{card_img}" 
+                             loading="lazy"
+                             referrerpolicy="no-referrer"
                              onerror="this.onerror=null; this.src='{card_fallback_svg}';" 
                              alt="{sp_title}" 
                              class="specimen-img" />
                         <div class="specimen-idx-badge">{sp_id}</div>
                         <div class="specimen-tag-badge" style="color: {card_accent}; border-color: {card_accent};">
-                            {sp_name.upper()}
+                            {sp_name.upper()} &bull; SPECIMEN #{orig_idx + 1:02d}
                         </div>
                     </div>
                     <div class="specimen-body">
                         <div>
-                            <div class="specimen-id">{sp_name} &bull; Specimen Row #{orig_idx + 1}</div>
-                            <div class="specimen-title">{sp_title}</div>
+                            <div class="specimen-id" style="color:{card_accent}; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;">
+                                {sp_name.upper()} &bull; SPECIMEN #{orig_idx + 1:02d}
+                            </div>
+                            <div class="specimen-title">{sp_name} &bull; Specimen #{orig_idx + 1:02d}</div>
                             <div class="specimen-subtitle">
-                                Botanical Specimen Record from Anderson&#39;s 1935 Expedition
+                                Sepal: {item['sepal_length']:.1f} &times; {item['sepal_width']:.1f} cm &bull; Petal: {item['petal_length']:.1f} &times; {item['petal_width']:.1f} cm
                             </div>
                         </div>
                         <div>
                             <div class="specimen-grid-metrics">
                                 <div class="specimen-metric-item">
-                                    <span class="specimen-metric-lbl">Sepal Length</span>
-                                    <span class="specimen-metric-val">{item['sepal_length']:.1f} cm</span>
+                                    <span class="specimen-metric-lbl">Sepal Length &times; Width</span>
+                                    <span class="specimen-metric-val">{item['sepal_length']:.1f} &times; {item['sepal_width']:.1f} cm</span>
                                 </div>
                                 <div class="specimen-metric-item">
-                                    <span class="specimen-metric-lbl">Sepal Width</span>
-                                    <span class="specimen-metric-val">{item['sepal_width']:.1f} cm</span>
+                                    <span class="specimen-metric-lbl">Petal Length &times; Width</span>
+                                    <span class="specimen-metric-val" style="color:{card_accent};">{item['petal_length']:.1f} &times; {item['petal_width']:.1f} cm</span>
                                 </div>
                                 <div class="specimen-metric-item">
-                                    <span class="specimen-metric-lbl">Petal Length</span>
-                                    <span class="specimen-metric-val" style="color:{card_accent};">{item['petal_length']:.1f} cm</span>
+                                    <span class="specimen-metric-lbl">Aspect Ratio</span>
+                                    <span class="specimen-metric-val">{aspect_ratio:.2f}</span>
                                 </div>
                                 <div class="specimen-metric-item">
-                                    <span class="specimen-metric-lbl">Petal Width</span>
-                                    <span class="specimen-metric-val" style="color:{card_accent};">{item['petal_width']:.1f} cm</span>
+                                    <span class="specimen-metric-lbl">Surface Area</span>
+                                    <span class="specimen-metric-val" style="color:#34D399;">{surface_area:.2f} cm&sup2;</span>
                                 </div>
                             </div>
                             <div class="specimen-pill-row">

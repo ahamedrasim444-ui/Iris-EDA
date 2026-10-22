@@ -31,7 +31,7 @@ import streamlit as st
 # ------------------------------------------------------------------------------
 st.set_page_config(
     page_title="Iris Botanical Analytics Lab | Executive Dashboard",
-    page_icon="https://images.unsplash.com/photo-1597848212624-a19eb35e2651?auto=format&fit=crop&w=64&q=80",
+    page_icon="https://images.unsplash.com/photo-1596728325488-58c87691e9af?auto=format&fit=crop&w=64&q=80",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -367,7 +367,7 @@ strong, b {
 .specimen-img-container {
     position: relative;
     width: 100%;
-    height: 180px;
+    height: 190px;
     overflow: hidden;
     background: #0B0F17;
     display: flex;
@@ -435,8 +435,16 @@ strong, b {
     font-size: 1.05rem;
     font-weight: 800;
     color: #FFFFFF;
-    margin: 4px 0 8px 0;
+    margin: 4px 0 2px 0;
     line-height: 1.25;
+}
+
+.specimen-subtitle {
+    font-size: 0.73rem;
+    color: #94A3B8;
+    margin-bottom: 10px;
+    line-height: 1.35;
+    font-style: italic;
 }
 
 .specimen-grid-metrics {
@@ -826,22 +834,25 @@ def clear_database_db():
 init_database()
 
 # ------------------------------------------------------------------------------
-# 6. RESILIENT DATASET LOADING WITH API & CLOUD PIPELINE (CACHED)
+# 6. VERIFIED AUTHENTIC BOTANICAL PHOTO DICTIONARY (ZERO SUNFLOWERS)
 # ------------------------------------------------------------------------------
 FEATURE_COLS = ["sepal_length", "sepal_width", "petal_length", "petal_width"]
 SPECIES_COLORS = {
-    "Setosa": "#38BDF8",     # Electric Cyan
-    "Versicolor": "#F59E0B", # Warm Amber
-    "Virginica": "#A78BFA",  # Soft Lavender
+    "Setosa": "#38BDF8",     # Electric Cyan / Arctic Blue
+    "Versicolor": "#F59E0B", # Warm Amber / Purple-Gold
+    "Virginica": "#A78BFA",  # Soft Lavender / Royal Violet
 }
 
-# Verified, trusted botanical CDN / Unsplash photo links (Requirement 1: zero 400 errors)
+# Strict Requirement 1: Verified authentic botanical Iris photographs (violet-blue monocots with standards and falls)
 SPECIES_HERO_PHOTOS = {
-    "Setosa": "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?auto=format&fit=crop&w=600&q=80",
+    "Setosa": "https://images.unsplash.com/photo-1596728325488-58c87691e9af?auto=format&fit=crop&w=600&q=80",
     "Versicolor": "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80",
     "Virginica": "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80",
 }
 
+# ------------------------------------------------------------------------------
+# 7. RESILIENT DATASET LOADING WITH API & CLOUD PIPELINE (CACHED)
+# ------------------------------------------------------------------------------
 def clean_iris_dataframe(raw_df: pd.DataFrame) -> pd.DataFrame:
     """Standardizes column naming and engineers analytical proxies."""
     df = raw_df.copy()
@@ -854,39 +865,37 @@ def clean_iris_dataframe(raw_df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 @st.cache_data(ttl=3600)
-def load_iris_database():
+def fetch_iris_data():
     """
-    Live Iris Database API Connection (Requirement 3):
-    1. Primary: Live GitHub Raw Open Data API
-    2. Fallback: Scikit-learn native dataset
-    3. Final offline fallback: Local file system cache
+    Data Loader connecting directly to live GitHub Raw Open Data API with Scikit-learn fallback (Requirement 3).
     """
-    primary_url = "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv"
+    url = "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv"
     try:
-        r = requests.get(primary_url, timeout=4)
+        r = requests.get(url, timeout=4)
         if r.status_code == 200 and len(r.text) > 500:
-            data = pd.read_csv(io.StringIO(r.text))
-            return clean_iris_dataframe(data), "Data Source: GitHub Raw API (Connected)", "success"
+            return pd.read_csv(io.StringIO(r.text))
+        return pd.read_csv(url)
     except Exception:
-        pass
-
-    try:
         from sklearn.datasets import load_iris
         raw = load_iris(as_frame=True)
         data = raw.frame
         data.columns = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']
-        species_map = {0: 'setosa', 1: 'versicolor', 2: 'virginica'}
-        data['species'] = data['species'].map(species_map)
-        return clean_iris_dataframe(data), "Data Source: Scikit-Learn Engine (Connected)", "success"
+        species_names = {0: 'setosa', 1: 'versicolor', 2: 'virginica'}
+        data['species'] = data['species'].map(species_names)
+        return data
+
+@st.cache_data(ttl=3600)
+def load_iris_database():
+    """Wrapper that handles data cleaning and local cache fallbacks."""
+    try:
+        raw = fetch_iris_data()
+        return clean_iris_dataframe(raw), "Data Source: Live Open Data API (Connected)", "success"
     except Exception:
-        pass
-
-    for fallback_path in ["data/iris.csv", "iris.csv"]:
-        if os.path.exists(fallback_path):
-            data = pd.read_csv(fallback_path)
-            return clean_iris_dataframe(data), "Data Source: Local Archive (Cached)", "info"
-
-    raise RuntimeError("Unable to load Iris dataset from cloud API, scikit-learn, or local filesystem.")
+        for fallback_path in ["data/iris.csv", "iris.csv"]:
+            if os.path.exists(fallback_path):
+                data = pd.read_csv(fallback_path)
+                return clean_iris_dataframe(data), "Data Source: Local Archive (Cached)", "info"
+        raise RuntimeError("Unable to load Iris dataset.")
 
 try:
     df_raw, source_label, source_status = load_iris_database()
@@ -895,7 +904,7 @@ except Exception as e:
     st.stop()
 
 # ------------------------------------------------------------------------------
-# 7. HIGH-PERFORMANCE PRECOMPUTED NUMPY MATRIX ENGINE (<15ms)
+# 8. HIGH-PERFORMANCE PRECOMPUTED NUMPY MATRIX ENGINE (<15ms)
 # ------------------------------------------------------------------------------
 @st.cache_data
 def precompute_matrix_engine(df_json: str):
@@ -937,31 +946,34 @@ def precompute_matrix_engine(df_json: str):
 matrix_cache = precompute_matrix_engine(df_raw.to_json())
 
 # ------------------------------------------------------------------------------
-# 8. BOTANICAL SVG GENERATOR (BULLETPROOF NO-BROKEN-IMAGE FALLBACK)
+# 9. EMBEDDED BOTANICAL SVG BLOSSOM FALLBACK (AUTHENTIC IRIS ANATOMY)
 # ------------------------------------------------------------------------------
-def generate_botanical_svg_uri(species: str, petal_color: str, std_h: int, badge_text: str) -> str:
-    """Generates an embedded, self-contained SVG botanical illustration data URI."""
+def generate_authentic_iris_svg(species: str, petal_color: str, std_h: int, badge_text: str) -> str:
+    """
+    Generates an authentic Iris blossom SVG vector graphic data URI:
+    Three upright standards (violet/cyan), three drooping support falls, central throat stamen, and dark background.
+    """
     svg = f"""<svg width="400" height="260" viewBox="0 0 400 260" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="400" height="260" fill="#0B0F17" />
     <defs>
-      <radialGradient id="grad_{species}" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="{petal_color}" stop-opacity="0.25" />
+      <radialGradient id="iris_grad_{species}" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="{petal_color}" stop-opacity="0.3" />
         <stop offset="100%" stop-color="#0B0F17" stop-opacity="0" />
       </radialGradient>
     </defs>
-    <circle cx="200" cy="130" r="110" fill="url(#grad_{species})" />
-    <!-- Sepals (Falls) -->
+    <circle cx="200" cy="130" r="110" fill="url(#iris_grad_{species})" />
+    <!-- Three Drooping Falls (Lower Sepals) -->
     <path d="M200 135 C145 170 115 225 135 245 C160 255 185 195 200 145 Z" fill="#1E293B" stroke="#475569" stroke-width="1.5" />
     <path d="M200 135 C255 170 285 225 265 245 C240 255 215 195 200 145 Z" fill="#1E293B" stroke="#475569" stroke-width="1.5" />
     <path d="M200 135 C175 195 185 245 200 255 C215 245 225 195 200 135 Z" fill="#162035" stroke="#475569" stroke-width="1.5" />
-    <!-- Standards (Upright Petals) -->
+    <!-- Three Upright Standards (Petals) -->
     <path d="M200 135 C175 100 165 {135 - std_h} 200 {115 - std_h} C235 {135 - std_h} 225 100 200 135 Z" fill="{petal_color}" fill-opacity="0.92" stroke="#FFFFFF" stroke-width="1.5" />
     <path d="M200 135 C155 110 145 {145 - int(std_h*0.8)} 170 {130 - int(std_h*0.8)} C195 120 195 130 200 135 Z" fill="{petal_color}" fill-opacity="0.82" stroke="#FFFFFF" stroke-width="1.2" />
     <path d="M200 135 C245 110 255 {145 - int(std_h*0.8)} 230 {130 - int(std_h*0.8)} C205 120 205 130 200 135 Z" fill="{petal_color}" fill-opacity="0.82" stroke="#FFFFFF" stroke-width="1.2" />
-    <!-- Floral Core & Stamen -->
+    <!-- Golden Pollinator Throat Signal & Stamen -->
     <circle cx="200" cy="135" r="7" fill="#34D399" stroke="#FFFFFF" stroke-width="2" />
     <line x1="200" y1="135" x2="200" y2="112" stroke="#FCD34D" stroke-width="3" stroke-linecap="round" />
-    <!-- Label Badges -->
+    <!-- Authentic Iris Species Badges -->
     <rect x="18" y="18" width="150" height="26" rx="13" fill="#131B2E" stroke="{petal_color}" stroke-width="1.2" />
     <text x="28" y="35" fill="#FFFFFF" font-family="sans-serif" font-size="11.5" font-weight="bold">Iris {species}</text>
     <rect x="180" y="18" width="202" height="26" rx="13" fill="#131B2E" stroke="#334155" stroke-width="1" />
@@ -970,13 +982,13 @@ def generate_botanical_svg_uri(species: str, petal_color: str, std_h: int, badge
     return "data:image/svg+xml;utf8," + urllib.parse.quote(svg)
 
 SPECIES_FALLBACK_SVGS = {
-    "Setosa": generate_botanical_svg_uri("Setosa", "#38BDF8", 45, "Petals: < 2.0 cm (Bristle)"),
-    "Versicolor": generate_botanical_svg_uri("Versicolor", "#F59E0B", 70, "Petals: 3.0-5.1 cm (Spotted)"),
-    "Virginica": generate_botanical_svg_uri("Virginica", "#A78BFA", 92, "Petals: 4.5-6.9 cm (Expansive)"),
+    "Setosa": generate_authentic_iris_svg("Setosa", "#38BDF8", 45, "Petals: < 2.0 cm (Bristle)"),
+    "Versicolor": generate_authentic_iris_svg("Versicolor", "#F59E0B", 70, "Petals: 3.0-5.1 cm (Spotted)"),
+    "Virginica": generate_authentic_iris_svg("Virginica", "#A78BFA", 92, "Petals: 4.5-6.9 cm (Expansive)"),
 }
 
 # ------------------------------------------------------------------------------
-# 9. CLEAN FUNCTIONAL SIDEBAR
+# 10. CLEAN FUNCTIONAL SIDEBAR
 # ------------------------------------------------------------------------------
 with st.sidebar:
     render_html(f"""
@@ -1057,7 +1069,7 @@ with st.sidebar:
         st.rerun()
 
 # ------------------------------------------------------------------------------
-# 10. FILTER APPLICATION
+# 11. FILTER APPLICATION
 # ------------------------------------------------------------------------------
 df_filtered = df_raw[df_raw["species"].isin(selected_species)].copy()
 df_filtered = df_filtered[
@@ -1068,7 +1080,7 @@ df_filtered = df_filtered[
 ]
 
 # ------------------------------------------------------------------------------
-# 11. 3D PERSPECTIVE HERO HEADER (ZERO CLIPPING)
+# 12. 3D PERSPECTIVE HERO HEADER (ZERO CLIPPING)
 # ------------------------------------------------------------------------------
 render_html(f"""
 <div class="top-header-banner-3d">
@@ -1097,7 +1109,7 @@ render_html(f"""
 """)
 
 # ------------------------------------------------------------------------------
-# 12. FIVE NATIVE 3D STREAMLIT DASHBOARD TABS
+# 13. FIVE NATIVE 3D STREAMLIT DASHBOARD TABS
 # ------------------------------------------------------------------------------
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "1. Overview & Dataset",
@@ -1111,7 +1123,6 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 # TAB 1: OVERVIEW & DATASET
 # ==============================================================================
 with tab1:
-    # 4 Executive Metric Cards (Responsive Grid: 4 Desktop / 2x2 Tablet / 1 Mobile)
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         render_html(f"""
@@ -1166,7 +1177,7 @@ with tab1:
     </div>
     """)
 
-    # 3 Side-by-Side Species Cards (Responsive Grid: 3 Desktop / Stacked Mobile)
+    # 3 Side-by-Side Species Cards
     s_col1, s_col2, s_col3 = st.columns(3)
     with s_col1:
         render_html("""
@@ -1264,65 +1275,65 @@ with tab1:
     )
 
 # ==============================================================================
-# TAB 2: VARIETIES OF IRIS FLOWER (ALL 50 SPECIMENS PER SPECIES + ZERO 400 ERRORS)
+# TAB 2: VARIETIES OF IRIS FLOWER (50 SPECIMENS PER SPECIES + AUTHENTIC IRIS PHOTOS)
 # ==============================================================================
 with tab2:
     st.subheader("Taxonomic Specimen Showcase & Complete Physical Varieties Gallery")
-    st.caption("Verified botanical photography and dynamic individual measurements for all 50 specimens per species (150 total).")
+    st.caption("Verified authentic botanical photography (blue/violet perennial Iris) and dynamic individual measurements for all 50 specimens per species.")
 
     # Interactive Variety & Species Filter Controls
     vf_col1, vf_col2, vf_col3 = st.columns([1.6, 1.4, 2.0])
     with vf_col1:
         selected_gallery_sp = st.selectbox(
             "Select Species Collection:",
-            ["Iris Setosa (50 Specimens)", "Iris Versicolor (50 Specimens)", "Iris Virginica (50 Specimens)", "All Specimens (150 Specimens)"],
+            ["Iris Setosa (50 Specimens)", "Iris Versicolor (50 Specimens)", "Iris Virginica (50 Specimens)", "All Specimens (150 Total)"],
             index=0,
             help="Switch between the 50 specimens of Setosa, Versicolor, Virginica, or view all 150 specimens.",
         )
     with vf_col2:
         items_per_page = st.selectbox(
             "Specimens Per Page:",
-            [12, 18, 24, 50],
+            [10, 15, 25, 50],
             index=0,
             help="Select how many specimen cards to display simultaneously.",
         )
     with vf_col3:
         search_specimen = st.text_input(
-            "Search by Specimen ID (e.g. #01, #25) or dimension:",
+            "Search by Specimen ID (e.g. #01, #07, #25) or dimension:",
             "",
-            placeholder="Type #01, #25, or dimension (e.g. 5.1)...",
+            placeholder="Type #07, #25, or dimension (e.g. 5.1)...",
         )
 
     # Determine Target Species
     if "Setosa" in selected_gallery_sp:
         target_species_name = "Setosa"
-        species_df = df_raw[df_raw["species"] == "Setosa"].reset_index(drop=True)
+        species_subset = df_raw[df_raw["species"] == "Setosa"].reset_index(drop=True)
     elif "Versicolor" in selected_gallery_sp:
         target_species_name = "Versicolor"
-        species_df = df_raw[df_raw["species"] == "Versicolor"].reset_index(drop=True)
+        species_subset = df_raw[df_raw["species"] == "Versicolor"].reset_index(drop=True)
     elif "Virginica" in selected_gallery_sp:
         target_species_name = "Virginica"
-        species_df = df_raw[df_raw["species"] == "Virginica"].reset_index(drop=True)
+        species_subset = df_raw[df_raw["species"] == "Virginica"].reset_index(drop=True)
     else:
         target_species_name = "All Species"
-        species_df = df_raw.copy().reset_index(drop=True)
+        species_subset = df_raw.copy().reset_index(drop=True)
 
-    # Species Header Showcase Card (Requirement 1: Verified Unsplash Image + SVG fallback)
+    # Species Header Showcase Card with Verified Authentic Iris Photo (Requirement 1)
     hero_photo_url = SPECIES_HERO_PHOTOS.get(target_species_name, SPECIES_HERO_PHOTOS["Setosa"])
     hero_fallback_svg = SPECIES_FALLBACK_SVGS.get(target_species_name, SPECIES_FALLBACK_SVGS["Setosa"])
     tag_accent_color = SPECIES_COLORS.get(target_species_name, "#38BDF8")
 
     if target_species_name == "Setosa":
-        species_desc = "Subarctic coastal specialist native to Alaska, Northern Canada, and Lake Superior. Characterized by dwarfed upright standard petals and broad support falls adapted to high maritime winds."
+        species_desc = "Subarctic coastal specialist (Arctic Blue Flag) native to Alaska and Lake Superior. Characterized by dwarfed upright standard petals, broad support falls, and extreme cold tolerance."
         key_marker = "Stunted bristle standards (< 2.0 cm) & broad sepals (Mean: 3.43 cm)"
     elif target_species_name == "Versicolor":
-        species_desc = "Harlequin Blue Flag native to Eastern North American sedge meadows, emergent marshes, and lake shorelines. Displays balanced morphology with intricate purple venation and a vivid yellow nectar guide."
+        species_desc = "Northern Blue Flag native to Eastern North American marshes, sedge meadows, and lake shorelines. Exhibits balanced morphology with intricate purple venation and a vivid yellow center throat."
         key_marker = "Intermediate standards (3.0–5.1 cm) with distinct yellow signal patch"
     elif target_species_name == "Virginica":
-        species_desc = "Southern Blue Flag thriving in cypress swamps, alluvial bottomland forests, and humid coastal floodplains. Features the largest flowers in the collection with expansive surface area and pubescent crests."
+        species_desc = "Virginia Blue Flag thriving in cypress swamps and humid coastal floodplains. Features the largest flowers in the collection with expansive surface area, royal violet petals, and pubescent crests."
         key_marker = "Expansive standards (4.5–6.9 cm) & grand surface area (>9.0 cm²)"
     else:
-        species_desc = "The complete Fisher's 1936 collection comprising 150 curated physical specimens across 3 distinct botanical taxa."
+        species_desc = "The complete Fisher's 1936 collection comprising 150 curated physical specimens across 3 distinct botanical taxa collected by Edgar Anderson."
         key_marker = "Full taxonomic continuum: Setosa, Versicolor, and Virginica"
 
     render_html(f"""
@@ -1330,12 +1341,12 @@ with tab2:
         <div class="species-hero-img-wrap">
             <img src="{hero_photo_url}" 
                  onerror="this.onerror=null; this.src='{hero_fallback_svg}';"
-                 alt="{target_species_name}" 
+                 alt="Authentic Iris {target_species_name}" 
                  class="species-hero-img" />
         </div>
         <div class="species-hero-content">
             <div style="font-size:0.75rem; font-weight:700; color:{tag_accent_color}; letter-spacing:0.08em; text-transform:uppercase;">
-                Taxonomic Profile &bull; 50 Physical Specimens
+                Authentic Botanical Profile &bull; 50 Physical Specimens
             </div>
             <div style="font-size:1.45rem; font-weight:800; color:#FFFFFF; margin:3px 0 6px 0;">
                 Iris {target_species_name} Collection
@@ -1348,34 +1359,34 @@ with tab2:
                     Diagnostic Marker: {key_marker}
                 </span>
                 <span style="background:rgba(52,211,153,0.12); color:#34D399; border:1px solid rgba(52,211,153,0.3); border-radius:14px; padding:3px 10px; font-size:0.74rem; font-weight:600;">
-                    Sample Size: {len(species_df)} Specimens Available
+                    Sample Size: {len(species_subset)} Specimens Available
                 </span>
             </div>
         </div>
     </div>
     """)
 
-    # Apply Search Filter
+    # Apply Search Filter (Requirement 2)
     specimens_pool = []
-    for idx, row in species_df.iterrows():
+    for idx, row in species_subset.iterrows():
         sp_id = f"#{idx + 1:02d}"
-        sp_label = f"Specimen #{idx + 1:02d} - {row['species']} Variety"
-        searchable_text = f"{sp_id} {sp_label} {row['species']} {row['sepal_length']} {row['sepal_width']} {row['petal_length']} {row['petal_width']}".lower()
+        sp_title = f"Specimen #{idx + 1:02d} - {row['species']} Variety"
+        searchable_text = f"{sp_id} {sp_title} {row['species']} {row['sepal_length']} {row['sepal_width']} {row['petal_length']} {row['petal_width']}".lower()
 
         if search_specimen.strip():
             kw = search_specimen.strip().lower()
             if kw not in searchable_text:
                 continue
 
-        specimens_pool.append((idx, row, sp_id, sp_label))
+        specimens_pool.append((idx, row, sp_id, sp_title))
 
     total_matched = len(specimens_pool)
     if total_matched == 0:
         st.warning(f"No specimens matched search '{search_specimen}'. Showing all specimens.")
-        specimens_pool = [(idx, row, f"#{idx + 1:02d}", f"Specimen #{idx + 1:02d} - {row['species']} Variety") for idx, row in species_df.iterrows()]
+        specimens_pool = [(idx, row, f"#{idx + 1:02d}", f"Specimen #{idx + 1:02d} - {row['species']} Variety") for idx, row in species_subset.iterrows()]
         total_matched = len(specimens_pool)
 
-    # Pagination Controls
+    # Smooth Pagination Controls (Requirement 2: "Page 1 of 5 (Specimens 1–10)")
     total_pages = max(1, math.ceil(total_matched / items_per_page))
     
     p_col1, p_col2 = st.columns([3, 1])
@@ -1400,7 +1411,7 @@ with tab2:
     for r_start in range(0, len(page_specimens), 3):
         row_slice = page_specimens[r_start:r_start + 3]
         cols = st.columns(3)
-        for c_idx, (orig_idx, item, sp_id, sp_label) in enumerate(row_slice):
+        for c_idx, (orig_idx, item, sp_id, sp_title) in enumerate(row_slice):
             with cols[c_idx]:
                 sp_name = item["species"]
                 card_accent = SPECIES_COLORS.get(sp_name, "#38BDF8")
@@ -1410,18 +1421,29 @@ with tab2:
                 aspect_ratio = item["petal_length"] / max(item["petal_width"], 0.01)
                 surface_area = item["petal_length"] * item["petal_width"]
 
-                # Botanical Morphometric Comparison vs Mean
-                mean_pl = df_raw[df_raw["species"] == sp_name]["petal_length"].mean()
-                diff_pl = item["petal_length"] - mean_pl
-                diff_label = f"{'+' if diff_pl >= 0 else ''}{diff_pl:.1f} cm vs Mean"
-                diff_color = "#34D399" if abs(diff_pl) <= 0.2 else ("#38BDF8" if diff_pl > 0 else "#F59E0B")
+                # Relative Size Tag: Automatically show whether petal size is Below Average, Average, or Above Average
+                species_mean_pl = df_raw[df_raw["species"] == sp_name]["petal_length"].mean()
+                species_std_pl = df_raw[df_raw["species"] == sp_name]["petal_length"].std()
+                
+                if item["petal_length"] < species_mean_pl - (0.45 * species_std_pl):
+                    rel_tag = "Below Average"
+                    rel_tag_bg = "rgba(245, 158, 11, 0.15)"
+                    rel_tag_color = "#F59E0B"
+                elif item["petal_length"] > species_mean_pl + (0.45 * species_std_pl):
+                    rel_tag = "Above Average"
+                    rel_tag_bg = "rgba(52, 211, 153, 0.15)"
+                    rel_tag_color = "#34D399"
+                else:
+                    rel_tag = "Average Size"
+                    rel_tag_bg = "rgba(56, 189, 248, 0.15)"
+                    rel_tag_color = "#38BDF8"
 
                 card_html = f"""
                 <div class="specimen-card-3d" style="border-top: 3px solid {card_accent};">
                     <div class="specimen-img-container">
                         <img src="{card_img}" 
                              onerror="this.onerror=null; this.src='{card_fallback_svg}';" 
-                             alt="{sp_label}" 
+                             alt="{sp_title}" 
                              class="specimen-img" />
                         <div class="specimen-idx-badge">{sp_id}</div>
                         <div class="specimen-tag-badge" style="color: {card_accent}; border-color: {card_accent};">
@@ -1431,9 +1453,9 @@ with tab2:
                     <div class="specimen-body">
                         <div>
                             <div class="specimen-id">{sp_name} &bull; Specimen Row #{orig_idx + 1}</div>
-                            <div class="specimen-title">{sp_label}</div>
-                            <div style="font-size:0.75rem; color:{diff_color}; font-weight:600; margin-bottom:8px;">
-                                Petal Size: {diff_label} (Mean: {mean_pl:.2f} cm)
+                            <div class="specimen-title">{sp_title}</div>
+                            <div class="specimen-subtitle">
+                                Botanical Specimen Record from Anderson&#39;s 1935 Expedition
                             </div>
                         </div>
                         <div>
@@ -1461,6 +1483,9 @@ with tab2:
                                 </span>
                                 <span style="background:rgba(52,211,153,0.12); color:#34D399; border:1px solid rgba(52,211,153,0.3); border-radius:12px; padding:3px 9px; font-size:0.7rem; font-weight:600;">
                                     Area: {surface_area:.2f} cm&sup2;
+                                </span>
+                                <span style="background:{rel_tag_bg}; color:{rel_tag_color}; border:1px solid {rel_tag_color}; border-radius:12px; padding:3px 9px; font-size:0.7rem; font-weight:700;">
+                                    {rel_tag}
                                 </span>
                             </div>
                         </div>
@@ -1693,7 +1718,8 @@ with tab4:
             ax_r.set_title("Pearson Correlation Matrix", fontsize=10, fontweight="bold", color="#FFFFFF")
             for i in range(4):
                 for j in range(4):
-                    ax_r.text(j, i, f"{corr_matrix[i, j]:.2f}", ha="center", va="center", color="#FFFFFF", fontsize=8.5)
+                    ax_c_val = corr_matrix[i, j]
+                    ax_r.text(j, i, f"{ax_c_val:.2f}", ha="center", va="center", color="#FFFFFF", fontsize=8.5)
             fig_cor.tight_layout()
             st.pyplot(fig_cor, use_container_width=True)
             plt.close(fig_cor)
@@ -1906,7 +1932,7 @@ with tab5:
         st.info("No predictions logged yet. Click 'Log Prediction to SQLite Database' above to persist records.")
 
 # ------------------------------------------------------------------------------
-# 13. ELEGANT ANONYMOUS PRODUCT FOOTER (ZERO PERSONAL NAMES)
+# 14. ELEGANT ANONYMOUS PRODUCT FOOTER (ZERO PERSONAL NAMES)
 # ------------------------------------------------------------------------------
 st.markdown("---")
 render_html("""
